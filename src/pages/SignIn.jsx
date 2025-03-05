@@ -44,7 +44,7 @@ const SignIn = () => {
     }
   };
   return (
-    <div className="bg-[url(bg-img.png)] h-screen bg-cover py-10 bg-center">
+    <div className="bg-[url(/public/bg-img.png)] h-screen bg-cover py-10 bg-center">
       <div className="w-[60%] bg-white mx-auto h-[100%] rounded-md flex">
         <img
           src="sign-in.png"
