@@ -8,9 +8,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-const token =
-  typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
+const token = localStorage.getItem("token");
 const route = createBrowserRouter([
   {
     path: "/",

@@ -3,6 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { redirect, useNavigate } from "react-router-dom";
 import { z } from "zod";
+import App from "../App";
 
 const SignIn = () => {
   const Schema = z.object({
@@ -35,10 +36,9 @@ const SignIn = () => {
       if (!response.ok) throw new Error(data.message);
 
       localStorage.setItem("token", data.value.token);
-      console.log(data.value);
-      alert("signin successfully");
-      reset(data);
-      navigate("/");
+      alert("Sign in successful!");
+      reset();
+      window.location.href = "/";
     } catch (err) {
       console.log(err);
     }
