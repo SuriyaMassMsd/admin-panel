@@ -1,9 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { redirect, useNavigate } from "react-router-dom";
 import { z } from "zod";
-import App from "../App";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 
 const SignIn = () => {
   const Schema = z.object({
@@ -18,7 +17,19 @@ const SignIn = () => {
     handleSubmit,
   } = useForm({ resolver: zodResolver(Schema) });
 
-  const navigate = useNavigate();
+  const success = () => {
+    toast.success("logged in succesfully", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
 
   const submitForm = async (data) => {
     const { email, password } = data;
@@ -33,32 +44,40 @@ const SignIn = () => {
         }
       );
       const data = await response.json();
+      console.log(response);
+
       if (!response.ok) throw new Error(data.message);
 
       localStorage.setItem("token", data.value.token);
-      alert("Sign in successful!");
       reset();
+      if (response.status == 201) {
+        success();
+      }
       window.location.href = "/";
     } catch (err) {
       console.log(err);
     }
   };
   return (
-    <div className="bg-[url(/public/bg-img.png)] h-screen bg-cover py-10 bg-center">
-      <div className="w-[60%] bg-white mx-auto h-[100%] rounded-md flex">
+    <div className="bg-blue-300/50 h-screen bg-cover py-10 bg-center">
+      <div
+        className="w-[90%] sm:w-[60%] px-2 py-6 sm:px-0 sm:py-0 bg-white mx-auto h-[100%] rounded-md flex
+       flex-col sm:flex-row items-center justify-center
+      "
+      >
         <img
           src="sign-in.png"
           alt="signin"
-          className="w-[50%] h-full rounded-l-md"
+          className="hidden w-[50%] h-full rounded-l-md sm:block "
         />
-        <div className="w-[50%] px-10 py-6">
+        <div className="w-full px-4 sm:w-[50%] sm:px-10 sm:py-14 ">
           <h1 className="text-[28px] font-[600]">Signin</h1>
           <h4 className="text-[#8c8c8c] text-[14px] font-[400]">
             Signin your account to continue
           </h4>
 
           <form
-            className="space-y-10 mt-10"
+            className="space-y-10 sm:space-y-14 mt-10"
             onSubmit={handleSubmit(submitForm)}
           >
             <div>
@@ -102,7 +121,7 @@ const SignIn = () => {
               )}
             </div>
 
-            <div className="text-[14px] flex justify-between items-center">
+            <div className="text-[14px] flex  justify-between items-center">
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="keepsign" />
                 <label htmlFor="keepsign" className="cursor-pointer">
@@ -125,10 +144,24 @@ const SignIn = () => {
                 rounded-md
                 "
                 type="submit"
+                // onClick={success}
               >
                 SIGN IN
               </button>
-              <div className="flex items-center gap-2">
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                transition={Bounce}
+              />
+              {/* <div className="flex items-center gap-2">
                 <div className="flex-1 h-[1px]  bg-gray-300"></div>
                 <span className="text-gray-300 ">or</span>
                 <div className="flex-1 h-[1px]  bg-gray-300"></div>
@@ -142,7 +175,7 @@ const SignIn = () => {
                 type="submit"
               >
                 REGISTER
-              </button>
+              </button> */}
             </div>
           </form>
 
