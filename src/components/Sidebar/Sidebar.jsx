@@ -114,11 +114,11 @@ export default function Sidebar(props) {
       branding={{
         logo: (
           <img
-            className="w-[40px] h-[40px] rounded-full bg-cover"
-            src="/public/bg-img.png"
+            className="w-[140px] h-[40px] rounded-full bg-cover"
+            src="https://gravitus.io/static/media/gravituslogo.d101ec067ab314ba6c5f8c14bfc019c6.svg"
           />
         ),
-        title: <h4 className="text-white ">Gravitus</h4>,
+        title: "",
       }}
     >
       <DashboardLayout>
