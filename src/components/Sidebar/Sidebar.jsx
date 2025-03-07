@@ -1,5 +1,6 @@
 import * as React from "react";
 import { extendTheme, styled } from "@mui/material/styles";
+import HomeIcon from "@mui/icons-material/Home";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BarChartIcon from "@mui/icons-material/BarChart";
@@ -16,8 +17,13 @@ const NAVIGATION = [
     title: "Main items",
   },
   {
+    segment: "Home",
+    title: "Home",
+    icon: <HomeIcon />,
+  },
+  {
     segment: "dashboard",
-    title: "Dashboard",
+    title: "All Courses",
     icon: <DashboardIcon />,
   },
   {
@@ -25,35 +31,35 @@ const NAVIGATION = [
     title: "Orders",
     icon: <ShoppingCartIcon />,
   },
-  {
-    kind: "divider",
-  },
-  {
-    kind: "header",
-    title: "Analytics",
-  },
-  {
-    segment: "reports",
-    title: "Reports",
-    icon: <BarChartIcon />,
-    children: [
-      {
-        segment: "sales",
-        title: "Sales",
-        icon: <DescriptionIcon />,
-      },
-      {
-        segment: "traffic",
-        title: "Traffic",
-        icon: <DescriptionIcon />,
-      },
-    ],
-  },
-  {
-    segment: "integrations",
-    title: "Integrations",
-    icon: <LayersIcon />,
-  },
+  // {
+  //   kind: "divider",
+  // },
+  // {
+  //   kind: "header",
+  //   title: "Analytics",
+  // },
+  // {
+  //   segment: "reports",
+  //   title: "Reports",
+  //   icon: <BarChartIcon />,
+  //   children: [
+  //     {
+  //       segment: "sales",
+  //       title: "Sales",
+  //       icon: <DescriptionIcon />,
+  //     },
+  //     {
+  //       segment: "traffic",
+  //       title: "Traffic",
+  //       icon: <DescriptionIcon />,
+  //     },
+  //   ],
+  // },
+  // {
+  //   segment: "integrations",
+  //   title: "Integrations",
+  //   icon: <LayersIcon />,
+  // },
 ];
 
 const demoTheme = extendTheme({
@@ -94,7 +100,7 @@ const Skeleton = styled("div")(({ theme, height }) => ({
 export default function Sidebar(props) {
   const { window } = props;
 
-  const router = useDemoRouter("/dashboard");
+  const router = useDemoRouter("/Home");
 
   // Remove this const when copying and pasting into your project.
   const demoWindow = window ? window() : undefined;
@@ -105,10 +111,19 @@ export default function Sidebar(props) {
       router={router}
       theme={demoTheme}
       window={demoWindow}
+      branding={{
+        logo: (
+          <img
+            className="w-[40px] h-[40px] rounded-full bg-cover"
+            src="/public/bg-img.png"
+          />
+        ),
+        title: <h4 className="text-white ">Gravitus</h4>,
+      }}
     >
       <DashboardLayout>
         <PageContainer>
-          <Grid container spacing={1}>
+          {/* <Grid container spacing={1}>
             <Grid size={5} />
             <Grid size={12}>
               <Skeleton height={14} />
@@ -142,7 +157,7 @@ export default function Sidebar(props) {
             <Grid size={3}>
               <Skeleton height={100} />
             </Grid>
-          </Grid>
+          </Grid> */}
         </PageContainer>
       </DashboardLayout>
     </AppProvider>
