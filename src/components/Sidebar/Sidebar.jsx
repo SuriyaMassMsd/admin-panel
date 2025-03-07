@@ -102,6 +102,19 @@ export default function Sidebar(props) {
 
   const router = useDemoRouter("/Home");
 
+  const renderContent = () => {
+    switch (router.pathname) {
+      case "/Home":
+        return <h1>Welcome to the Home Page</h1>;
+      case "/dashboard":
+        return <h1>All Courses</h1>;
+      case "/orders":
+        return <h1>Manage Orders</h1>;
+      default:
+        return <h1>404 - Not Found</h1>;
+    }
+  };
+
   // Remove this const when copying and pasting into your project.
   const demoWindow = window ? window() : undefined;
 
@@ -122,43 +135,7 @@ export default function Sidebar(props) {
       }}
     >
       <DashboardLayout>
-        <PageContainer>
-          {/* <Grid container spacing={1}>
-            <Grid size={5} />
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-            <Grid size={4}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={8}>
-              <Skeleton height={100} />
-            </Grid>
-
-            <Grid size={12}>
-              <Skeleton height={150} />
-            </Grid>
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-          </Grid> */}
-        </PageContainer>
+        <PageContainer>{renderContent()}</PageContainer>
       </DashboardLayout>
     </AppProvider>
   );
