@@ -1,10 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 
 const SignIn = () => {
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
   const Schema = z.object({
     email: z.string().email("Email is required"),
     password: z.string({ required_error: "Password is required" }).min(6),
@@ -33,7 +35,7 @@ const SignIn = () => {
 
   const submitForm = async (data) => {
     const { email, password } = data;
-
+    setLoading(true);
     try {
       const response = await fetch(
         "https://lms-masterv3.onrender.com/auth/signIn",
@@ -50,12 +52,16 @@ const SignIn = () => {
 
       localStorage.setItem("token", data.value.token);
       reset();
+
+      setStatus(response.status);
       if (response.status == 201) {
         success();
       }
       window.location.href = "/";
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -144,9 +150,9 @@ const SignIn = () => {
                 rounded-md
                 "
                 type="submit"
-                // onClick={success}
+                disabled={loading}
               >
-                SIGN IN
+                {loading ? "SIGNING..." : "SIGN IN"}
               </button>
               <ToastContainer
                 position="top-right"

@@ -10,6 +10,9 @@ import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import Grid from "@mui/material/Grid2";
+import { useNavigate } from "react-router-dom";
+import { Account } from "@toolpad/core/Account";
+import { Logout } from "@mui/icons-material";
 
 const NAVIGATION = [
   {
@@ -99,6 +102,26 @@ const Skeleton = styled("div")(({ theme, height }) => ({
 
 export default function Sidebar(props) {
   const { window } = props;
+  const navigate = useNavigate();
+
+  const [session, setSession] = React.useState(null);
+
+  const authentication = React.useMemo(() => {
+    // signIn = () => {
+    setSession({
+      user: {
+        name: "Admin",
+        email: "gravitus.abishake@gmail.com",
+        image: "https://mcmart.live/account/images/profile-icon.png",
+      },
+    });
+    return {
+      signOut: () => {
+        setSession(null);
+        navigate("/sign-in");
+      },
+    };
+  }, []);
 
   const router = useDemoRouter("/Home");
 
@@ -110,17 +133,21 @@ export default function Sidebar(props) {
         return <h1>All Courses</h1>;
       case "/orders":
         return <h1>Manage Orders</h1>;
+      case "/signin":
+        return <h1>Please Sign In</h1>;
       default:
         return <h1>404 - Not Found</h1>;
     }
   };
 
   // Remove this const when copying and pasting into your project.
-  const demoWindow = window ? window() : undefined;
+  const demoWindow = typeof window !== "undefined" ? window() : undefined;
 
   return (
     <AppProvider
       navigation={NAVIGATION}
+      authentication={authentication}
+      session={session}
       router={router}
       theme={demoTheme}
       window={demoWindow}
@@ -129,6 +156,7 @@ export default function Sidebar(props) {
           <img
             className="w-[140px] h-[40px] rounded-full bg-cover"
             src="https://gravitus.io/static/media/gravituslogo.d101ec067ab314ba6c5f8c14bfc019c6.svg"
+            alt="gravitus logo"
           />
         ),
         title: "",

@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
 
 const App = () => {
+  useEffect(() => {
+    document.title = "Admin Panel";
+  }, []);
   return (
     <div>
       <Sidebar />

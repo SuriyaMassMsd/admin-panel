@@ -7,6 +7,7 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import Form from "./pages/Form.jsx";
 
 const token = localStorage.getItem("token");
 const route = createBrowserRouter([
@@ -18,6 +19,7 @@ const route = createBrowserRouter([
     path: "/sign-in",
     element: <SignIn />,
   },
+  { path: "/fullform", element: <Form /> },
 ]);
 
 createRoot(document.getElementById("root")).render(
