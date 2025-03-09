@@ -13,6 +13,9 @@ import Grid from "@mui/material/Grid2";
 import { useNavigate } from "react-router-dom";
 import { Account } from "@toolpad/core/Account";
 import { Logout } from "@mui/icons-material";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 
 const NAVIGATION = [
   {
@@ -23,46 +26,69 @@ const NAVIGATION = [
     segment: "Home",
     title: "Home",
     icon: <HomeIcon />,
+    path: "/Home",
   },
   {
-    segment: "dashboard",
-    title: "All Courses",
+    segment: "courses",
+    title: "Courses",
     icon: <DashboardIcon />,
+    children: [
+      {
+        segment: "chapter",
+        title: "Chapter",
+        path: "/courses/chapter",
+      },
+      {
+        segment: "lesson",
+        title: "Lessons",
+        path: "/courses/lesson",
+      },
+      {
+        segment: "quiz",
+        title: "Quiz",
+        path: "/courses/quiz",
+      },
+      {
+        segment: "assignment",
+        title: "Assignment",
+        path: "/courses/assignment",
+      },
+    ],
   },
   {
     segment: "orders",
     title: "Orders",
-    icon: <ShoppingCartIcon />,
+    icon: <PeopleAltIcon />,
+    children: [
+      {
+        segment: "find-by",
+        title: "Find By",
+        path: "/orders/find",
+      },
+      {
+        segment: "create",
+        title: "Create",
+        path: "/orders/create",
+      },
+      {
+        segment: "delete",
+        title: "Delete",
+        path: "/orders/delete",
+      },
+    ],
   },
-  // {
-  //   kind: "divider",
-  // },
-  // {
-  //   kind: "header",
-  //   title: "Analytics",
-  // },
-  // {
-  //   segment: "reports",
-  //   title: "Reports",
-  //   icon: <BarChartIcon />,
-  //   children: [
-  //     {
-  //       segment: "sales",
-  //       title: "Sales",
-  //       icon: <DescriptionIcon />,
-  //     },
-  //     {
-  //       segment: "traffic",
-  //       title: "Traffic",
-  //       icon: <DescriptionIcon />,
-  //     },
-  //   ],
-  // },
-  // {
-  //   segment: "integrations",
-  //   title: "Integrations",
-  //   icon: <LayersIcon />,
-  // },
+  {
+    segment: "tickets",
+    title: "Tickets",
+    icon: <ConfirmationNumberIcon />,
+    path: "/tickets",
+  },
+  {
+    segment: "notify",
+    title: "Notify",
+    icon: <NotificationsActiveIcon />,
+    path: "/notify",
+  },
 ];
 
 const demoTheme = extendTheme({
@@ -126,15 +152,46 @@ export default function Sidebar(props) {
   const router = useDemoRouter("/Home");
 
   const renderContent = () => {
-    switch (router.pathname) {
+    const path = router.pathname;
+
+    if (path.startsWith("/courses")) {
+      switch (true) {
+        case path.includes("/chapter"):
+          return <h1>Chapter Page</h1>;
+        case path.includes("/lesson"):
+          return <h1>Lessons Page</h1>;
+        case path.includes("/quiz"):
+          return <h1>Quiz Page</h1>;
+        case path.includes("/assignment"):
+          return <h1>Assignment Page</h1>;
+        default:
+          return <h1>All Courses</h1>;
+      }
+    }
+
+    if (path.startsWith("/orders")) {
+      switch (true) {
+        case path.includes("/find"):
+          return <h1>Find By</h1>;
+
+        case path.includes("/create"):
+          return <h1>Create</h1>;
+
+        case path.includes("/delete"):
+          return <h1>Delete</h1>;
+      }
+    }
+    switch (path) {
       case "/Home":
         return <h1>Welcome to the Home Page</h1>;
-      case "/dashboard":
-        return <h1>All Courses</h1>;
       case "/orders":
         return <h1>Manage Orders</h1>;
       case "/signin":
         return <h1>Please Sign In</h1>;
+      case "/tickets":
+        return <h1>Tickets</h1>;
+      case "/notify":
+        return <h1>Notify</h1>;
       default:
         return <h1>404 - Not Found</h1>;
     }
