@@ -2,6 +2,7 @@ import { z } from "zod";
 import Input from "../components/Input";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import RichTextEditor from "./../components/RichTextEditor";
 
 const schema = z.object({
   email: z
@@ -77,6 +78,7 @@ const MyForm = () => {
           type="checkbox"
           placeholder=""
         />
+        <RichTextEditor />
         <button
           type="submit"
           className="bg-[#00bbab] text-white py-2 px-4 rounded mt-4"

@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
+import "global";
 import SignIn from "./pages/SignIn.jsx";
 import {
   createBrowserRouter,
