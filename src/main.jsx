@@ -24,7 +24,5 @@ const route = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={route}>
-    <App />
-  </RouterProvider>
+  <RouterProvider router={route} />
 );
