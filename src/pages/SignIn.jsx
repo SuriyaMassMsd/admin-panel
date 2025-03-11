@@ -74,9 +74,9 @@ const SignIn = () => {
         <img
           src="sign-in.png"
           alt="signin"
-          className="hidden w-[50%] h-full rounded-l-md sm:block "
+          className="hidden w-[50%] h-full rounded-l-md lg:block "
         />
-        <div className="w-full px-4 sm:w-[50%] sm:px-10 sm:py-14 ">
+        <div className="w-full px-4 sm:w-[80%] lg:w-[50%] lg:px-10 lg:py-14 ">
           <h1 className="text-[28px] font-[600]">Signin</h1>
           <h4 className="text-[#8c8c8c] text-[14px] font-[400]">
             Signin your account to continue
