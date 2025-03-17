@@ -9,6 +9,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Form from "./pages/Form.jsx";
+import { Details } from "@mui/icons-material";
 
 const token = localStorage.getItem("token");
 const route = createBrowserRouter([
@@ -20,6 +21,7 @@ const route = createBrowserRouter([
     path: "/sign-in",
     element: <SignIn />,
   },
+  { path: "/course/:id", element: <Details /> },
   { path: "/fullform", element: <Form /> },
 ]);
 

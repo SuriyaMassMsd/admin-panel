@@ -38,7 +38,7 @@ const SignIn = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        "https://lms-masterv3.onrender.com/auth/signIn",
+        "https://lms_api.haloquant.com/auth/signin",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
