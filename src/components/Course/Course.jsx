@@ -10,6 +10,11 @@ const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(2),
+  transition: "all 0.3s",
+  "&:hover": {
+    boxShadow: "0px 4px 10px rgba(0 0 0 0.2) ",
+    transform: "scale(1.05)",
+  },
   textAlign: "center",
   color: theme.palette.text.secondary,
   ...theme.applyStyles("dark", {
@@ -77,18 +82,18 @@ export default function Course({ navigate, datas }) {
         {data.map((item, index) => (
           <Grid item xs={1} sm={4} md={4} key={index}>
             <Item onClick={() => handleRouteData(item)}>
-              <div className="hover:scale-105 transition cursor-pointer flex flex-col justify-between h-[280px]">
+              <div className=" cursor-pointer flex flex-col justify-between gap-y-6 h-[280px] ">
                 <img
                   src={item.thumbnailUrl}
                   alt={item.title}
-                  className="rounded-[10px] h-[150px] w-full object-cover"
+                  className="rounded-[10px] h-[150px]  object-cover"
                 />
-                <div className="flex flex-col justify-between items-start py-2 space-y-2 h-full">
-                  <h1 className="text-[18px] text-start font-semibold line-clamp-2 overflow-hidden text-ellipsis w-full">
+                <div className="flex flex-col justify-start items-start py-2 space-y-2 h-full ">
+                  <h1 className="text-[18px] text-start font-semibold line-clamp-1 text-ellipsis overflow-hidden">
                     {item.title}
                   </h1>
                   <span className="text-sm text-gray-400">{item.author}</span>
-                  <div className="flex items-center gap-2 mt-auto">
+                  <div className="flex items-center gap-2 ">
                     <MovieFilterIcon />
                     <div className="flex items-center gap-1">
                       <p>{item.totalUnits}</p>
