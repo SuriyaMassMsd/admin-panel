@@ -9,8 +9,10 @@ import Details from "../../pages/Details";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
   ...theme.typography.body2,
-  padding: theme.spacing(2),
+  padding: theme.spacing(2.5),
+  borderRadius: "10px",
   transition: "all 0.3s",
+
   "&:hover": {
     boxShadow: "0px 4px 10px rgba(0 0 0 0.2) ",
     transform: "scale(1.05)",
@@ -76,28 +78,30 @@ export default function Course({ navigate, datas }) {
     <Box sx={{ flexGrow: 1 }}>
       <Grid
         container
-        spacing={{ xs: 2, md: 3 }}
+        spacing={{ xs: 2, md: 8 }}
         columns={{ xs: 1, sm: 8, md: 8, lg: 12 }}
       >
         {data.map((item, index) => (
           <Grid item xs={1} sm={4} md={4} key={index}>
             <Item onClick={() => handleRouteData(item)}>
-              <div className=" cursor-pointer flex flex-col justify-between gap-y-6 h-[280px] ">
+              <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
                 <img
                   src={item.thumbnailUrl}
                   alt={item.title}
                   className="rounded-[10px] h-[150px]  object-cover"
                 />
-                <div className="flex flex-col justify-start items-start py-2 space-y-2 h-full ">
-                  <h1 className="text-[18px] text-start font-semibold line-clamp-1 text-ellipsis overflow-hidden">
+                <div className="flex flex-col justify-between items-start py-2 space-y-4 h-full ">
+                  <h1 className="text-[18px] text-start font-semibold ">
                     {item.title}
                   </h1>
-                  <span className="text-sm text-gray-400">{item.author}</span>
-                  <div className="flex items-center gap-2 ">
-                    <MovieFilterIcon />
-                    <div className="flex items-center gap-1">
-                      <p>{item.totalUnits}</p>
-                      <p>Tutorials</p>
+                  <div className="flex flex-col items-start">
+                    <span className="text-sm text-gray-400">{item.author}</span>
+                    <div className="flex items-center gap-2 ">
+                      <MovieFilterIcon />
+                      <div className="flex items-center gap-1">
+                        <p>{item.totalUnits}</p>
+                        <p>Tutorials</p>
+                      </div>
                     </div>
                   </div>
                 </div>
