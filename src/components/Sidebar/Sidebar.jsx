@@ -10,13 +10,20 @@ import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import Grid from "@mui/material/Grid2";
-import { useNavigate } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { Account } from "@toolpad/core/Account";
 import { Logout } from "@mui/icons-material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import Course from "../Course/Course";
+import Details from "../../pages/Details";
 
 const NAVIGATION = [
   {
@@ -34,6 +41,8 @@ const NAVIGATION = [
     title: "Courses",
     path: "/courses",
     icon: <DashboardIcon />,
+
+    // children: [],
     //   children: [
     //     {
     //       segment: "chapter",
@@ -131,6 +140,9 @@ const Skeleton = styled("div")(({ theme, height }) => ({
 export default function Sidebar(props) {
   const { window } = props;
   const navigate = useNavigate();
+  const { id } = useParams();
+  console.log("UseParams", id);
+  const [selectedCourse, setSelectedCourse] = React.useState(null);
 
   const [session, setSession] = React.useState(null);
 
@@ -153,23 +165,45 @@ export default function Sidebar(props) {
 
   const router = useDemoRouter("/Home");
 
+  const location = useLocation();
+  // console.log(location.pathname);
+
   const renderContent = () => {
     const path = router.pathname;
+    const url = location.pathname;
 
-    // if (path.startsWith("/courses")) {
+    if (path.startsWith("/courses/details")) {
+      return (
+        <>
+          <div className="flex items-center space-x-1">
+            <span>
+              <strong
+                className="cursor-pointer hover:underline"
+                onClick={() => router.navigate("/courses")}
+              >
+                Courses
+              </strong>
+            </span>
+            <span>/ Details</span>
+          </div>
+          <Details course={selectedCourse} />
+        </>
+      );
+    }
+
+    // if (path.startsWith("/course")) {
     //   switch (true) {
-    //     case path.includes("/courses"):
-    //       return <h1>Courses</h1>;
-    //     case path.includes("/chapter"):
-    //       return <h1>Chapter Page</h1>;
-    //     case path.includes("/lesson"):
-    //       return <h1>Lessons Page</h1>;
-    //     case path.includes("/quiz"):
-    //       return <h1>Quiz Page</h1>;
-    //     case path.includes("/assignment"):
-    //       return <h1>Assignment Page</h1>;
-    //     default:
-    //       return <h1>All Courses</h1>;
+    //     case path.includes(location.pathname == "/course/detail"):
+    //     // case path.includes("/chapter"):
+    //     //   return <h1>Chapter Page</h1>;
+    //     // case path.includes("/lesson"):
+    //     //   return <h1>Lessons Page</h1>;
+    //     // case path.includes("/quiz"):
+    //     //   return <h1>Quiz Page</h1>;
+    //     // case path.includes("/assignment"):
+    //     //   return <h1>Assignment Page</h1>;
+    //     // default:
+    //     //   return <h1>All Courses</h1>;
     //   }
     // }
 
@@ -189,7 +223,13 @@ export default function Sidebar(props) {
       case "/Home":
         return <h1>Welcome to the Home Page</h1>;
       case "/courses":
-        return <Course />;
+        return (
+          <Course
+            navigate={router.navigate}
+            datas={{ selectedCourse, setSelectedCourse }}
+          />
+        );
+
       case "/orders":
         return <h1>Manage Orders</h1>;
       case "/signin":
@@ -226,7 +266,14 @@ export default function Sidebar(props) {
       }}
     >
       <DashboardLayout>
-        <PageContainer>{renderContent()}</PageContainer>
+        <PageContainer>
+          {/* <Routes> */}
+          {renderContent()}
+          {/* <Route path="/" element={<h1>Welcome to the Home Page</h1>} /> */}
+          {/* <Route path="/courses" element={<Course />} /> */}
+          {/* <Route path="/courses/details/:id" element={<Details />} /> */}
+          {/* </Routes> */}
+        </PageContainer>
       </DashboardLayout>
     </AppProvider>
   );
