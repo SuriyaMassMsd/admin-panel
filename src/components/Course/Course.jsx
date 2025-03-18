@@ -77,14 +77,14 @@ export default function Course({ navigate, datas }) {
         {data.map((item, index) => (
           <Grid item xs={1} sm={4} md={4} key={index}>
             <Item onClick={() => handleRouteData(item)}>
-              <div className=" hover:scale-105 min-h-min transition cursor-pointer ">
+              <div className=" hover:scale-105 h-[280px] transition cursor-pointer ">
                 <img
                   src={item.thumbnailUrl}
                   alt={item.title}
                   className="rounded-[10px] h-[150px] w-full bg-contain"
                 />
                 <div className="flex flex-col justify-center items-start py-2 space-y-2">
-                  <h1 className="text-justify text-[18px] font-semibold">
+                  <h1 className=" text-[18px] text-start font-semibold">
                     {item.title}
                   </h1>
                   <span>{item.author}</span>
