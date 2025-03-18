@@ -77,21 +77,19 @@ export default function Course({ navigate, datas }) {
         {data.map((item, index) => (
           <Grid item xs={1} sm={4} md={4} key={index}>
             <Item onClick={() => handleRouteData(item)}>
-              <div className=" hover:scale-105 min-h-[280px] transition cursor-pointer flex flex-col justify-between">
+              <div className="hover:scale-105 transition cursor-pointer flex flex-col justify-between h-[280px]">
                 <img
                   src={item.thumbnailUrl}
                   alt={item.title}
-                  className="rounded-[10px] h-[150px] w-full bg-contain"
+                  className="rounded-[10px] h-[150px] w-full object-cover"
                 />
-                <div className="flex flex-col justify-center items-start py-2 space-y-2 ">
-                  <h1 className=" text-[18px] text-start font-semibold">
+                <div className="flex flex-col justify-between items-start py-2 space-y-2 h-full">
+                  <h1 className="text-[18px] text-start font-semibold line-clamp-2 overflow-hidden text-ellipsis w-full">
                     {item.title}
                   </h1>
-                  <span>{item.author}</span>
-                  <div className="flex items-center gap-2">
-                    <span>
-                      <MovieFilterIcon />
-                    </span>
+                  <span className="text-sm text-gray-400">{item.author}</span>
+                  <div className="flex items-center gap-2 mt-auto">
+                    <MovieFilterIcon />
                     <div className="flex items-center gap-1">
                       <p>{item.totalUnits}</p>
                       <p>Tutorials</p>
