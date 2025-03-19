@@ -5,6 +5,7 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import MovieFilterIcon from "@mui/icons-material/MovieFilter";
 import Details from "../../pages/Details";
+import YouTube from "../Skeleton/Skeleton";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -58,18 +59,22 @@ export default function Course({ navigate, datas, current }) {
     courseData();
   }, []);
 
-  if (!data) return <h1>Loading...</h1>;
+  if (!data) return <YouTube />;
 
   const handleRouteData = (data) => {
     localStorage.setItem("item", JSON.stringify(data));
-    // setSelectedCourse(data);
     setPathname("/courses");
     navigate("/courses/details");
-    // console.log(data);
   };
 
   return (
     <Box sx={{ flexGrow: 1, my: 4 }}>
+      <button
+        className="absolute top-22 right-20 px-10 py-2 bg-gray-500 font-semibold text-white cursor-pointer hover:scale-105 hover:bg-gray-600 rounded outline-none transition-all duration-200 2s"
+        onClick={() => navigate("/courses/addCourse")}
+      >
+        Add Course
+      </button>
       <Grid
         container
         spacing={{ xs: 2, md: 8 }}

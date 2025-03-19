@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 const Details = () => {
   const navigate = useNavigate();
   const course = JSON.parse(localStorage.getItem("item"));
+
   return (
     <div>
       <button className="cursor-pointer text-lg hover:underline">

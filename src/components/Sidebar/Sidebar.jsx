@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import Course from "../Course/Course";
 import Details from "../../pages/Details";
+import Form from "../../pages/Form";
 
 const NAVIGATION = [
   {
@@ -127,6 +128,25 @@ export default function Sidebar(props) {
             <span>/ Details</span>
           </div>
           <Details course={selectedCourse} />
+        </>
+      );
+    }
+
+    if (path.includes("/courses/addCourse")) {
+      return (
+        <>
+          <div className="flex items-center space-x-1 w-">
+            <span>
+              <strong
+                className="cursor-pointer hover:underline"
+                onClick={currentRoutes}
+              >
+                Courses
+              </strong>
+            </span>
+            <span>/ AddCourses</span>
+          </div>
+          <Form />
         </>
       );
     }
