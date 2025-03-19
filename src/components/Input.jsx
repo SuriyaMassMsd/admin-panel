@@ -5,7 +5,6 @@ const Input = ({
   name,
   type,
   placeholder,
-  validationSchema,
   error,
   className,
   options,
@@ -16,20 +15,22 @@ const Input = ({
 }) => {
   const { register, setValue } = useFormContext();
 
-  // console.log(data);
-
   const renderInputField = () => {
-    const [fileValue, setFile] = useState(null);
     switch (type) {
       case "textarea":
         return (
-          <textarea
-            placeholder={placeholder}
-            className={`px-[10px] w-full py-[10px] border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
-              ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
-              ${className}`}
-            {...register(name, validationSchema)}
-          />
+          <div>
+            <label htmlFor={id}>{label}</label>
+
+            <textarea
+              id={id}
+              placeholder={placeholder}
+              className={`px-[10px] w-full mt-2 py-[10px] border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
+    ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
+    ${className}`}
+              {...register(name)}
+            />
+          </div>
         );
       case "file":
         return (
@@ -38,15 +39,13 @@ const Input = ({
             <input
               type="file"
               id={id}
-              // name={name}
               className={`px-[10px] w-full py-[10px] mt-1 border rounded outline-none text-[#969696]
                   ${error ? "border-red-500 shadow-md shadow-red-500/50" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
                   ${className}`}
-              {...register(name)}
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (file) {
-                  setValue(name, file);
+                  setValue(name, file, { shouldValidate: true });
                 }
               }}
             />
@@ -89,7 +88,7 @@ const Input = ({
               className={`px-[10px] w-full py-[10px] mt-1 border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
               ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
               ${className}`}
-              {...register(name, validationSchema)}
+              {...register(name)}
             />
           </div>
         );
@@ -101,13 +100,62 @@ const Input = ({
                 <input
                   type="checkbox"
                   value={d}
-                  // name={name}
                   id={`${id}-${index}`}
                   {...register(name)}
                 />
                 <label htmlFor={`${id}-${index}`}>{d}</label>
               </div>
             ))}
+          </div>
+        );
+      case "array":
+        const [arrayValue, setArrayValue] = useState("");
+
+        return (
+          <div>
+            <label className="" htmlFor={id}>
+              {label}
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                id={id}
+                value={arrayValue}
+                placeholder={placeholder}
+                className={`px-[10px] w-full py-[10px] mt-1 border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
+                  ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"}`}
+                onChange={(e) => setArrayValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && arrayValue.trim()) {
+                    e.preventDefault();
+                    const currentValues = methods.getValues(name) || [];
+                    setValue(name, [...currentValues, arrayValue], {
+                      shouldValidate: true,
+                    });
+                  }
+                  setArrayValue("");
+                }}
+              />
+            </div>
+            {error && (
+              <p className="font-headerFont text-red-500">{error.message}</p>
+            )}
+            <div className="mt-2 flex gap-2 flex-wrap">
+              {methods.getValues(name)?.map((item, index) => (
+                <span
+                  key={index}
+                  className="bg-[#00bbab] text-white px-2 py-1 rounded cursor-pointer"
+                  onClick={() => {
+                    const filteredValues = methods
+                      .getValues(name)
+                      .files((_, i) => i !== index);
+                    setValue(name, filteredValues, { shouldValidate: true });
+                  }}
+                >
+                  {item} ✖
+                </span>
+              ))}
+            </div>
           </div>
         );
 
