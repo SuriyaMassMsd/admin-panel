@@ -2,14 +2,9 @@ import * as React from "react";
 import { extendTheme, styled } from "@mui/material/styles";
 import HomeIcon from "@mui/icons-material/Home";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import DescriptionIcon from "@mui/icons-material/Description";
-import LayersIcon from "@mui/icons-material/Layers";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
-import Grid from "@mui/material/Grid2";
 import {
   Route,
   Routes,
@@ -17,11 +12,6 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { Account } from "@toolpad/core/Account";
-import { Logout } from "@mui/icons-material";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import Course from "../Course/Course";
 import Details from "../../pages/Details";
 
@@ -41,65 +31,7 @@ const NAVIGATION = [
     title: "Courses",
     path: "/courses",
     icon: <DashboardIcon />,
-
-    // children: [],
-    //   children: [
-    //     {
-    //       segment: "chapter",
-    //       title: "Chapter",
-    //       path: "/courses/chapter",
-    //     },
-    //     {
-    //       segment: "lesson",
-    //       title: "Lessons",
-    //       path: "/courses/lesson",
-    //     },
-    //     {
-    //       segment: "quiz",
-    //       title: "Quiz",
-    //       path: "/courses/quiz",
-    //     },
-    //     {
-    //       segment: "assignment",
-    //       title: "Assignment",
-    //       path: "/courses/assignment",
-    //     },
-    //   ],
   },
-  // {
-  //   segment: "orders",
-  //   title: "Orders",
-  //   icon: <PeopleAltIcon />,
-  // children: [
-  //   {
-  //     segment: "find-by",
-  //     title: "Find By",
-  //     path: "/orders/find",
-  //   },
-  //   {
-  //     segment: "create",
-  //     title: "Create",
-  //     path: "/orders/create",
-  //   },
-  //   {
-  //     segment: "delete",
-  //     title: "Delete",
-  //     path: "/orders/delete",
-  //   },
-  // ],
-  // },
-  // {
-  //   segment: "tickets",
-  //   title: "Tickets",
-  //   icon: <ConfirmationNumberIcon />,
-  //   path: "/tickets",
-  // },
-  // {
-  //   segment: "notify",
-  //   title: "Notify",
-  //   icon: <NotificationsActiveIcon />,
-  //   path: "/notify",
-  // },
 ];
 
 const demoTheme = extendTheme({
@@ -116,20 +48,6 @@ const demoTheme = extendTheme({
   },
 });
 
-function useDemoRouter(initialPath) {
-  const [pathname, setPathname] = React.useState(initialPath);
-
-  const router = React.useMemo(() => {
-    return {
-      pathname,
-      searchParams: new URLSearchParams(),
-      navigate: (path) => setPathname(String(path)),
-    };
-  }, [pathname]);
-
-  return router;
-}
-
 const Skeleton = styled("div")(({ theme, height }) => ({
   backgroundColor: theme.palette.action.hover,
   borderRadius: theme.shape.borderRadius,
@@ -143,8 +61,22 @@ export default function Sidebar(props) {
   const { id } = useParams();
   console.log("UseParams", id);
   const [selectedCourse, setSelectedCourse] = React.useState(null);
-
   const [session, setSession] = React.useState(null);
+  const [pathname, setPathname] = React.useState(
+    localStorage.getItem("current")
+  );
+
+  function useDemoRouter() {
+    const router = React.useMemo(() => {
+      return {
+        pathname,
+        searchParams: new URLSearchParams(),
+        navigate: (path) => setPathname(String(path)),
+      };
+    }, [pathname]);
+
+    return router;
+  }
 
   const authentication = React.useMemo(() => {
     // signIn = () => {
@@ -163,10 +95,18 @@ export default function Sidebar(props) {
     };
   }, []);
 
-  const router = useDemoRouter("/Home");
+  localStorage.setItem("current", pathname);
+  const demoRoute = localStorage.getItem("current");
+  const router = useDemoRouter(demoRoute);
 
   const location = useLocation();
-  // console.log(location.pathname);
+  // console.log("PathName", pathname);
+  console.log(selectedCourse);
+
+  const currentRoutes = () => {
+    setPathname("/courses");
+    router.navigate("/courses");
+  };
 
   const renderContent = () => {
     const path = router.pathname;
@@ -179,7 +119,7 @@ export default function Sidebar(props) {
             <span>
               <strong
                 className="cursor-pointer hover:underline"
-                onClick={() => router.navigate("/courses")}
+                onClick={currentRoutes}
               >
                 Courses
               </strong>
@@ -191,34 +131,6 @@ export default function Sidebar(props) {
       );
     }
 
-    // if (path.startsWith("/course")) {
-    //   switch (true) {
-    //     case path.includes(location.pathname == "/course/detail"):
-    //     // case path.includes("/chapter"):
-    //     //   return <h1>Chapter Page</h1>;
-    //     // case path.includes("/lesson"):
-    //     //   return <h1>Lessons Page</h1>;
-    //     // case path.includes("/quiz"):
-    //     //   return <h1>Quiz Page</h1>;
-    //     // case path.includes("/assignment"):
-    //     //   return <h1>Assignment Page</h1>;
-    //     // default:
-    //     //   return <h1>All Courses</h1>;
-    //   }
-    // }
-
-    // if (path.startsWith("/orders")) {
-    //   switch (true) {
-    //     case path.includes("/find"):
-    //       return <h1>Find By</h1>;
-
-    //     case path.includes("/create"):
-    //       return <h1>Create</h1>;
-
-    //     case path.includes("/delete"):
-    //       return <h1>Delete</h1>;
-    //   }
-    // }
     switch (path) {
       case "/Home":
         return <h1>Welcome to the Home Page</h1>;
@@ -226,6 +138,7 @@ export default function Sidebar(props) {
         return (
           <Course
             navigate={router.navigate}
+            current={{ setPathname }}
             datas={{ selectedCourse, setSelectedCourse }}
           />
         );
@@ -266,14 +179,7 @@ export default function Sidebar(props) {
       }}
     >
       <DashboardLayout>
-        <PageContainer>
-          {/* <Routes> */}
-          {renderContent()}
-          {/* <Route path="/" element={<h1>Welcome to the Home Page</h1>} /> */}
-          {/* <Route path="/courses" element={<Course />} /> */}
-          {/* <Route path="/courses/details/:id" element={<Details />} /> */}
-          {/* </Routes> */}
-        </PageContainer>
+        <PageContainer>{renderContent()}</PageContainer>
       </DashboardLayout>
     </AppProvider>
   );

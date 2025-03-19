@@ -1,15 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const Details = ({ course, onBack, path }) => {
+const Details = () => {
   const navigate = useNavigate();
-
+  const course = JSON.parse(localStorage.getItem("item"));
   return (
     <div>
-      <button
-        onClick={onBack}
-        className="cursor-pointer text-lg hover:underline"
-      >
+      <button className="cursor-pointer text-lg hover:underline">
         {/* Courses / Details */}
       </button>
       <div>

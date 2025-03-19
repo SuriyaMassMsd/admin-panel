@@ -24,9 +24,10 @@ const Item = styled(Paper)(({ theme }) => ({
   }),
 }));
 
-export default function Course({ navigate, datas }) {
+export default function Course({ navigate, datas, current }) {
   const [data, setData] = React.useState(null);
   const { selectedCourse, setSelectedCourse } = datas;
+  const { setPathname } = current;
   // const [selectedCourse, setSelectedCourse] = React.useState(null);
 
   React.useEffect(() => {
@@ -59,23 +60,16 @@ export default function Course({ navigate, datas }) {
 
   if (!data) return <h1>Loading...</h1>;
 
-  // if (selectedCourse) {
-  //   return (
-  //     <Details
-  //       course={selectedCourse}
-  //       onBack={() => setSelectedCourse(null)}
-  //       // path={path}
-  //     />
-  //   );
-  // }
-
   const handleRouteData = (data) => {
-    setSelectedCourse(data);
+    localStorage.setItem("item", JSON.stringify(data));
+    // setSelectedCourse(data);
+    setPathname("/courses");
     navigate("/courses/details");
+    // console.log(data);
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, my: 4 }}>
       <Grid
         container
         spacing={{ xs: 2, md: 8 }}
