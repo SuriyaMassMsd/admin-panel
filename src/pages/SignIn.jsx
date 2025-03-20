@@ -36,15 +36,15 @@ const SignIn = () => {
   const submitForm = async (data) => {
     const { email, password } = data;
     setLoading(true);
+    // console.log(process.env.VITE_SIGNIN);
+    const apiUrl = import.meta.env.VITE_SIGNIN;
+
     try {
-      const response = await fetch(
-        "https://lms_api.haloquant.com/auth/signin",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
       const data = await response.json();
       console.log(response);
 

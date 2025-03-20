@@ -52,7 +52,7 @@ const MyForm = () => {
     setLoading(true);
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("https://lms_api.haloquant.com/course", {
+      const response = await fetch(process.env.CREATE_COURSE, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

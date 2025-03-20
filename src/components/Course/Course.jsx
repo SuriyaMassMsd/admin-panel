@@ -34,10 +34,10 @@ export default function Course({ navigate, datas, current }) {
   React.useEffect(() => {
     const courseData = async () => {
       const token = localStorage.getItem("token");
-      console.log(token);
+      const apiUrl = import.meta.env.VITE_CREATE_COURSE;
 
       try {
-        const response = await fetch("https://lms_api.haloquant.com/course", {
+        const response = await fetch(apiUrl, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -83,7 +83,44 @@ export default function Course({ navigate, datas, current }) {
         spacing={{ xs: 2, md: 8 }}
         columns={{ xs: 1, sm: 8, md: 8, lg: 12 }}
       >
-        {data.map((item, index) => (
+        {data.approved.map((item, index) => (
+          <Grid item xs={1} sm={4} md={4} key={index}>
+            <Item onClick={() => handleRouteData(item)}>
+              <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
+                <img
+                  src={item.thumbnailUrl}
+                  alt={item.title}
+                  className="rounded-[10px] h-[150px]  object-cover"
+                />
+                <div className="flex flex-col justify-between items-start py-2 space-y-4 h-full ">
+                  <h1 className="text-[18px] text-start font-semibold ">
+                    {item.title}
+                  </h1>
+                  <div className="flex flex-col items-start">
+                    <span className="text-sm text-gray-400">{item.author}</span>
+                    <div className="flex items-center gap-2 ">
+                      <MovieFilterIcon />
+                      <div className="flex items-center gap-1">
+                        <p>{item.totalUnits}</p>
+                        <p>Tutorials</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Item>
+          </Grid>
+        ))}
+      </Grid>
+
+      <div className="mt-10 w-full h-1 bg-white"></div>
+      <h1 className="mt-10 mb-10">Pending Courses</h1>
+      <Grid
+        container
+        spacing={{ xs: 2, md: 8 }}
+        columns={{ xs: 1, sm: 8, md: 8, lg: 12 }}
+      >
+        {data.pending.map((item, index) => (
           <Grid item xs={1} sm={4} md={4} key={index}>
             <Item onClick={() => handleRouteData(item)}>
               <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
