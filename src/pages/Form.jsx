@@ -3,6 +3,8 @@ import Input from "../components/Input";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RichTextEditor from "./../components/RichTextEditor";
+import { useState } from "react";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 
 const schema = z.object({
   title: z
@@ -17,10 +19,8 @@ const schema = z.object({
     .min(50, { message: "Description must contain at least 50 character(s)" }),
   highlights: z
     .array(z.string())
-    .nonempty({ message: "At least one highlight is required" }),
-  tags: z
-    .array(z.string())
-    .nonempty({ message: "At least one tag is required" }),
+    .min(1, { message: "At least one highlight is required" }),
+  tags: z.array(z.string()).min(1, { message: "At least one tag is required" }),
   category: z.string().nonempty({ message: "Category is required" }),
   duration: z.string().nonempty({ message: "Duration is required" }),
   currency: z.string().nonempty({ message: "Currenty is required" }),
@@ -29,12 +29,49 @@ const schema = z.object({
   preview: z.instanceof(File, { message: "Preview is required" }),
 });
 const MyForm = () => {
+  const [loading, setLoading] = useState(false);
   const methods = useForm({
     resolver: zodResolver(schema),
   });
 
-  const submitData = (data) => {
-    console.log("form data", data);
+  const success = () => {
+    toast.success("Course Created Successfully", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+
+  const submitData = async (data) => {
+    setLoading(true);
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch("https://lms_api.haloquant.com/course", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+      const formData = await response.json();
+      if (!response.ok) throw new Error(formData.message);
+
+      if (response.status === 201) {
+        success();
+      }
+      console.log("form data", data);
+    } catch (err) {
+      console.log("Error", err);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <FormProvider {...methods}>
@@ -147,9 +184,25 @@ const MyForm = () => {
           error={methods.formState.errors.preview}
           methods={methods}
         />
-        <button className="bg-[#00bbab] text-white py-2 px-4 rounded mt-4">
-          Submit
+        <button
+          disabled={loading}
+          className="bg-[#00bbab] cursor-pointer hover:bg-[#51ada5f3] w-full font-semibold text-white py-2 px-4 rounded mt-4"
+        >
+          {loading ? "Submiting course" : "Create course"}
         </button>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Bounce}
+        />
       </form>
     </FormProvider>
   );

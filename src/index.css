@@ -7,3 +7,7 @@ body {
 .branding-text {
   color: #ff5733; /* Replace with your desired color code */
 }
+
+#add {
+  scroll-margin-top: 0;
+}

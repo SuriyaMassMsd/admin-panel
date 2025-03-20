@@ -132,14 +132,14 @@ const Input = ({
                     setValue(name, [...currentValues, arrayValue], {
                       shouldValidate: true,
                     });
+                    setArrayValue("");
                   }
-                  setArrayValue("");
                 }}
               />
             </div>
-            {error && (
+            {/* {error && (
               <p className="font-headerFont text-red-500">{error.message}</p>
-            )}
+            )} */}
             <div className="mt-2 flex gap-2 flex-wrap">
               {methods.getValues(name)?.map((item, index) => (
                 <span
@@ -148,7 +148,7 @@ const Input = ({
                   onClick={() => {
                     const filteredValues = methods
                       .getValues(name)
-                      .files((_, i) => i !== index);
+                      .filter((_, i) => i !== index);
                     setValue(name, filteredValues, { shouldValidate: true });
                   }}
                 >

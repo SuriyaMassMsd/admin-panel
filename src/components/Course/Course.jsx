@@ -69,12 +69,15 @@ export default function Course({ navigate, datas, current }) {
 
   return (
     <Box sx={{ flexGrow: 1, my: 4 }}>
-      <button
-        className="absolute top-22 right-20 px-10 py-2 bg-gray-500 font-semibold text-white cursor-pointer hover:scale-105 hover:bg-gray-600 rounded outline-none transition-all duration-200 2s"
-        onClick={() => navigate("/courses/addCourse")}
-      >
-        Add Course
-      </button>
+      <div className="flex justify-center sm:justify-end -mt-10 mb-10  sm:-mt-20 sm:mb-20">
+        <button
+          className="  px-10 py-2 bg-gray-500 font-semibold text-white cursor-pointer hover:scale-105 hover:bg-gray-600 rounded outline-none transition-all duration-200 2s"
+          onClick={() => navigate("/courses/addCourse")}
+        >
+          Add Course
+        </button>
+      </div>
+
       <Grid
         container
         spacing={{ xs: 2, md: 8 }}
