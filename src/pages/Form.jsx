@@ -52,6 +52,7 @@ const MyForm = () => {
     setLoading(true);
     const token = localStorage.getItem("token");
     const apiUrl = import.meta.env.VITE_CREATE_COURSE;
+    // console.log(data);
 
     try {
       const response = await fetch(apiUrl, {
@@ -176,6 +177,7 @@ const MyForm = () => {
           label="Thumbnail Image"
           error={methods.formState.errors.thumbnail}
           methods={methods}
+          accept="image/*"
         />
 
         <Input
@@ -185,6 +187,7 @@ const MyForm = () => {
           label="Preview"
           error={methods.formState.errors.preview}
           methods={methods}
+          accept="video/*"
         />
         <button
           disabled={loading}

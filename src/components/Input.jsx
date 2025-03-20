@@ -12,6 +12,7 @@ const Input = ({
   id,
   label,
   methods,
+  ...rest
 }) => {
   const { register, setValue } = useFormContext();
 
@@ -39,6 +40,7 @@ const Input = ({
             <input
               type="file"
               id={id}
+              {...rest}
               className={`px-[10px] w-full py-[10px] mt-1 border rounded outline-none text-[#969696]
                   ${error ? "border-red-500 shadow-md shadow-red-500/50" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
                   ${className}`}
