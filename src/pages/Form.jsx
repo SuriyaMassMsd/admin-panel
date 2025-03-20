@@ -51,8 +51,10 @@ const MyForm = () => {
   const submitData = async (data) => {
     setLoading(true);
     const token = localStorage.getItem("token");
+    const apiUrl = import.meta.env.VITE_CREATE_COURSE;
+
     try {
-      const response = await fetch(process.env.CREATE_COURSE, {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
