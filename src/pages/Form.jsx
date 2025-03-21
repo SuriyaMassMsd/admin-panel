@@ -51,20 +51,32 @@ const MyForm = () => {
   const submitData = async (data) => {
     setLoading(true);
     const token = localStorage.getItem("token");
-    const apiUrl = import.meta.env.VITE_CREATE_COURSE;
     // console.log(data);
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("courseType", data.courseType);
+    formData.append("introduction", data.introduction);
+    formData.append("description", data.description);
+    formData.append("category", data.category);
+    formData.append("duration", data.duration);
+    formData.append("currency", data.currency);
+    formData.append("price", data.price);
 
+    formData.append("thumbnail", data.thumbnail);
+    formData.append("preview", data.preview);
+
+    const apiUrl = import.meta.env.VITE_CREATE_COURSE;
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: formData,
       });
-      const formData = await response.json();
-      if (!response.ok) throw new Error(formData.message);
+      const formDatas = await response.json();
+      if (!response.ok) throw new Error(formDatas.message);
 
       if (response.status === 201) {
         success();

@@ -51,7 +51,13 @@ export default function Course({ navigate, datas, current }) {
         }
         const data = await response.json();
         setData(data.value);
-        console.log(data);
+        localStorage.setItem(
+          "dataLength",
+          JSON.stringify({
+            approved: data.value.approved.length,
+            pending: data.value.pending.length,
+          })
+        );
       } catch (error) {
         console.log("error", error);
       }
