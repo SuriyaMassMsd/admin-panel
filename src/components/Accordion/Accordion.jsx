@@ -1,7 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
+import Input from "../Input";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const schema = z.object({
+  title: z
+    .string()
+    .min(10, { message: "Title must contain at least 10 character(s)" }),
+  description: z
+    .string()
+    .min(10, { message: "Description must contain at least 10 character(s)" }),
+});
 
 const Accordion = () => {
+  const [data, setData] = useState(null);
+  const methods = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  useEffect(() => {
+    const chapterData = async () => {
+      const token = localStorage.getItem("token");
+      const apiUrl = import.meta.env.VITE_BASE_URL;
+      try {
+        const response = await fetch(`${apiUrl}/chapter`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const formDatas = await response.json();
+        setData(formDatas);
+        console.log(data);
+
+        if (!response.ok) throw new Error(formDatas.message);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    chapterData();
+  }, []);
+
+  const submitChapter = async (data) => {
+    const token = localStorage.getItem("token");
+    const details = JSON.parse(localStorage.getItem("item"));
+    const sentData = { ...data, courseId: details.courseId };
+    const apiUrl = import.meta.env.VITE_BASE_URL;
+    try {
+      const response = await fetch(`${apiUrl}/chapter`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(sentData),
+      });
+
+      const formDatas = await response.json();
+      if (!response.ok) throw new Error(formDatas.message);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <>
       <div className="font-semibold text-[18px] flex justify-between items-center rounded-lg shadow-sm  w-full mb-1 p-2 ">
@@ -51,14 +115,31 @@ const Accordion = () => {
                 <span class="sr-only">Close modal</span>
               </button>
             </div>
+            <FormProvider {...methods}>
+              <form class="p-4" onSubmit={methods.handleSubmit(submitChapter)}>
+                <Input
+                  name="title"
+                  id="title"
+                  type="text"
+                  label="Chapter Title"
+                  placeholder={"Enter chapter name"}
+                  error={methods.formState.errors.title}
+                />
+                <Input
+                  name="description"
+                  id="description"
+                  type="textarea"
+                  label="Description"
+                  placeholder="Description*"
+                  error={methods.formState.errors.description}
+                />
+                {/* <div>
 
-            <form class="p-4">
-              <div>
                 <label
                   for="name"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Chapter Name
+                  Chapter title
                 </label>
                 <input
                   type="text"
@@ -69,13 +150,30 @@ const Accordion = () => {
                   required
                 />
               </div>
-              <button
-                type="submit"
-                class="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Add Chapter
-              </button>
-            </form>
+              <div>
+                <label
+                  for="name"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Description
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  placeholder="Dscription"
+                  required
+                />
+              </div> */}
+                <button
+                  type="submit"
+                  class="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Add Chapter
+                </button>
+              </form>
+            </FormProvider>
           </div>
         </div>
       </div>

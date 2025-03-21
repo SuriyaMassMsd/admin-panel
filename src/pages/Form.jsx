@@ -65,9 +65,9 @@ const MyForm = () => {
     formData.append("thumbnail", data.thumbnail);
     formData.append("preview", data.preview);
 
-    const apiUrl = import.meta.env.VITE_CREATE_COURSE;
+    const apiUrl = import.meta.env.VITE_BASE_URL;
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(`${apiUrl}/course`, {
         method: "POST",
         headers: {
           // "Content-Type": "application/json",

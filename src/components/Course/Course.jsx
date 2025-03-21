@@ -34,10 +34,9 @@ export default function Course({ navigate, datas, current }) {
   React.useEffect(() => {
     const courseData = async () => {
       const token = localStorage.getItem("token");
-      const apiUrl = import.meta.env.VITE_CREATE_COURSE;
-
+      const apiUrl = import.meta.env.VITE_BASE_URL;
       try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch(`${apiUrl}/course`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

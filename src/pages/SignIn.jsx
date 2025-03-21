@@ -37,10 +37,10 @@ const SignIn = () => {
     const { email, password } = data;
     setLoading(true);
     // console.log(process.env.VITE_SIGNIN);
-    const apiUrl = import.meta.env.VITE_SIGNIN;
+    const apiUrl = import.meta.env.VITE_BASE_URL;
 
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(`${apiUrl}/auth/signin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
