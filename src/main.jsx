@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import Form from "./pages/Form.jsx";
 import { Details } from "@mui/icons-material";
+import { ThemeProvider } from "@material-tailwind/react";
 
 const token = localStorage.getItem("token");
 const route = createBrowserRouter([
@@ -26,5 +27,7 @@ const route = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={route} />
+  <ThemeProvider>
+    <RouterProvider router={route} />
+  </ThemeProvider>
 );

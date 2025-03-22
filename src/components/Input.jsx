@@ -41,18 +41,37 @@ const Input = ({
               type="file"
               id={id}
               {...rest}
+              accept="video/*,image/*"
               className={`px-[10px] w-full py-[10px] mt-1 border rounded outline-none text-[#969696]
-                  ${error ? "border-red-500 shadow-md shadow-red-500/50" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
-                  ${className}`}
+                    ${error ? "border-red-500 shadow-md shadow-red-500/50" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
+                    ${className}`}
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (file) {
-                  setValue(name, file, { shouldValidate: true });
+                  if (file.type.startsWith("video/")) {
+                    const video = document.createElement("video");
+                    video.preload = "metadata";
+                    video.onloadedmetadata = () => {
+                      window.URL.revokeObjectURL(video.src);
+                      const duration = video.duration;
+                      console.log(`Video Duration: ${duration} seconds`);
+                      setValue(
+                        name,
+                        { file, duration },
+                        { shouldValidate: true }
+                      );
+                    };
+
+                    video.src = URL.createObjectURL(file);
+                  } else {
+                    setValue(name, file, { shouldValidate: true });
+                  }
                 }
               }}
             />
           </div>
         );
+
       case "select":
         return (
           <div>
