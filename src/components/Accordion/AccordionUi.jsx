@@ -129,9 +129,7 @@ const CustomizedAccordions = ({ item }) => {
                     <span className="hover:underline cursor-pointer hover:underline-offset-2 px-2 rounded-md">
                       {item.title}
                     </span>
-                    <span className=" px-2 rounded-md">
-                      {item?.duration}min
-                    </span>
+                    <span className=" px-2 rounded-md">{item.duration}min</span>
                   </div>
                 ))}
           </div>
