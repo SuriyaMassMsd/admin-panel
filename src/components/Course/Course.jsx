@@ -49,7 +49,7 @@ export default function Course({ navigate, datas, current }) {
           return;
         }
         const data = await response.json();
-        setData(data.value);
+        setData(data.value || []);
         localStorage.setItem(
           "dataLength",
           JSON.stringify({
