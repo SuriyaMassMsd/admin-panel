@@ -49,7 +49,7 @@ export default function Course({ navigate, datas, current }) {
           return;
         }
         const data = await response.json();
-        setData(data.value || []);
+        setData(data.value || { approved: [], pending: [] });
         localStorage.setItem(
           "dataLength",
           JSON.stringify({
@@ -88,8 +88,8 @@ export default function Course({ navigate, datas, current }) {
         spacing={{ xs: 2, md: 8 }}
         columns={{ xs: 1, sm: 8, md: 8, lg: 12 }}
       >
-        {data &&
-          data.approved?.map((item, index) => (
+        {data?.approved?.length > 0 &&
+          data.approved.map((item, index) => (
             <Grid item xs={1} sm={4} md={4} key={index}>
               <Item onClick={() => handleRouteData(item)}>
                 <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
@@ -128,8 +128,8 @@ export default function Course({ navigate, datas, current }) {
         spacing={{ xs: 2, md: 8 }}
         columns={{ xs: 1, sm: 8, md: 8, lg: 12 }}
       >
-        {data &&
-          data.pending?.map((item, index) => (
+        {data?.pending?.length > 0 &&
+          data?.pending?.map((item, index) => (
             <Grid item xs={1} sm={4} md={4} key={index}>
               <Item onClick={() => handleRouteData(item)}>
                 <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
