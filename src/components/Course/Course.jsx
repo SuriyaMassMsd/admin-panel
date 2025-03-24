@@ -54,18 +54,18 @@ export default function Course({ navigate, datas, current }) {
             approved: data.value.approved || [],
             pending: data.value.pending || [],
           });
+
+          localStorage.setItem(
+            "dataLength",
+            JSON.stringify({
+              approved: data.value.approved?.length || 0,
+              pending: data.value.pending?.length || 0,
+            })
+          );
         } else {
           console.error("Invalid response structure:", data);
           setData({ approved: [], pending: [] });
         }
-
-        localStorage.setItem(
-          "dataLength",
-          JSON.stringify({
-            approved: data.value.approved.length,
-            pending: data.value.pending.length,
-          })
-        );
       } catch (error) {
         console.log("error", error);
       }
