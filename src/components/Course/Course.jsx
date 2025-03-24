@@ -51,10 +51,10 @@ export default function Course({ navigate, datas, current }) {
         const data = await response.json();
         if (data?.value) {
           const approved = Array.isArray(data.value.approved)
-            ? data.value.approved
+            ? data?.value.approved
             : [];
           const pending = Array.isArray(data.value.pending)
-            ? data.value.pending
+            ? data?.value?.pending
             : [];
 
           setData({ approved, pending });
