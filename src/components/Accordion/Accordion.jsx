@@ -71,18 +71,18 @@ const Accordion = () => {
 
   return (
     <>
-      <div className="font-semibold text-[18px] flex justify-between items-center rounded-lg shadow-sm w-full mb-1 p-2">
-        <h1>Create Chapters</h1>
+      <div className="font-semibold text-[18px] flex justify-between items-center rounded-lg shadow-sm w-full mb-4 p-2">
+        <h1>Chapters</h1>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2 cursor-pointer dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300   text-sm px-6 py-2 rounded cursor-pointer dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 font-semibold"
         >
-          <AddIcon />
+          Add Chapter
         </button>
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 text-black bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold">Create Chapter</h2>

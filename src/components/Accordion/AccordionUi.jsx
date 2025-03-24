@@ -9,6 +9,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../Input";
+// import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const schema = z.object({
   title: z
@@ -37,7 +39,7 @@ const CustomizedAccordions = ({ item }) => {
     resolver: zodResolver(schema),
   });
 
-  console.log(item);
+  // console.log(item);
 
   const submitChapter = async (formData) => {
     const token = localStorage.getItem("token");
@@ -91,7 +93,7 @@ const CustomizedAccordions = ({ item }) => {
           },
         });
         const responseData = await response.json();
-        console.log(responseData);
+        // console.log(responseData);
 
         setLesson(responseData.value || []);
         if (!response.ok) throw new Error(responseData.message);
@@ -105,12 +107,15 @@ const CustomizedAccordions = ({ item }) => {
   return (
     <>
       <MuiAccordion>
-        <MuiAccordionSummary>
-          {item.title ? (
-            <Typography>{item.title}</Typography>
-          ) : (
-            "No chapter available"
-          )}
+        <MuiAccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <div className="flex justify-between w-full items-center">
+            <h1>{item.title}</h1>
+            <span>{/* <KeyboardArrowDownIcon /> */}</span>
+          </div>
         </MuiAccordionSummary>
         <MuiAccordionDetails>
           <div className="flex flex-wrap mb-1">

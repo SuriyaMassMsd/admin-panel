@@ -116,7 +116,7 @@ export default function Sidebar(props) {
     if (path.startsWith("/courses/details")) {
       return (
         <>
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-1 ">
             <span>
               <strong
                 className="cursor-pointer hover:underline"
@@ -127,7 +127,9 @@ export default function Sidebar(props) {
             </span>
             <span>/ Details</span>
           </div>
-          <Details course={selectedCourse} />
+          <div className="mt-10">
+            <Details course={selectedCourse} />
+          </div>
         </>
       );
     }
