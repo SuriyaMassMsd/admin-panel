@@ -10,7 +10,7 @@ function Media(props) {
   const arrayLegth = JSON.parse(localStorage.getItem("dataLength"));
   return (
     <Grid container wrap="wrap">
-      {(loading ? Array.from(new Array(arrayLegth.approved)) : data).map(
+      {(loading ? Array.from(new Array(arrayLegth)) : data).map(
         (item, index) => (
           <Box key={index} sx={{ width: 270, marginRight: 10, my: 5 }}>
             {item ? (
