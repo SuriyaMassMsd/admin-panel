@@ -49,23 +49,20 @@ export default function Course({ navigate, datas, current }) {
           return;
         }
         const data = await response.json();
-        if (data?.value) {
-          setData({
-            approved: data.value.approved || [],
-            pending: data.value.pending || [],
-          });
+        const courseData = data?.value || {};
 
-          localStorage.setItem(
-            "dataLength",
-            JSON.stringify({
-              approved: data.value.approved?.length || 0,
-              pending: data.value.pending?.length || 0,
-            })
-          );
-        } else {
-          console.error("Invalid response structure:", data);
-          setData({ approved: [], pending: [] });
-        }
+        setData({
+          approved: courseData.approved || [],
+          pending: courseData.pending || [],
+        });
+
+        localStorage.setItem(
+          "dataLength",
+          JSON.stringify({
+            approved: courseData.approved?.length || 0,
+            pending: courseData.pending?.length || 0,
+          })
+        );
       } catch (error) {
         console.log("error", error);
       }
