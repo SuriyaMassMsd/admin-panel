@@ -49,20 +49,27 @@ export default function Course({ navigate, datas, current }) {
           return;
         }
         const data = await response.json();
-        const courseData = data?.value || {};
+        if (data?.value) {
+          const approved = Array.isArray(data.value.approved)
+            ? data.value.approved
+            : [];
+          const pending = Array.isArray(data.value.pending)
+            ? data.value.pending
+            : [];
 
-        setData({
-          approved: courseData.approved || [],
-          pending: courseData.pending || [],
-        });
+          setData({ approved, pending });
 
-        localStorage.setItem(
-          "dataLength",
-          JSON.stringify({
-            approved: courseData.approved?.length || 0,
-            pending: courseData.pending?.length || 0,
-          })
-        );
+          localStorage.setItem(
+            "dataLength",
+            JSON.stringify({
+              approved: approved.length,
+              pending: pending.length,
+            })
+          );
+        } else {
+          console.error("Invalid response structure:", data);
+          setData({ approved: [], pending: [] });
+        }
       } catch (error) {
         console.log("error", error);
       }
@@ -94,8 +101,8 @@ export default function Course({ navigate, datas, current }) {
         spacing={{ xs: 2, md: 8 }}
         columns={{ xs: 1, sm: 8, md: 8, lg: 12 }}
       >
-        {data?.approved?.length > 0 &&
-          data?.approved?.map((item, index) => (
+        {data?.approved?.length > 0 ? (
+          data.approved.map((item, index) => (
             <Grid item xs={1} sm={4} md={4} key={index}>
               <Item onClick={() => handleRouteData(item)}>
                 <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
@@ -124,7 +131,10 @@ export default function Course({ navigate, datas, current }) {
                 </div>
               </Item>
             </Grid>
-          ))}
+          ))
+        ) : (
+          <div>Loading Approved Courses...</div>
+        )}
       </Grid>
 
       <div className="mt-10 w-full h-1 bg-white"></div>
@@ -134,8 +144,8 @@ export default function Course({ navigate, datas, current }) {
         spacing={{ xs: 2, md: 8 }}
         columns={{ xs: 1, sm: 8, md: 8, lg: 12 }}
       >
-        {data?.pending?.length > 0 &&
-          data?.pending?.map((item, index) => (
+        {data?.pending?.length > 0 ? (
+          data.pending.map((item, index) => (
             <Grid item xs={1} sm={4} md={4} key={index}>
               <Item onClick={() => handleRouteData(item)}>
                 <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
@@ -164,7 +174,10 @@ export default function Course({ navigate, datas, current }) {
                 </div>
               </Item>
             </Grid>
-          ))}
+          ))
+        ) : (
+          <div>Loading Approved Courses...</div>
+        )}
       </Grid>
     </Box>
   );
