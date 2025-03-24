@@ -98,7 +98,7 @@ export default function Course({ navigate, datas, current }) {
         columns={{ xs: 1, sm: 8, md: 8, lg: 12 }}
       >
         {data?.approved?.length > 0 &&
-          data.approved.map((item, index) => (
+          data?.approved?.map((item, index) => (
             <Grid item xs={1} sm={4} md={4} key={index}>
               <Item onClick={() => handleRouteData(item)}>
                 <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
