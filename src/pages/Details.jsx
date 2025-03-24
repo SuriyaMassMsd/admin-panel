@@ -1,9 +1,10 @@
 import React from "react";
 import Accordion from "../components/Accordion/Accordion.jsx";
 import { Grid } from "@mui/material";
-// import DoneIcon from "@mui/icons-material/Done";
-// import ClearIcon from "@mui/icons-material/Clear";
+import DoneIcon from "@mui/icons-material/Done";
+import ClearIcon from "@mui/icons-material/Clear";
 import WorkIcon from "@mui/icons-material/Work";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Details = () => {
   const course = JSON.parse(localStorage.getItem("item"));
@@ -17,19 +18,27 @@ const Details = () => {
     >
       <Grid item xs={12} md={9}>
         <div className="space-y-4">
-          <h1 className="text-[20px] font-semibold">{course.title}</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-[20px] font-semibold">{course.title}</h1>
+            {course.courseStatus === 1 ? (
+              <div className="space-x-4">
+                <button className="cursor-pointer">
+                  <ClearIcon />
+                </button>
+                <button className="cursor-pointer">
+                  <DoneIcon />
+                </button>
+              </div>
+            ) : (
+              <button className="cursor-pointer">
+                <DeleteIcon />
+              </button>
+            )}
+          </div>
           <p className="text-[16px] text-gray-300 font-normal">
             {course.introduction}
           </p>
 
-          {/* <div>
-            <button className="cursor-pointer">
-              <DoneIcon />
-            </button>
-            <button className="cursor-pointer">
-              <ClearIcon />
-            </button>
-          </div> */}
           <div className="w-full h-auto p-4 rounded-md">
             <img src={course.thumbnailUrl} alt={course.title} />
             <div className="flex mt-2 justify-between">
@@ -48,7 +57,7 @@ const Details = () => {
         <div>
           <h1 className="font-semibold text-[18px]">What You Will Learn</h1>
           <ul>
-            {course.highlights.map((item, i) => (
+            {course?.highlights?.map((item, i) => (
               <li className="list-disc m-4 font-medium text-[16px]" key={i}>
                 {item}
               </li>
