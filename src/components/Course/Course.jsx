@@ -57,13 +57,10 @@ export default function Course({ navigate, datas, current }) {
         ) {
           setApprovedCourse(data.value.approved);
           setPendingCourse(data.value.pending);
-          // localStorage.setItem(
-          //   "dataLength",
-          //   JSON.stringify({
-          //     approved: data.value.approved.length,
-          //     pending: data.value.pending.length,
-          //   })
-          // );
+          localStorage.setItem(
+            "dataLength",
+            JSON.stringify(data?.value.approved.length || 4)
+          );
         } else {
           setApprovedCourse([]);
           setPendingCourse([]);
