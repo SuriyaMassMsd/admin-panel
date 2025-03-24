@@ -49,7 +49,16 @@ export default function Course({ navigate, datas, current }) {
           return;
         }
         const data = await response.json();
-        setData(data.value || { approved: [], pending: [] });
+        if (data?.value) {
+          setData({
+            approved: data.value.approved || [],
+            pending: data.value.pending || [],
+          });
+        } else {
+          console.error("Invalid response structure:", data);
+          setData({ approved: [], pending: [] });
+        }
+
         localStorage.setItem(
           "dataLength",
           JSON.stringify({
