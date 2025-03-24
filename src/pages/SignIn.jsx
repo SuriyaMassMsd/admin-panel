@@ -50,14 +50,28 @@ const SignIn = () => {
 
       if (!response.ok) throw new Error(data.message);
 
-      localStorage.setItem("token", data.value.token);
-      reset();
+      if (data?.value?.token) {
+        localStorage.setItem("token", data.value.token);
+        reset();
+        setStatus(response.status);
 
-      setStatus(response.status);
-      if (response.status == 201) {
-        success();
+        if (response.status === 201) {
+          success();
+        }
+        window.location.href = "/";
+      } else {
+        console.error("Token not found in response data.");
+        toast.error("Authentication failed. Please try again.");
       }
-      window.location.href = "/";
+
+      // localStorage.setItem("token", data.value.token);
+      // reset();
+
+      // setStatus(response.status);
+      // if (response.status == 201) {
+      //   success();
+      // }
+      // window.location.href = "/";
     } catch (err) {
       console.log(err);
     } finally {
