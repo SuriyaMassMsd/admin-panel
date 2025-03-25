@@ -1,14 +1,62 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Accordion from "../components/Accordion/Accordion.jsx";
-import { Grid } from "@mui/material";
-import DoneIcon from "@mui/icons-material/Done";
-import ClearIcon from "@mui/icons-material/Clear";
+import { Grid, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { z } from "zod";
+import { FormProvider, useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+
+const schema = z.object({
+  courseStatus: z.string(),
+});
+
+const courseStatusOptions = [
+  { value: "7", label: "Approved" },
+  { value: "1", label: "Pending" },
+  { value: "-1", label: "Deleted" },
+  { value: "0", label: "Rework" },
+];
 
 const Details = () => {
   const course = JSON.parse(localStorage.getItem("item"));
-  console.log(course);
+
+  const methods = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: { courseStatus: course.courseStatus?.toString() },
+  });
+
+  const { control, watch, setValue } = methods;
+  const selectedStatus = watch("courseStatus");
+
+  useEffect(() => {
+    if (course.courseStatus !== undefined) {
+      setValue("courseStatus", course.courseStatus.toString());
+    }
+  }, [course.courseStatus, setValue]);
+
+  const handleStatusChange = async (newStatus) => {
+    const apiUrl = import.meta.env.VITE_BASE_URL;
+    const token = localStorage.getItem("token");
+    try {
+      await fetch(
+        `${apiUrl}/course/approve/${Number(course.courseId)}`,
+
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          // body: {},
+        }
+      );
+
+      console.log("Status updated successfully");
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   return (
     <Grid
@@ -20,21 +68,35 @@ const Details = () => {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h1 className="text-[20px] font-semibold">{course.title}</h1>
-            {course.courseStatus === 1 ? (
-              <div className="space-x-4">
-                <button className="cursor-pointer">
-                  <ClearIcon />
-                </button>
-                <button className="cursor-pointer">
-                  <DoneIcon />
-                </button>
-              </div>
-            ) : (
-              <button className="cursor-pointer">
-                <DeleteIcon />
-              </button>
-            )}
+
+            <div>
+              <FormProvider {...methods}>
+                <FormControl fullWidth>
+                  <InputLabel>Status</InputLabel>
+                  <Controller
+                    name="courseStatus"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          handleStatusChange(e.target.value);
+                        }}
+                      >
+                        {courseStatusOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+              </FormProvider>
+            </div>
           </div>
+
           <p className="text-[16px] text-gray-300 font-normal">
             {course.introduction}
           </p>
@@ -66,7 +128,7 @@ const Details = () => {
         </div>
 
         <div className="mt-10 space-y-2">
-          <h1 className="font-semibold text-[18px] ">About The Course</h1>
+          <h1 className="font-semibold text-[18px]">About The Course</h1>
           <span>{course.description}</span>
         </div>
 

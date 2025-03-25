@@ -26,7 +26,16 @@ const schema = z.object({
   currency: z.string().nonempty({ message: "Currenty is required" }),
   price: z.string().nonempty({ message: "Price is required" }),
   thumbnail: z.instanceof(File, { message: "Thumbnail is required" }),
-  preview: z.instanceof(File, { message: "Preview is required" }),
+  preview: z
+    .union([
+      z.instanceof(File),
+      z.object({
+        file: z.instanceof(File),
+        duration: z.number().optional(),
+      }),
+    ])
+    .refine((value) => !!value, { message: "Video is required" }),
+  // preview: z.instanceof(File, { message: "Preview is required" }),
 });
 const MyForm = () => {
   const [loading, setLoading] = useState(false);

@@ -19,6 +19,7 @@
     "@syncfusion/ej2-react-richtexteditor": "^28.2.9",
     "@tailwindcss/vite": "^4.0.9",
     "@toolpad/core": "^0.12.1",
+    "axios": "^1.8.4",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
     "flowbite": "^3.1.2",
