@@ -117,8 +117,8 @@ const CustomizedAccordions = ({ item }) => {
             <span>{/* <KeyboardArrowDownIcon /> */}</span>
           </div>
         </MuiAccordionSummary>
-        <MuiAccordionDetails>
-          <div className="flex flex-wrap mb-1">
+        <MuiAccordionDetails sx={{ backgroundColor: "gray" }}>
+          <div className="flex flex-wrap mb-1 ">
             {lesson &&
               lesson
                 .filter(

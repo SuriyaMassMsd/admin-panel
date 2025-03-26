@@ -100,7 +100,7 @@ const MyForm = () => {
   return (
     <FormProvider {...methods}>
       <form
-        className="space-y-4 py-6 w-[50%]"
+        className="space-y-4 py-6 w-[50%] "
         onSubmit={methods.handleSubmit(submitData)}
       >
         <Input

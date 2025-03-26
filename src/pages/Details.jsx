@@ -36,7 +36,6 @@ const Details = () => {
   });
 
   const { control, watch, setValue } = methods;
-  const selectedStatus = watch("courseStatus");
 
   useEffect(() => {
     if (course.courseStatus !== undefined) {
@@ -44,22 +43,49 @@ const Details = () => {
     }
   }, [course.courseStatus, setValue]);
 
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+
+  // console.log(statusEndPoint[selectedStatus]);
+
   const handleStatusChange = async (newStatus) => {
-    const apiUrl = import.meta.env.VITE_BASE_URL;
+    const statusEndPoint = {
+      7: {
+        url: `${apiUrl}/course/approve/${course.courseId}`,
+        method: "POST",
+        body: null,
+      },
+      "-1": {
+        url: `${apiUrl}/course/${course.courseId}`,
+        method: "DELETE",
+        body: null,
+      },
+      1: {
+        url: `${apiUrl}/course/update/${course.courseId}`,
+        method: "PATCH",
+        body: JSON.stringify({ courseStatus: 1 }),
+      },
+      0: {
+        url: `${apiUrl}/course/update/${course.courseId}`,
+        method: "PATCH",
+        body: JSON.stringify({ courseStatus: 0 }),
+      },
+
+      // rework :
+    };
+
+    const selectedStatus = watch("courseStatus");
+
+    const api = statusEndPoint[selectedStatus];
     const token = localStorage.getItem("token");
     try {
-      await fetch(
-        `${apiUrl}/course/approve/${Number(course.courseId)}`,
-
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          // body: {},
-        }
-      );
+      await fetch(api.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: api.body,
+      });
 
       console.log("Status updated successfully");
     } catch (error) {

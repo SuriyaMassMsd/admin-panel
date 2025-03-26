@@ -1,3 +1,4 @@
+import { Html } from "@mui/icons-material";
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -106,9 +107,10 @@ const Input = ({
               id={id}
               // name={name}
               placeholder={placeholder}
-              className={`px-[10px] w-full py-[10px] mt-1 border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
-              ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
-              ${className}`}
+              className={`px-[10px] w-full mt-2 py-[10px] border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
+              
+                ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
+                ${className}`}
               {...register(name)}
             />
           </div>
