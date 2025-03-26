@@ -1,11 +1,19 @@
 import React, { useEffect } from "react";
 import Accordion from "../components/Accordion/Accordion.jsx";
-import { Grid, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import {
+  Grid,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Box,
+} from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";
 import { z } from "zod";
 import { FormProvider, useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { getUserValue } from "../components/UserType.js";
 
 const schema = z.object({
   courseStatus: z.string(),
@@ -19,6 +27,7 @@ const courseStatusOptions = [
 ];
 
 const Details = () => {
+  const userData = getUserValue();
   const course = JSON.parse(localStorage.getItem("item"));
 
   const methods = useForm({
@@ -59,93 +68,107 @@ const Details = () => {
   };
 
   return (
-    <Grid
-      container
-      spacing={6}
-      sx={{ display: "flex", justifyContent: "center" }}
-    >
-      <Grid item xs={12} md={9}>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-[20px] font-semibold">{course.title}</h1>
+    <Box sx={{ flexGrow: 1, my: 4 }}>
+      <div className="flex justify-center sm:justify-end -mt-10 mb-10  sm:-mt-20  ml-auto w-[300px] gap-4">
+        <FormProvider {...methods}>
+          <FormControl fullWidth>
+            <InputLabel>Status</InputLabel>
+            <Controller
+              name="courseStatus"
+              control={control}
+              disabled={userData.role !== "Admin"}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                  }}
+                >
+                  {courseStatusOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+          </FormControl>
+        </FormProvider>
+        <button
+          disabled={userData.role !== "Admin"}
+          onClick={() => handleStatusChange(methods.getValues("courseStatus"))}
+          className="px-10 py-2 bg-[#00bbab] cursor-pointer hover:bg-[#51ada5f3] rounded"
+        >
+          Submit
+        </button>
+      </div>
+      <Grid
+        container
+        spacing={10}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
 
+          // m: 0,
+        }}
+      >
+        <Grid item xs={12} md={8} sx={{ width: "100%" }}>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h1 className="text-[20px] font-semibold">{course.title}</h1>
+            </div>
+
+            <p className="text-[16px] text-gray-300 font-normal">
+              {course.introduction}
+            </p>
+
+            <div className="w-full h-auto p-4 rounded-md ">
+              <img src={course.thumbnailUrl} alt={course.title} />
+              <div className="flex mt-2 justify-between">
+                <p>Total Tutorials: {course.totalUnits}</p>
+                <p>Author: {course.author}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-20">
+            <Accordion />
+          </div>
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          <div className="text-wrap">
+            <h1 className="font-semibold text-[18px]">What You Will Learn</h1>
+            <ul>
+              {course?.highlights?.map((item, i) => (
+                <li className="list-disc m-4 font-medium text-[16px]" key={i}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-10 space-y-2 text-justify">
+            <h1 className="font-semibold text-[18px]">About The Course</h1>
+            <span>{course.description}</span>
+          </div>
+
+          <div className="mt-10 flex flex-col  space-y-1 text-wrap">
+            <h1 className="font-semibold text-[18px]">
+              Learn From - {course.authorOccupation}
+            </h1>
+            <span> Author : {course.author}</span>
             <div>
-              <FormProvider {...methods}>
-                <FormControl fullWidth>
-                  <InputLabel>Status</InputLabel>
-                  <Controller
-                    name="courseStatus"
-                    control={control}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          handleStatusChange(e.target.value);
-                        }}
-                      >
-                        {courseStatusOptions.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    )}
-                  />
-                </FormControl>
-              </FormProvider>
+              <span className="flex gap-2">
+                <WorkIcon />
+                {course.authorExp}
+              </span>
             </div>
           </div>
-
-          <p className="text-[16px] text-gray-300 font-normal">
-            {course.introduction}
-          </p>
-
-          <div className="w-full h-auto p-4 rounded-md">
-            <img src={course.thumbnailUrl} alt={course.title} />
-            <div className="flex mt-2 justify-between">
-              <p>Total Tutorials: {course.totalUnits}</p>
-              <p>Author: {course.author}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-20">
-          <Accordion />
-        </div>
+        </Grid>
       </Grid>
-
-      <Grid item xs={12} md={3}>
-        <div>
-          <h1 className="font-semibold text-[18px]">What You Will Learn</h1>
-          <ul>
-            {course?.highlights?.map((item, i) => (
-              <li className="list-disc m-4 font-medium text-[16px]" key={i}>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-10 space-y-2">
-          <h1 className="font-semibold text-[18px]">About The Course</h1>
-          <span>{course.description}</span>
-        </div>
-
-        <div className="mt-10 flex flex-col  space-y-1 ">
-          <h1 className="font-semibold text-[18px]">
-            Learn From - {course.authorOccupation}
-          </h1>
-          <span> Author : {course.author}</span>
-          <div>
-            <span className="flex gap-2">
-              <WorkIcon />
-              {course.authorExp}
-            </span>
-          </div>
-        </div>
-      </Grid>
-    </Grid>
+    </Box>
   );
 };
 

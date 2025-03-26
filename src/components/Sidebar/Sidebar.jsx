@@ -15,6 +15,7 @@ import {
 import Course from "../Course/Course";
 import Details from "../../pages/Details";
 import Form from "../../pages/Form";
+import { getUserValue } from "../UserType";
 
 const NAVIGATION = [
   {
@@ -57,6 +58,9 @@ const Skeleton = styled("div")(({ theme, height }) => ({
 }));
 
 export default function Sidebar(props) {
+  const userData = getUserValue();
+  // console.log(userData);
+
   const { window } = props;
   const navigate = useNavigate();
   const { id } = useParams();
@@ -83,8 +87,8 @@ export default function Sidebar(props) {
     // signIn = () => {
     setSession({
       user: {
-        name: "Admin",
-        email: "gravitus.abishake@gmail.com",
+        name: userData.role,
+        email: userData.email,
         image: "https://mcmart.live/account/images/profile-icon.png",
       },
     });
