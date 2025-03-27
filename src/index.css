@@ -3,6 +3,7 @@
 
 body {
   font-family: sans-serif;
+  scroll-behavior: smooth;
 }
 
 .branding-text {

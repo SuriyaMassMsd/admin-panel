@@ -82,6 +82,17 @@ export default function Course({ navigate, datas, current }) {
 
   return (
     <Box sx={{ flexGrow: 1, my: 4 }}>
+      {/* <div className="flex justify-center sm:justify-center -mt-10 mb-10  sm:-mt-20 ">
+        <button className="px-10 py-1 bg-gray-500 font-semibold text-[18px] mr-1 cursor-pointer hover:bg-gray-600 transition-all ease-in-out 2s duration-300">
+          Approved
+        </button>
+        <a
+          href="#pending"
+          className="px-10 py-2 bg-gray-500 font-semibold text-[18px] cursor-pointer hover:bg-gray-600 transition-all ease-in-out 2s duration-300"
+        >
+          Pending
+        </a>
+      </div> */}
       <div className="flex justify-center sm:justify-end -mt-10 mb-10  sm:-mt-20 sm:mb-20">
         <button
           className="  px-10 py-2 bg-gray-500 font-semibold text-white cursor-pointer hover:scale-105 hover:bg-gray-600 rounded outline-none transition-all duration-200 2s"
@@ -150,7 +161,10 @@ export default function Course({ navigate, datas, current }) {
           pendingCourse.map((item, index) => (
             <Grid item xs={1} sm={4} md={4} key={index}>
               <Item onClick={() => handleRouteData(item)}>
-                <div className="relative cursor-pointer flex flex-col justify-between  h-[280px] ">
+                <div
+                  id="pending"
+                  className="relative cursor-pointer flex flex-col justify-between  h-[280px] "
+                >
                   <span
                     className={`absolute -top-3 -right-3 px-3 py-1.5 rounded 
                   
