@@ -79,7 +79,7 @@ const Details = () => {
     const token = localStorage.getItem("token");
     try {
       await fetch(api.url, {
-        method: "POST",
+        method: api.method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
