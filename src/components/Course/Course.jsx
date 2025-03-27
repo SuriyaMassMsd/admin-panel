@@ -52,8 +52,9 @@ export default function Course({ navigate, datas, current }) {
         const data = await response.json();
 
         if (
-          data?.value.approved.length !== 0 &&
-          data?.value.approved.length >= 0
+          (data?.value.approved.length !== 0 &&
+            data?.value.approved.length >= 0) ||
+          (data?.value.pending.length !== 0 && data?.value.pending.length >= 0)
         ) {
           setApprovedCourse(data.value.approved);
           setPendingCourse(data.value.pending);
@@ -79,6 +80,8 @@ export default function Course({ navigate, datas, current }) {
     setPathname("/courses");
     navigate("/courses/details");
   };
+
+  console.log(pendingCourse);
 
   return (
     <Box sx={{ flexGrow: 1, my: 4 }}>
@@ -146,7 +149,7 @@ export default function Course({ navigate, datas, current }) {
             </Grid>
           ))
         ) : (
-          <div>Loading Approved Courses...</div>
+          <div className="px-16">No Courses Availables </div>
         )}
       </Grid>
 
