@@ -100,7 +100,14 @@ export default function Course({ navigate, datas, current }) {
           approvedCourse.map((item, index) => (
             <Grid item xs={1} sm={4} md={4} key={index}>
               <Item onClick={() => handleRouteData(item)}>
-                <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
+                <div className="relative cursor-pointer flex flex-col justify-between  h-[280px] ">
+                  <span
+                    className={`absolute -top-3 -right-3 px-3 py-1.5 rounded 
+                  
+                   ${item.courseStatus === 7 ? "bg-[#0ead69] text-white font-semibold" : ""}`}
+                  >
+                    {item.courseStatus === 7 ? "Approved" : "Pending"}
+                  </span>
                   <img
                     src={item.thumbnailUrl}
                     alt={item.title}
@@ -143,7 +150,14 @@ export default function Course({ navigate, datas, current }) {
           pendingCourse.map((item, index) => (
             <Grid item xs={1} sm={4} md={4} key={index}>
               <Item onClick={() => handleRouteData(item)}>
-                <div className=" cursor-pointer flex flex-col justify-between  h-[280px] ">
+                <div className="relative cursor-pointer flex flex-col justify-between  h-[280px] ">
+                  <span
+                    className={`absolute -top-3 -right-3 px-3 py-1.5 rounded 
+                  
+                   ${item.courseStatus === 7 ? "" : "bg-[#ff4d6d] text-white font-semibold"}`}
+                  >
+                    {item.courseStatus === 7 ? "Approved" : "Pending"}
+                  </span>
                   <img
                     src={item.thumbnailUrl}
                     alt={item.title}
