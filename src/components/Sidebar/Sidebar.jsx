@@ -5,6 +5,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
+import PersonIcon from "@mui/icons-material/Person";
 import {
   Route,
   Routes,
@@ -16,6 +17,8 @@ import Course from "../Course/Course";
 import Details from "../../pages/Details";
 import Form from "../../pages/Form";
 import { getUserValue } from "../UserType";
+import User from "../Users/User";
+import UserEdits from "../UserEdits";
 
 const NAVIGATION = [
   {
@@ -33,6 +36,12 @@ const NAVIGATION = [
     title: "Courses",
     path: "/courses",
     icon: <DashboardIcon />,
+  },
+  {
+    segment: "users",
+    title: "Users",
+    path: "/users",
+    icon: <PersonIcon />,
   },
 ];
 
@@ -156,6 +165,24 @@ export default function Sidebar(props) {
         </>
       );
     }
+    if (path.includes("/users/edit")) {
+      return (
+        <>
+          <div className="flex items-center space-x-1 w-">
+            <span>
+              <strong
+                className="cursor-pointer hover:underline"
+                onClick={currentRoutes}
+              >
+                Users
+              </strong>
+            </span>
+            <span>/ Edit</span>
+          </div>
+          <UserEdits />
+        </>
+      );
+    }
 
     switch (path) {
       case "/Home":
@@ -168,6 +195,8 @@ export default function Sidebar(props) {
             datas={{ selectedCourse, setSelectedCourse }}
           />
         );
+      case "/users":
+        return <User navigate={router.navigate} current={{ setPathname }} />;
 
       case "/orders":
         return <h1>Manage Orders</h1>;
