@@ -35,6 +35,15 @@ function createData(name, calories, fat, carbs, protein) {
 
 export default function CustomizedTables(props) {
   const data = props?.data || [];
+  const { setPathname } = props.current;
+
+  const handleEdit = (items) => {
+    console.log(items);
+
+    localStorage.setItem("userData", JSON.stringify(items));
+    setPathname("/users");
+    props.navigate("/users/edit");
+  };
 
   return (
     <TableContainer
@@ -42,7 +51,8 @@ export default function CustomizedTables(props) {
       sx={{ width: "fit-content", margin: "start" }}
     >
       <Table aria-label="customized table">
-        {data?.map(({ email, id, role }, index) => {
+        {data?.map((item, index) => {
+          const { email, id, role } = item;
           return (
             <div key={id}>
               <TableHead>
@@ -70,7 +80,10 @@ export default function CustomizedTables(props) {
                     {role}
                   </StyledTableCell>
                   <StyledTableCell component="th" scope="row">
-                    <div className="cursor-pointer" onClick={props.handleEdit}>
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => handleEdit(item)}
+                    >
                       <EditIcon />
                     </div>
                   </StyledTableCell>

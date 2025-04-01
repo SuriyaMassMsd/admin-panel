@@ -32,16 +32,14 @@ const User = ({ navigate, datas, current }) => {
     fetchUserData();
   }, []);
 
-  const handleEdit = () => {
-    localStorage.setItem("userData", data);
-    setPathname("/users");
-    navigate("/users/edit");
-  };
-  console.log(data);
-
   return (
     <div>
-      <CustomizedTables data={data} handleEdit={handleEdit} />
+      <CustomizedTables
+        data={data}
+        navigate={navigate}
+        current={current}
+        // handleEdit={handleEdit}
+      />
     </div>
   );
 };
