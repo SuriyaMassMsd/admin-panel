@@ -8,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import EditIcon from "@mui/icons-material/Edit";
+import Animations from "./Skeleton/TableSkeleton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -23,15 +24,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-
   "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
 
 export default function CustomizedTables(props) {
   const data = props?.data || [];
@@ -39,59 +35,46 @@ export default function CustomizedTables(props) {
 
   const handleEdit = (items) => {
     console.log(items);
-
     localStorage.setItem("userData", JSON.stringify(items));
     setPathname("/users");
     props.navigate("/users/edit");
   };
 
+  if (!props.data) return <Animations />;
+
   return (
-    <TableContainer
-      component={Paper}
-      sx={{ width: "fit-content", margin: "start" }}
-    >
+    <TableContainer component={Paper} sx={{ width: "100%", overflowX: "auto" }}>
       <Table aria-label="customized table">
-        {data?.map((item, index) => {
-          const { email, id, role } = item;
-          return (
-            <div key={id}>
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell>S.No</StyledTableCell>
-                  <StyledTableCell>Name</StyledTableCell>
-                  <StyledTableCell>Email</StyledTableCell>
-                  <StyledTableCell>Role</StyledTableCell>
-                  <StyledTableCell>Edit</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {/* {rows.map((row) => ( */}
-                <StyledTableRow key={id}>
-                  <StyledTableCell component="th" scope="row">
-                    {index + 1}
-                  </StyledTableCell>
-                  <StyledTableCell component="th" scope="row">
-                    {email.split("@")[0]}
-                  </StyledTableCell>
-                  <StyledTableCell component="th" scope="row">
-                    {email}
-                  </StyledTableCell>
-                  <StyledTableCell component="th" scope="row">
-                    {role}
-                  </StyledTableCell>
-                  <StyledTableCell component="th" scope="row">
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => handleEdit(item)}
-                    >
-                      <EditIcon />
-                    </div>
-                  </StyledTableCell>
-                </StyledTableRow>
-              </TableBody>
-            </div>
-          );
-        })}
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>S.No</StyledTableCell>
+            <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell>Email</StyledTableCell>
+            <StyledTableCell>Role</StyledTableCell>
+            <StyledTableCell>Edit</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data?.map((item, index) => {
+            const { email, id, role } = item;
+            return (
+              <StyledTableRow key={id}>
+                <StyledTableCell>{index + 1}</StyledTableCell>
+                <StyledTableCell>{email.split("@")[0]}</StyledTableCell>
+                <StyledTableCell>{email}</StyledTableCell>
+                <StyledTableCell>{role}</StyledTableCell>
+                <StyledTableCell>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => handleEdit(item)}
+                  >
+                    <EditIcon />
+                  </div>
+                </StyledTableCell>
+              </StyledTableRow>
+            );
+          })}
+        </TableBody>
       </Table>
     </TableContainer>
   );
