@@ -75,8 +75,18 @@ export default function Course({ navigate, datas, current }) {
 
   if (!approvedCourse || !pendingCourse) return <YouTube />;
 
+  // React.useEffect(() => {
+  //   deleteCourseData();
+  //   // const interval = setInterval(() => {
+  //   //   deleteCourseData();
+  //   // }, 100);
+  //   // return () => clearInterval(interval);
+  // }, []);
+
   const handleRouteData = (data) => {
+    // if (path === "/course/details") {
     localStorage.setItem("item", JSON.stringify(data));
+    // }
     setPathname("/courses");
     navigate("/courses/details");
   };

@@ -19,6 +19,8 @@ import Form from "../../pages/Form";
 import { getUserValue } from "../UserType";
 import User from "../Users/User";
 import UserEdits from "../UserEdits";
+import CourseEdit from "../CourseEdit/CourseEdit";
+import MyForm from "../../pages/Form";
 
 const NAVIGATION = [
   {
@@ -121,6 +123,10 @@ export default function Sidebar(props) {
     setPathname("/courses");
     router.navigate("/courses");
   };
+  const courseDetails = () => {
+    setPathname("/courses");
+    router.navigate("/courses/details");
+  };
 
   const renderContent = () => {
     const path = router.pathname;
@@ -141,7 +147,32 @@ export default function Sidebar(props) {
             <span>/ Details</span>
           </div>
           <div className="mt-10">
-            <Details course={selectedCourse} />
+            <Details
+              course={selectedCourse}
+              navigate={router.navigate}
+              current={{ setPathname }}
+            />
+          </div>
+        </>
+      );
+    }
+
+    if (path.startsWith("/courses/edit")) {
+      return (
+        <>
+          <div className="flex items-center space-x-1 ">
+            <span>
+              <strong
+                className="cursor-pointer hover:underline"
+                onClick={currentRoutes}
+              >
+                Courses
+              </strong>
+            </span>
+            <span>/ Edit</span>
+          </div>
+          <div>
+            <MyForm />
           </div>
         </>
       );

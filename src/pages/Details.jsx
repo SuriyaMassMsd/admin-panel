@@ -12,8 +12,8 @@ import WorkIcon from "@mui/icons-material/Work";
 import { z } from "zod";
 import { FormProvider, useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { getUserValue } from "../components/UserType.js";
+import EditIcon from "@mui/icons-material/Edit";
 
 const schema = z.object({
   courseStatus: z.string(),
@@ -26,7 +26,7 @@ const courseStatusOptions = [
   { value: "0", label: "Rework" },
 ];
 
-const Details = () => {
+const Details = ({ navigate, current }) => {
   const userData = getUserValue();
   const course = JSON.parse(localStorage.getItem("item"));
 
@@ -93,6 +93,12 @@ const Details = () => {
     }
   };
 
+  const courseEdit = () => {
+    const { setPathname } = current;
+    setPathname("/courses");
+    navigate("/courses/edit");
+  };
+
   return (
     <Box sx={{ flexGrow: 1, my: 4 }}>
       <div className="flex justify-center sm:justify-end -mt-10 mb-10  sm:-mt-20  ml-auto w-[300px] gap-4">
@@ -143,6 +149,12 @@ const Details = () => {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h1 className="text-[20px] font-semibold">{course.title}</h1>
+              <h4
+                className="flex justify-between items-center gap-3 cursor-pointer"
+                onClick={courseEdit}
+              >
+                Edit <EditIcon fontSize="small" />{" "}
+              </h4>
             </div>
 
             <p className="text-[16px] text-gray-300 font-normal">

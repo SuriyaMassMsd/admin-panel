@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { object, z } from "zod";
 import Input from "../components/Input";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import RichTextEditor from "./../components/RichTextEditor";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 
 const schema = z.object({
@@ -38,10 +38,20 @@ const schema = z.object({
   // preview: z.instanceof(File, { message: "Preview is required" }),
 });
 const MyForm = () => {
+  const existingCourse = JSON.parse(localStorage.getItem("item"));
   const [loading, setLoading] = useState(false);
   const methods = useForm({
     resolver: zodResolver(schema),
+    defaultValues: existingCourse || {},
   });
+
+  useEffect(() => {
+    if (existingCourse) {
+      Object.entries(existingCourse).forEach(([key, value]) => {
+        methods.setValue(key, value);
+      });
+    }
+  }, [existingCourse, methods.setValue]);
 
   const success = () => {
     toast.success("Course Created Successfully", {
@@ -76,8 +86,19 @@ const MyForm = () => {
 
     const apiUrl = import.meta.env.VITE_BASE_URL;
     try {
-      const response = await fetch(`${apiUrl}/course`, {
-        method: "POST",
+      const urlApi = existingCourse
+        ? {
+            url: `${apiUrl}/course/update/${existingCourse.id}`,
+            method: "PATCH",
+          }
+        : {
+            url: `${apiUrl}/course`,
+            method: "POST",
+          };
+
+      // `${apiUrl}/course/update/${existingCourse.id}`: ;
+      const response = await fetch(urlApi.url, {
+        method: urlApi.method,
         headers: {
           // "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -109,6 +130,7 @@ const MyForm = () => {
           type="text"
           label="Title"
           placeholder="Title*"
+          defaultValues={existingCourse?.title || ""}
           error={methods.formState.errors.title}
         />
         <Input
@@ -116,6 +138,7 @@ const MyForm = () => {
           id="courseType"
           type="select"
           label="Course Type"
+          defaultValues={existingCourse?.courseType}
           options={[
             { value: "", label: "Select The Type" },
             { value: "Pre-Recorded", label: "Pre-Recorded" },
@@ -129,6 +152,7 @@ const MyForm = () => {
           type="textarea"
           label="Introduction"
           placeholder="Introduction*"
+          defaultValues={existingCourse?.introduction}
           error={methods.formState.errors.introduction}
         />
         <Input
@@ -137,6 +161,7 @@ const MyForm = () => {
           type="textarea"
           label="Description"
           placeholder="Description*"
+          defaultValues={existingCourse?.description}
           error={methods.formState.errors.description}
         />
         <Input
@@ -145,6 +170,7 @@ const MyForm = () => {
           type="array"
           label="Highlights"
           placeholder="Add a highlight and press Enter"
+          defaultValues={existingCourse?.highlights || ""}
           error={methods.formState.errors.highlights}
           methods={methods}
         />
@@ -154,6 +180,7 @@ const MyForm = () => {
           type="array"
           label="Tags"
           placeholder="Add a tag and press Enter"
+          defaultValues={existingCourse?.tags || ""}
           error={methods.formState.errors.tags}
           methods={methods}
         />
@@ -164,6 +191,7 @@ const MyForm = () => {
           type="text"
           label="Category"
           placeholder="Category*"
+          defaultValues={existingCourse?.category}
           error={methods.formState.errors.category}
         />
         <Input
@@ -172,6 +200,7 @@ const MyForm = () => {
           type="text"
           label="Duration"
           placeholder="Duration*"
+          defaultValues={existingCourse?.duration}
           error={methods.formState.errors.duration}
         />
         <Input
@@ -180,6 +209,7 @@ const MyForm = () => {
           type="text"
           label="Currency"
           placeholder="Currency"
+          defaultValues={existingCourse?.currency}
           error={methods.formState.errors.currency}
         />
         <Input
@@ -188,6 +218,7 @@ const MyForm = () => {
           type="text"
           label="Price"
           placeholder="Price*"
+          defaultValues={existingCourse?.price}
           error={methods.formState.errors.price}
         />
 
@@ -201,6 +232,20 @@ const MyForm = () => {
           accept="image/*"
         />
 
+        {methods.watch("thumbnail") instanceof File ? (
+          <img
+            src={URL.createObjectURL(methods.watch("thumbnail"))}
+            alt="Thumbnail Preview"
+            className="w-32 h-32 object-cover mt-2"
+          />
+        ) : existingCourse?.thumbnailUrl ? (
+          <img
+            src={existingCourse.thumbnailUrl}
+            alt="Existing Thumbnail"
+            className="w-32 h-32 object-cover mt-2"
+          />
+        ) : null}
+
         <Input
           name="preview"
           id="preview"
@@ -210,11 +255,27 @@ const MyForm = () => {
           methods={methods}
           accept="video/*"
         />
+
+        {methods.watch("preview") instanceof File ? (
+          <video controls className="w-64 h-36 mt-2">
+            <source
+              src={URL.createObjectURL(methods.watch("preview"))}
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+        ) : existingCourse?.previewUrl ? (
+          <video controls className="w-64 h-36 mt-2">
+            <source src={existingCourse?.previewUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : null}
         <button
           disabled={loading}
           className="bg-[#00bbab] cursor-pointer hover:bg-[#51ada5f3] w-full font-semibold text-white py-2 px-4 rounded mt-4"
         >
-          {loading ? "Submiting course" : "Create course"}
+          {existingCourse ? "Update course" : "Create course"}
+          {/* {loading ? "Submiting course" : "Create course"} */}
         </button>
         <ToastContainer
           position="top-right"
