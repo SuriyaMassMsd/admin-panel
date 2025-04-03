@@ -25,24 +25,31 @@ const schema = z.object({
   duration: z.string().nonempty({ message: "Duration is required" }),
   currency: z.string().nonempty({ message: "Currenty is required" }),
   price: z.string().nonempty({ message: "Price is required" }),
-  thumbnail: z.instanceof(File, { message: "Thumbnail is required" }),
-  preview: z
-    .union([
-      z.instanceof(File),
-      z.object({
-        file: z.instanceof(File),
-        duration: z.number().optional(),
-      }),
-    ])
-    .refine((value) => !!value, { message: "Video is required" }),
-  // preview: z.instanceof(File, { message: "Preview is required" }),
+  thumbnail: z.union([z.instanceof(File), z.string().url().or(z.literal(""))]),
+
+  preview: z.union([z.instanceof(File), z.string().url().or(z.literal(""))]),
 });
 const MyForm = () => {
   const existingCourse = JSON.parse(localStorage.getItem("item"));
+  console.log(existingCourse);
+
   const [loading, setLoading] = useState(false);
   const methods = useForm({
     resolver: zodResolver(schema),
-    defaultValues: existingCourse || {},
+    defaultValues: existingCourse
+      ? {
+          ...existingCourse,
+          tags: existingCourse.tags || [],
+          highlights: existingCourse.highlights || [],
+          thumbnail: existingCourse.thumbnailUrl || "",
+          preview: existingCourse.previewUrl || "",
+        }
+      : {
+          tags: [],
+          highlights: [],
+          thumbnail: "",
+          preview: "",
+        },
   });
 
   useEffect(() => {
@@ -71,6 +78,19 @@ const MyForm = () => {
     setLoading(true);
     const token = localStorage.getItem("token");
     // console.log(data);
+
+    data.tags = data.tags ? data.tags.filter((tag) => tag.trim() !== "") : [];
+    data.highlights = data.highlights
+      ? data.highlights.filter((highlight) => highlight.trim() !== "")
+      : [];
+
+    if (data.tags.length === 0) {
+      delete data.tags;
+    }
+    if (data.highlights.length === 0) {
+      delete data.highlights;
+    }
+
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("courseType", data.courseType);
@@ -84,11 +104,20 @@ const MyForm = () => {
     formData.append("thumbnail", data.thumbnail);
     formData.append("preview", data.preview);
 
+    if (data.tags && data.tags.length > 0) {
+      data.tags.forEach((tag) => formData.append("tags", tag));
+    }
+    if (data.highlights && data.highlights.length > 0) {
+      data.highlights.forEach((highlight) =>
+        formData.append("highlights", highlight)
+      );
+    }
+
     const apiUrl = import.meta.env.VITE_BASE_URL;
     try {
       const urlApi = existingCourse
         ? {
-            url: `${apiUrl}/course/update/${existingCourse.id}`,
+            url: `${apiUrl}/course/update/${existingCourse.courseId}`,
             method: "PATCH",
           }
         : {
@@ -130,7 +159,7 @@ const MyForm = () => {
           type="text"
           label="Title"
           placeholder="Title*"
-          defaultValues={existingCourse?.title || ""}
+          defaultValues={existingCourse?.title}
           error={methods.formState.errors.title}
         />
         <Input
@@ -170,7 +199,7 @@ const MyForm = () => {
           type="array"
           label="Highlights"
           placeholder="Add a highlight and press Enter"
-          defaultValues={existingCourse?.highlights || ""}
+          defaultValues={existingCourse?.highlights}
           error={methods.formState.errors.highlights}
           methods={methods}
         />
@@ -180,7 +209,7 @@ const MyForm = () => {
           type="array"
           label="Tags"
           placeholder="Add a tag and press Enter"
-          defaultValues={existingCourse?.tags || ""}
+          defaultValues={existingCourse?.tags}
           error={methods.formState.errors.tags}
           methods={methods}
         />
@@ -227,6 +256,7 @@ const MyForm = () => {
           id="thumbnail"
           type="file"
           label="Thumbnail Image"
+          defaultValues={existingCourse?.thumbnail}
           error={methods.formState.errors.thumbnail}
           methods={methods}
           accept="image/*"
@@ -251,6 +281,7 @@ const MyForm = () => {
           id="preview"
           type="file"
           label="Preview"
+          defaultValues={existingCourse?.preview}
           error={methods.formState.errors.preview}
           methods={methods}
           accept="video/*"

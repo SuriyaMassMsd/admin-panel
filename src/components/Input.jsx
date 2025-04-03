@@ -149,13 +149,18 @@ const Input = ({
                   ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"}`}
                 onChange={(e) => setArrayValue(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && arrayValue.trim()) {
+                  if (e.key === "Enter") {
                     e.preventDefault();
-                    const currentValues = methods.getValues(name) || [];
-                    setValue(name, [...currentValues, arrayValue], {
-                      shouldValidate: true,
-                    });
-                    setArrayValue("");
+                    const trimmedValue = arrayValue.trim();
+                    if (trimmedValue) {
+                      const currentValues = methods.getValues(name) || [];
+                      if (!currentValues.includes(trimmedValue)) {
+                        setValue(name, [...currentValues, trimmedValue], {
+                          shouldValidate: true,
+                        });
+                      }
+                      setArrayValue("");
+                    }
                   }
                 }}
               />
