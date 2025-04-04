@@ -84,13 +84,15 @@ export default function Course({ navigate, datas, current }) {
   // }, []);
 
   const handleRouteData = (data) => {
-    // if (path === "/course/details") {
     localStorage.setItem("item", JSON.stringify(data));
-    // }
     setPathname("/courses");
     navigate("/courses/details");
   };
 
+  const addCourseRoute = () => {
+    localStorage.removeItem("item");
+    navigate("/courses/addCourse");
+  };
   console.log(pendingCourse);
 
   return (
@@ -109,7 +111,7 @@ export default function Course({ navigate, datas, current }) {
       <div className="flex justify-center sm:justify-end -mt-10 mb-10  sm:-mt-20 sm:mb-20">
         <button
           className="  px-10 py-2 bg-gray-500 font-semibold text-white cursor-pointer hover:scale-105 hover:bg-gray-600 rounded outline-none transition-all duration-200 2s"
-          onClick={() => navigate("/courses/addCourse")}
+          onClick={addCourseRoute}
         >
           Add Course
         </button>

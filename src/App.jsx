@@ -5,6 +5,11 @@ import "global";
 const App = () => {
   useEffect(() => {
     document.title = "Admin Panel";
+    const pathName = localStorage.getItem("current");
+
+    if (pathName !== "/courses/details") {
+      localStorage.removeItem("item");
+    }
   }, []);
   return (
     <div>

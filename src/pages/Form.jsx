@@ -22,7 +22,7 @@ const schema = z.object({
     .min(1, { message: "At least one highlight is required" }),
   tags: z.array(z.string()).min(1, { message: "At least one tag is required" }),
   category: z.string().nonempty({ message: "Category is required" }),
-  duration: z.string().nonempty({ message: "Duration is required" }),
+  // duration: z.string().nonempty({ message: "Duration is required" }),
   currency: z.string().nonempty({ message: "Currenty is required" }),
   price: z.string().nonempty({ message: "Price is required" }),
   thumbnail: z.union([z.instanceof(File), z.string().url().or(z.literal(""))]),
@@ -52,13 +52,21 @@ const MyForm = () => {
         },
   });
 
+  // useEffect(() => {
+  //   if (existingCourse) {
+  //     Object.entries(existingCourse).forEach(([key, value]) => {
+  //       methods.setValue(key, value);
+  //     });
+  //   }
+  // }, [existingCourse, methods.setValue]);
+
   useEffect(() => {
     if (existingCourse) {
       Object.entries(existingCourse).forEach(([key, value]) => {
-        methods.setValue(key, value);
+        methods.setValue(key, value, { shouldDirty: true });
       });
     }
-  }, [existingCourse, methods.setValue]);
+  }, [existingCourse, methods]);
 
   const success = () => {
     toast.success("Course Created Successfully", {
@@ -77,76 +85,153 @@ const MyForm = () => {
   const submitData = async (data) => {
     setLoading(true);
     const token = localStorage.getItem("token");
-    // console.log(data);
-
-    data.tags = data.tags ? data.tags.filter((tag) => tag.trim() !== "") : [];
-    data.highlights = data.highlights
-      ? data.highlights.filter((highlight) => highlight.trim() !== "")
-      : [];
-
-    if (data.tags.length === 0) {
-      delete data.tags;
-    }
-    if (data.highlights.length === 0) {
-      delete data.highlights;
-    }
-
-    const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("courseType", data.courseType);
-    formData.append("introduction", data.introduction);
-    formData.append("description", data.description);
-    formData.append("category", data.category);
-    formData.append("duration", data.duration);
-    formData.append("currency", data.currency);
-    formData.append("price", data.price);
-
-    formData.append("thumbnail", data.thumbnail);
-    formData.append("preview", data.preview);
-
-    if (data.tags && data.tags.length > 0) {
-      data.tags.forEach((tag) => formData.append("tags", tag));
-    }
-    if (data.highlights && data.highlights.length > 0) {
-      data.highlights.forEach((highlight) =>
-        formData.append("highlights", highlight)
-      );
-    }
-
     const apiUrl = import.meta.env.VITE_BASE_URL;
-    try {
-      const urlApi = existingCourse
-        ? {
-            url: `${apiUrl}/course/update/${existingCourse.courseId}`,
-            method: "PATCH",
-          }
-        : {
-            url: `${apiUrl}/course`,
-            method: "POST",
-          };
 
-      // `${apiUrl}/course/update/${existingCourse.id}`: ;
-      const response = await fetch(urlApi.url, {
-        method: urlApi.method,
-        headers: {
-          // "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+    if (existingCourse) {
+      await updateCourse(data, apiUrl, token);
+    } else {
+      await addCourse(data, apiUrl, token);
+    }
+
+    setLoading(false);
+  };
+
+  const addCourse = async (data, apiUrl, token) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((item) => formData.append(key, item));
+      } else {
+        formData.append(key, value);
+      }
+    });
+
+    try {
+      const response = await fetch(`${apiUrl}/course`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-      const formDatas = await response.json();
-      if (!response.ok) throw new Error(formDatas.message);
 
-      if (response.status === 201) {
-        success();
-      }
-      console.log("form data", data);
+      if (!response.ok) throw new Error("Failed to create course");
+      success();
     } catch (err) {
-      console.log("Error", err);
-    } finally {
-      setLoading(false);
+      console.error("Error:", err);
     }
   };
+
+  const updateCourse = async (data, apiUrl, token) => {
+    const updatedFields = {};
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (JSON.stringify(value) !== JSON.stringify(existingCourse[key])) {
+        updatedFields[key] = value;
+      }
+    });
+
+    delete updatedFields.thumbnail;
+    delete updatedFields.preview;
+
+    if (Object.keys(updatedFields).length === 0) {
+      toast.info("No changes detected");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${apiUrl}/course/update/${existingCourse.courseId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedFields),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to update course");
+      toast.success("Course Updated Successfully");
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
+
+  // const submitData = async (data) => {
+  //   setLoading(true);
+  //   const token = localStorage.getItem("token");
+  //   // console.log(data);
+
+  //   data.tags = data.tags ? data.tags.filter((tag) => tag.trim() !== "") : [];
+  //   data.highlights = data.highlights
+  //     ? data.highlights.filter((highlight) => highlight.trim() !== "")
+  //     : [];
+
+  //   if (data.tags.length === 0) {
+  //     delete data.tags;
+  //   }
+  //   if (data.highlights.length === 0) {
+  //     delete data.highlights;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append("title", data.title);
+  //   formData.append("courseType", data.courseType);
+  //   formData.append("introduction", data.introduction);
+  //   formData.append("description", data.description);
+  //   formData.append("category", data.category);
+  //   formData.append("duration", data.duration);
+  //   formData.append("currency", data.currency);
+  //   formData.append("price", data.price);
+
+  //   formData.append("thumbnail", data.thumbnail);
+  //   formData.append("preview", data.preview);
+
+  //   if (data.tags && data.tags.length > 0) {
+  //     data.tags.forEach((tag) => formData.append("tags", tag));
+  //   }
+  //   if (data.highlights && data.highlights.length > 0) {
+  //     data.highlights.forEach((highlight) =>
+  //       formData.append("highlights", highlight)
+  //     );
+  //   }
+
+  //   const apiUrl = import.meta.env.VITE_BASE_URL;
+  //   try {
+  //     const urlApi = existingCourse
+  //       ? {
+  //           url: `${apiUrl}/course/update/${existingCourse.courseId}`,
+  //           method: "PATCH",
+  //         }
+  //       : {
+  //           url: `${apiUrl}/course`,
+  //           method: "POST",
+  //         };
+
+  //     console.log("url for api", urlApi.url);
+
+  //     // `${apiUrl}/course/update/${existingCourse.id}`: ;
+  //     const response = await fetch(urlApi.url, {
+  //       method: urlApi.method,
+  //       headers: {
+  //         // "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: formData,
+  //     });
+  //     const formDatas = await response.json();
+  //     if (!response.ok) throw new Error(formDatas.message);
+
+  //     if (response.status === 201) {
+  //       success();
+  //     }
+  //     console.log("form data", data);
+  //   } catch (err) {
+  //     console.log("Error", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   return (
     <FormProvider {...methods}>
       <form
@@ -199,7 +284,7 @@ const MyForm = () => {
           type="array"
           label="Highlights"
           placeholder="Add a highlight and press Enter"
-          defaultValues={existingCourse?.highlights}
+          defaultValues={existingCourse?.highlights || []}
           error={methods.formState.errors.highlights}
           methods={methods}
         />
@@ -209,7 +294,7 @@ const MyForm = () => {
           type="array"
           label="Tags"
           placeholder="Add a tag and press Enter"
-          defaultValues={existingCourse?.tags}
+          defaultValues={existingCourse?.tags || []}
           error={methods.formState.errors.tags}
           methods={methods}
         />
@@ -223,7 +308,7 @@ const MyForm = () => {
           defaultValues={existingCourse?.category}
           error={methods.formState.errors.category}
         />
-        <Input
+        {/* <Input
           name="duration"
           id="duration"
           type="text"
@@ -231,7 +316,7 @@ const MyForm = () => {
           placeholder="Duration*"
           defaultValues={existingCourse?.duration}
           error={methods.formState.errors.duration}
-        />
+        /> */}
         <Input
           name="currency"
           id="currency"
