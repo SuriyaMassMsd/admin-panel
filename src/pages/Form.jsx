@@ -29,7 +29,7 @@ const schema = z.object({
 
   preview: z.union([z.instanceof(File), z.string().url().or(z.literal(""))]),
 });
-const MyForm = () => {
+const MyForm = ({ navigate }) => {
   const existingCourse = JSON.parse(localStorage.getItem("item"));
   console.log(existingCourse);
 
@@ -52,26 +52,18 @@ const MyForm = () => {
         },
   });
 
-  // useEffect(() => {
-  //   if (existingCourse) {
-  //     Object.entries(existingCourse).forEach(([key, value]) => {
-  //       methods.setValue(key, value);
-  //     });
-  //   }
-  // }, [existingCourse, methods.setValue]);
-
   useEffect(() => {
     if (existingCourse) {
       Object.entries(existingCourse).forEach(([key, value]) => {
-        methods.setValue(key, value, { shouldDirty: true });
+        methods.setValue(key, value);
       });
     }
-  }, [existingCourse, methods]);
+  }, []);
 
   const success = () => {
     toast.success("Course Created Successfully", {
       position: "top-right",
-      autoClose: 5000,
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: false,
       pauseOnHover: true,
@@ -152,86 +144,12 @@ const MyForm = () => {
 
       if (!response.ok) throw new Error("Failed to update course");
       toast.success("Course Updated Successfully");
+      navigate("/courses");
     } catch (err) {
       console.error("Error:", err);
     }
   };
 
-  // const submitData = async (data) => {
-  //   setLoading(true);
-  //   const token = localStorage.getItem("token");
-  //   // console.log(data);
-
-  //   data.tags = data.tags ? data.tags.filter((tag) => tag.trim() !== "") : [];
-  //   data.highlights = data.highlights
-  //     ? data.highlights.filter((highlight) => highlight.trim() !== "")
-  //     : [];
-
-  //   if (data.tags.length === 0) {
-  //     delete data.tags;
-  //   }
-  //   if (data.highlights.length === 0) {
-  //     delete data.highlights;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append("title", data.title);
-  //   formData.append("courseType", data.courseType);
-  //   formData.append("introduction", data.introduction);
-  //   formData.append("description", data.description);
-  //   formData.append("category", data.category);
-  //   formData.append("duration", data.duration);
-  //   formData.append("currency", data.currency);
-  //   formData.append("price", data.price);
-
-  //   formData.append("thumbnail", data.thumbnail);
-  //   formData.append("preview", data.preview);
-
-  //   if (data.tags && data.tags.length > 0) {
-  //     data.tags.forEach((tag) => formData.append("tags", tag));
-  //   }
-  //   if (data.highlights && data.highlights.length > 0) {
-  //     data.highlights.forEach((highlight) =>
-  //       formData.append("highlights", highlight)
-  //     );
-  //   }
-
-  //   const apiUrl = import.meta.env.VITE_BASE_URL;
-  //   try {
-  //     const urlApi = existingCourse
-  //       ? {
-  //           url: `${apiUrl}/course/update/${existingCourse.courseId}`,
-  //           method: "PATCH",
-  //         }
-  //       : {
-  //           url: `${apiUrl}/course`,
-  //           method: "POST",
-  //         };
-
-  //     console.log("url for api", urlApi.url);
-
-  //     // `${apiUrl}/course/update/${existingCourse.id}`: ;
-  //     const response = await fetch(urlApi.url, {
-  //       method: urlApi.method,
-  //       headers: {
-  //         // "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: formData,
-  //     });
-  //     const formDatas = await response.json();
-  //     if (!response.ok) throw new Error(formDatas.message);
-
-  //     if (response.status === 201) {
-  //       success();
-  //     }
-  //     console.log("form data", data);
-  //   } catch (err) {
-  //     console.log("Error", err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   return (
     <FormProvider {...methods}>
       <form

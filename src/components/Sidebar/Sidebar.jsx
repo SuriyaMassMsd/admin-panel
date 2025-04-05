@@ -172,7 +172,7 @@ export default function Sidebar(props) {
             <span>/ Edit</span>
           </div>
           <div>
-            <MyForm />
+            <MyForm navigate={router.navigate} />
           </div>
         </>
       );
