@@ -7,8 +7,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import EditIcon from "@mui/icons-material/Edit";
+// import EditIcon from "@mui/icons-material/Edit";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Animations from "./Skeleton/TableSkeleton";
+import LongMenu from "./UserSuspend";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -32,13 +34,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function CustomizedTables(props) {
   const data = props?.data || [];
   const { setPathname } = props.current;
-
-  const handleEdit = (items) => {
-    console.log(items);
-    localStorage.setItem("userData", JSON.stringify(items));
-    setPathname("/users");
-    props.navigate("/users/edit");
-  };
 
   if (!props.data) return <Animations />;
 
@@ -64,11 +59,8 @@ export default function CustomizedTables(props) {
                 <StyledTableCell>{email}</StyledTableCell>
                 <StyledTableCell>{role}</StyledTableCell>
                 <StyledTableCell>
-                  <div
-                    className="cursor-pointer"
-                    onClick={() => handleEdit(item)}
-                  >
-                    <EditIcon />
+                  <div className="cursor-pointer">
+                    <LongMenu />
                   </div>
                 </StyledTableCell>
               </StyledTableRow>
