@@ -10,81 +10,74 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-function AlertDialog() {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open alert dialog
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button
-            onClick={() => {
-              handleDelete();
-              handleClose();
-            }}
-            autoFocus
-          >
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
-  );
-}
-
-const options = ["Suspend"];
+const options = ["Delete"];
 
 const ITEM_HEIGHT = 48;
 
-const handleDelete = async () => {
+const handleDelete = async (id) => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
 
   try {
-    await fetch(`${apiUrl}/user/`, {
+    await fetch(`${apiUrl}/users/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
-    confirm("are you sure");
   } catch (err) {
     console.log("error", err);
   }
 };
 
-export default function LongMenu() {
+function AlertDialog({ open, handleClose, id }) {
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Deleting User"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Are you sure you want to delete this user?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Disagree</Button>
+        <Button
+          onClick={() => {
+            handleDelete(id);
+            handleClose();
+          }}
+          autoFocus
+        >
+          Agree
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+export default function LongMenu({ id }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const menuOpen = Boolean(anchorEl);
+
+  const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+
+  const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+    handleMenuClose();
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   return (
@@ -92,10 +85,10 @@ export default function LongMenu() {
       <IconButton
         aria-label="more"
         id="long-button"
-        aria-controls={open ? "long-menu" : undefined}
-        aria-expanded={open ? "true" : undefined}
+        aria-controls={menuOpen ? "long-menu" : undefined}
+        aria-expanded={menuOpen ? "true" : undefined}
         aria-haspopup="true"
-        onClick={handleClick}
+        onClick={handleMenuClick}
       >
         <MoreVertIcon />
       </IconButton>
@@ -105,8 +98,8 @@ export default function LongMenu() {
           "aria-labelledby": "long-button",
         }}
         anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
+        open={menuOpen}
+        onClose={handleMenuClose}
         slotProps={{
           paper: {
             style: {
@@ -117,17 +110,16 @@ export default function LongMenu() {
         }}
       >
         {options.map((option) => (
-          <div onClick={() => AlertDialog}>
-            <MenuItem
-              key={option}
-              selected={option === "Pyxis"}
-              onClick={handleClose}
-            >
-              {option}
-            </MenuItem>
-          </div>
+          <MenuItem
+            key={option}
+            selected={option === "Pyxis"}
+            onClick={handleDialogOpen}
+          >
+            {option}
+          </MenuItem>
         ))}
       </Menu>
+      <AlertDialog open={dialogOpen} handleClose={handleDialogClose} id={id} />
     </div>
   );
 }

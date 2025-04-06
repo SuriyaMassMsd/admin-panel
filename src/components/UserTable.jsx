@@ -60,7 +60,7 @@ export default function CustomizedTables(props) {
                 <StyledTableCell>{role}</StyledTableCell>
                 <StyledTableCell>
                   <div className="cursor-pointer">
-                    <LongMenu />
+                    <LongMenu id={id} />
                   </div>
                 </StyledTableCell>
               </StyledTableRow>
