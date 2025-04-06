@@ -10,7 +10,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-const options = ["Delete"];
+const options = ["Delete", "Details"];
 
 const ITEM_HEIGHT = 48;
 
@@ -58,7 +58,7 @@ function AlertDialog({ open, handleClose, id }) {
   );
 }
 
-export default function LongMenu({ id }) {
+export default function LongMenu({ id, navigate }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const menuOpen = Boolean(anchorEl);
@@ -78,6 +78,14 @@ export default function LongMenu({ id }) {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+  };
+
+  const handleMenu = (index) => {
+    if (index === 0) {
+      handleDialogOpen();
+    } else if (index === 1) {
+      navigate("/users/details");
+    }
   };
 
   return (
@@ -109,11 +117,11 @@ export default function LongMenu({ id }) {
           },
         }}
       >
-        {options.map((option) => (
+        {options.map((option, index) => (
           <MenuItem
             key={option}
             selected={option === "Pyxis"}
-            onClick={handleDialogOpen}
+            onClick={() => handleMenu(index)}
           >
             {option}
           </MenuItem>

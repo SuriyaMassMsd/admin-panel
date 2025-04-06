@@ -95,7 +95,7 @@ export default function CustomizedTables(props) {
                 <StyledTableCell>{role}</StyledTableCell>
                 <StyledTableCell>
                   <div className="cursor-pointer">
-                    <LongMenu id={id} />
+                    <LongMenu id={id} navigate={props.navigate} />
                   </div>
                 </StyledTableCell>
               </StyledTableRow>

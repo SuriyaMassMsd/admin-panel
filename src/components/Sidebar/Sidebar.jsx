@@ -18,9 +18,8 @@ import Details from "../../pages/Details";
 import Form from "../../pages/Form";
 import { getUserValue } from "../UserType";
 import User from "../Users/User";
-import UserEdits from "../UserEdits";
-import CourseEdit from "../CourseEdit/CourseEdit";
 import MyForm from "../../pages/Form";
+import UserDetails from "../UserDetails";
 
 const NAVIGATION = [
   {
@@ -196,7 +195,7 @@ export default function Sidebar(props) {
         </>
       );
     }
-    if (path.includes("/users/edit")) {
+    if (path.includes("/users/details")) {
       return (
         <>
           <div className="flex items-center space-x-1 w-">
@@ -208,9 +207,9 @@ export default function Sidebar(props) {
                 Users
               </strong>
             </span>
-            <span>/ Edit</span>
+            <span>/ Details</span>
           </div>
-          <UserEdits />
+          <UserDetails />
         </>
       );
     }
