@@ -79,7 +79,7 @@ export default function CustomizedTables(props) {
         </TableHead>
         <TableBody>
           {data?.map((item, index) => {
-            const { email, id, role } = item;
+            const { email, id, role, username } = item;
             return (
               <StyledTableRow key={id}>
                 {!isSmallScreen && (
@@ -87,9 +87,10 @@ export default function CustomizedTables(props) {
                 )}
                 <StyledTableCell>
                   {isSmallScreen
-                    ? email.split("@")[0].substring(0, 12) +
-                      (email.split("@")[0].length > 12 ? "..." : "")
-                    : email.split("@")[0]}
+                    ? username ||
+                      email.split("@")[0].substring(0, 12) +
+                        (email.split("@")[0].length > 12 ? "..." : "")
+                    : username || email.split("@")[0]}
                 </StyledTableCell>
                 {!isSmallScreen && <StyledTableCell>{email}</StyledTableCell>}
                 <StyledTableCell>{role}</StyledTableCell>

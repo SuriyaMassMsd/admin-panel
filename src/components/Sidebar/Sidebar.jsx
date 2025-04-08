@@ -6,6 +6,7 @@ import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import PersonIcon from "@mui/icons-material/Person";
+import BugReportIcon from "@mui/icons-material/BugReport";
 import {
   Route,
   Routes,
@@ -43,6 +44,12 @@ const NAVIGATION = [
     title: "Users",
     path: "/users",
     icon: <PersonIcon />,
+  },
+  {
+    segment: "tickets",
+    title: "Tickets",
+    path: "/tickets",
+    icon: <BugReportIcon />,
   },
 ];
 
@@ -228,7 +235,7 @@ export default function Sidebar(props) {
       case "/users":
         return <User navigate={router.navigate} current={{ setPathname }} />;
 
-      case "/orders":
+      case "/tickets":
         return <h1>Manage Orders</h1>;
       case "/signin":
         return <h1>Please Sign In</h1>;
