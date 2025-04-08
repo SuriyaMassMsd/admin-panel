@@ -39,6 +39,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function CustomizedTables(props) {
   const data = props?.data || [];
   const { setPathname } = props.current;
+
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -96,7 +97,12 @@ export default function CustomizedTables(props) {
                 <StyledTableCell>{role}</StyledTableCell>
                 <StyledTableCell>
                   <div className="cursor-pointer">
-                    <LongMenu id={id} navigate={props.navigate} data={item} />
+                    <LongMenu
+                      id={id}
+                      navigate={props.navigate}
+                      data={item}
+                      handleDelete={props.handleDelete}
+                    />
                   </div>
                 </StyledTableCell>
               </StyledTableRow>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import CustomizedTables from "../UserTable";
 
 const User = ({ navigate, datas, current }) => {
-  const { setPathname } = current;
   const [data, setData] = useState(null);
   useEffect(() => {
     const fetchUserData = async () => {
@@ -32,13 +31,28 @@ const User = ({ navigate, datas, current }) => {
     fetchUserData();
   }, []);
 
+  const handleDelete = async (id) => {
+    const apiUrl = import.meta.env.VITE_BASE_URL;
+    const token = localStorage.getItem("token");
+
+    try {
+      await fetch(`${apiUrl}/users/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setData((prev) => prev.filter((u) => u.id !== id));
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
   return (
     <div>
       <CustomizedTables
         data={data}
         navigate={navigate}
         current={current}
-        // handleEdit={handleEdit}
+        handleDelete={handleDelete}
       />
     </div>
   );

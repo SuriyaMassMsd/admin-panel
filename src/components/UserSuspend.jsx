@@ -16,21 +16,7 @@ const options = ["Delete", "Details"];
 
 const ITEM_HEIGHT = 48;
 
-const handleDelete = async (id) => {
-  const apiUrl = import.meta.env.VITE_BASE_URL;
-  const token = localStorage.getItem("token");
-
-  try {
-    await fetch(`${apiUrl}/users/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-  } catch (err) {
-    console.log("error", err);
-  }
-};
-
-function AlertDialog({ open, handleClose, id }) {
+function AlertDialog({ open, handleClose, id, handleDelete }) {
   return (
     <Dialog
       open={open}
@@ -60,9 +46,10 @@ function AlertDialog({ open, handleClose, id }) {
   );
 }
 
-export default function LongMenu({ id, navigate, data }) {
+export default function LongMenu({ id, navigate, data, handleDelete }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const menuOpen = Boolean(anchorEl);
 
   const handleMenuClick = (event) => {
@@ -82,17 +69,16 @@ export default function LongMenu({ id, navigate, data }) {
     setDialogOpen(false);
   };
 
-  const handleMenu = (index, data) => {
-    if (index === 0) {
-      handleDialogOpen();
-    } else if (index === 1) {
-      navigate("/users/details");
-      localStorage.setItem("userData", JSON.stringify(data));
-    }
+  const handleDeleteOpen = () => {
+    setDeleteDialogOpen(true);
   };
 
-  const openUser = () => {
-    // handleMenuClick();
+  const handleDeleteClose = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const openUser = (data) => {
+    localStorage.setItem("userData", JSON.stringify(data));
     handleDialogOpen();
   };
 
@@ -104,7 +90,7 @@ export default function LongMenu({ id, navigate, data }) {
         aria-controls={menuOpen ? "long-menu" : undefined}
         aria-expanded={menuOpen ? "true" : undefined}
         aria-haspopup="true"
-        onClick={openUser}
+        onClick={() => openUser(data)}
       >
         <VisibilityIcon />
       </IconButton>
@@ -135,8 +121,17 @@ export default function LongMenu({ id, navigate, data }) {
           </MenuItem>
         ))}
       </Menu> */}
-      <UserDetails open={dialogOpen} handleClose={handleDialogClose} />
-      {/* <AlertDialog open={dialogOpen} handleClose={handleDialogClose} id={id} /> */}
+      <UserDetails
+        open={dialogOpen}
+        handleClose={handleDialogClose}
+        handleDeleteOpen={handleDeleteOpen}
+      />
+      <AlertDialog
+        open={deleteDialogOpen}
+        handleClose={handleDeleteClose}
+        handleDelete={handleDelete}
+        id={id}
+      />
     </div>
   );
 }

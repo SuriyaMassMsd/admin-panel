@@ -22,11 +22,16 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const UserDetails = ({ open, handleClose }) => {
+const UserDetails = ({ open, handleClose, handleDeleteOpen }) => {
   const userData = JSON.parse(localStorage.getItem("userData"));
   const { age, email, profilePicture, username, isActive } = userData;
   const defImg =
     "https://imgs.search.brave.com/wTGFv276tv4aDjxtxOQJKFik7yI3PdFq6OpafOk7YCI/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMubGlmZS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMTkv/MTAvMTUxNTMyMjgv/MTE1MjA5Ni1lMTU3/MTE1MzU0NzMzMi5q/cGc";
+
+  const handleDeleteDialog = () => {
+    handleMenuClick();
+    handleDialogOpen();
+  };
   return (
     <div>
       <BootstrapDialog
@@ -76,7 +81,10 @@ const UserDetails = ({ open, handleClose }) => {
                 <button className="px-20 py-4 font-semibold hover:bg-lime-500 cursor-pointer transition-all duration-300 1s bg-lime-600 rounded-xs outline-none border-none text-white">
                   Promote
                 </button>
-                <button className="px-20 py-4 font-semibold hover:bg-red-500 cursor-pointer transition-all duration-300 1s bg-red-600 rounded-xs outline-none border-none text-white">
+                <button
+                  onClick={handleDeleteOpen}
+                  className="px-20 py-4 font-semibold hover:bg-red-500 cursor-pointer transition-all duration-300 1s bg-red-600 rounded-xs outline-none border-none text-white"
+                >
                   Delete
                 </button>
               </div>
