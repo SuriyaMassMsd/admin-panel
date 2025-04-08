@@ -10,6 +10,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import UserDetails from "./UserDetails";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const options = ["Delete", "Details"];
 
@@ -90,6 +91,11 @@ export default function LongMenu({ id, navigate, data }) {
     }
   };
 
+  const openUser = () => {
+    // handleMenuClick();
+    handleDialogOpen();
+  };
+
   return (
     <div>
       <IconButton
@@ -98,11 +104,11 @@ export default function LongMenu({ id, navigate, data }) {
         aria-controls={menuOpen ? "long-menu" : undefined}
         aria-expanded={menuOpen ? "true" : undefined}
         aria-haspopup="true"
-        onClick={handleMenuClick}
+        onClick={openUser}
       >
-        <MoreVertIcon />
+        <VisibilityIcon />
       </IconButton>
-      <Menu
+      {/* <Menu
         id="long-menu"
         MenuListProps={{
           "aria-labelledby": "long-button",
@@ -128,8 +134,9 @@ export default function LongMenu({ id, navigate, data }) {
             {option}
           </MenuItem>
         ))}
-      </Menu>
-      <AlertDialog open={dialogOpen} handleClose={handleDialogClose} id={id} />
+      </Menu> */}
+      <UserDetails open={dialogOpen} handleClose={handleDialogClose} />
+      {/* <AlertDialog open={dialogOpen} handleClose={handleDialogClose} id={id} /> */}
     </div>
   );
 }
