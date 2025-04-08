@@ -22,16 +22,42 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const UserDetails = ({ open, handleClose, handleDeleteOpen }) => {
+const UserDetails = ({
+  open,
+  handleClose,
+  handleDeleteOpen,
+  // handlePromote,
+}) => {
   const userData = JSON.parse(localStorage.getItem("userData"));
-  const { age, email, profilePicture, username, isActive } = userData;
+  const { age, email, profilePicture, username, isActive, id } = userData;
+
+  const logOut = (ids) => {
+    console.log("userId", ids);
+  };
+
   const defImg =
     "https://imgs.search.brave.com/wTGFv276tv4aDjxtxOQJKFik7yI3PdFq6OpafOk7YCI/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMubGlmZS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMTkv/MTAvMTUxNTMyMjgv/MTE1MjA5Ni1lMTU3/MTE1MzU0NzMzMi5q/cGc";
 
-  const handleDeleteDialog = () => {
-    handleMenuClick();
-    handleDialogOpen();
+  const handlePromote = async (id) => {
+    const apiUrl = import.meta.env.VITE_BASE_URL;
+    const token = localStorage.getItem("token");
+
+    if (!apiUrl || !token) {
+      console.warn("Missing API URL or Token");
+      return;
+    }
+
+    try {
+      await fetch(`${apiUrl}/users/assign/${id}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // setData((prev) => prev.filter((u) => u.id !== id));
+    } catch (err) {
+      console.log("error", err);
+    }
   };
+
   return (
     <div>
       <BootstrapDialog
@@ -78,7 +104,10 @@ const UserDetails = ({ open, handleClose, handleDeleteOpen }) => {
               </h1>
               <p className="opacity-65">{email}</p>
               <div className="flex space-x-4 items-center justify-center">
-                <button className="px-20 py-4 font-semibold hover:bg-lime-500 cursor-pointer transition-all duration-300 1s bg-lime-600 rounded-xs outline-none border-none text-white">
+                <button
+                  onClick={() => handlePromote(id)}
+                  className="px-20 py-4 font-semibold hover:bg-lime-500 cursor-pointer transition-all duration-300 1s bg-lime-600 rounded-xs outline-none border-none text-white"
+                >
                   Promote
                 </button>
                 <button
