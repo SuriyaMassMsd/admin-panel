@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import "global";
+import { Bounce, ToastContainer } from "react-toastify";
 
 const App = () => {
   useEffect(() => {
@@ -13,6 +14,19 @@ const App = () => {
   }, []);
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
       <Sidebar />
     </div>
   );

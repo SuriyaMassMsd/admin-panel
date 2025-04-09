@@ -21,6 +21,7 @@ import { getUserValue } from "../UserType";
 import User from "../Users/User";
 import MyForm from "../../pages/Form";
 import UserDetails from "../UserDetails";
+import TicketsTable from "../TicketsTable";
 
 const NAVIGATION = [
   {
@@ -236,7 +237,7 @@ export default function Sidebar(props) {
         return <User navigate={router.navigate} current={{ setPathname }} />;
 
       case "/tickets":
-        return <h1>Manage Orders</h1>;
+        return <TicketsTable />;
       case "/signin":
         return <h1>Please Sign In</h1>;
       case "/tickets":

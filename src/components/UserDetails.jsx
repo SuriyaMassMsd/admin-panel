@@ -8,8 +8,8 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
-import { Bounce, ToastContainer } from "react-toastify";
-import ClipLoader from "react-spinners/ClipLoader";
+import { Bounce, toast, ToastContainer } from "react-toastify";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialog-paper": {
@@ -50,6 +50,22 @@ const UserDetails = ({
       transition: Bounce,
     });
   };
+  const failed = () => {
+    toast.error(
+      "Update necessary user details to promote user as an Instructor",
+      {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      }
+    );
+  };
 
   const handlePromote = async (id) => {
     setLoading(true);
@@ -62,15 +78,23 @@ const UserDetails = ({
     }
 
     try {
-      await fetch(`${apiUrl}/users/assign/${id}`, {
+      const response = await fetch(`${apiUrl}/users/assign/${id}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
-      success();
+
       setLoading(false);
+      if (response.status === 200) {
+        success();
+      }
+      if (response.status === 201) {
+        failed();
+      }
       // setData((prev) => prev.filter((u) => u.id !== id));
     } catch (err) {
       console.log("error", err);
+      setLoading(false);
+      toast.error(err.message);
     }
   };
 
@@ -125,18 +149,7 @@ const UserDetails = ({
                   onClick={() => handlePromote(id)}
                   className="px-20 py-4 font-semibold hover:bg-lime-500 cursor-pointer transition-all duration-300 1s bg-lime-600 rounded-xs outline-none border-none text-white"
                 >
-                  {loading ? (
-                    <ClipLoader
-                      className="w-4 h-4 border-2 m-auto block border-white"
-                      color="#fff"
-                      loading={loading}
-                      size={150}
-                      aria-label="Loading Spinner"
-                      data-testid="loader"
-                    />
-                  ) : (
-                    "Promote"
-                  )}
+                  {loading ? "Promoting..." : "Promote"}
                 </button>
                 <button
                   onClick={handleDeleteOpen}
@@ -149,20 +162,6 @@ const UserDetails = ({
           </div>
         </DialogContent>
       </BootstrapDialog>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
     </div>
   );
 };
