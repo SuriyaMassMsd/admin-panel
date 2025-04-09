@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -8,6 +8,8 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
+import { Bounce, ToastContainer } from "react-toastify";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialog-paper": {
@@ -30,15 +32,27 @@ const UserDetails = ({
 }) => {
   const userData = JSON.parse(localStorage.getItem("userData"));
   const { age, email, profilePicture, username, isActive, id } = userData;
-
-  const logOut = (ids) => {
-    console.log("userId", ids);
-  };
+  const [loading, setLoading] = useState(false);
 
   const defImg =
     "https://imgs.search.brave.com/wTGFv276tv4aDjxtxOQJKFik7yI3PdFq6OpafOk7YCI/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMubGlmZS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMTkv/MTAvMTUxNTMyMjgv/MTE1MjA5Ni1lMTU3/MTE1MzU0NzMzMi5q/cGc";
 
+  const success = () => {
+    toast.success("User Promoted Successfully", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+
   const handlePromote = async (id) => {
+    setLoading(true);
     const apiUrl = import.meta.env.VITE_BASE_URL;
     const token = localStorage.getItem("token");
 
@@ -52,6 +66,8 @@ const UserDetails = ({
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
+      success();
+      setLoading(false);
       // setData((prev) => prev.filter((u) => u.id !== id));
     } catch (err) {
       console.log("error", err);
@@ -105,10 +121,22 @@ const UserDetails = ({
               <p className="opacity-65">{email}</p>
               <div className="flex space-x-4 items-center justify-center">
                 <button
+                  disabled={loading}
                   onClick={() => handlePromote(id)}
                   className="px-20 py-4 font-semibold hover:bg-lime-500 cursor-pointer transition-all duration-300 1s bg-lime-600 rounded-xs outline-none border-none text-white"
                 >
-                  Promote
+                  {loading ? (
+                    <ClipLoader
+                      className="w-4 h-4 border-2 m-auto block border-white"
+                      color="#fff"
+                      loading={loading}
+                      size={150}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  ) : (
+                    "Promote"
+                  )}
                 </button>
                 <button
                   onClick={handleDeleteOpen}
@@ -121,6 +149,20 @@ const UserDetails = ({
           </div>
         </DialogContent>
       </BootstrapDialog>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 };
