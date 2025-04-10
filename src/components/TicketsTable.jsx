@@ -12,6 +12,13 @@ import Animations from "./Skeleton/TableSkeleton";
 import LongMenu from "./UserSuspend";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
+import RotateLeftIcon from "@mui/icons-material/RotateLeft";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import dayjs from "dayjs";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import TicketOpen from "./TicketOpen";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -124,11 +131,23 @@ export default function TicketsTable(props) {
             {!isSmallScreen && (
               <StyledTableCell>Completion date</StyledTableCell>
             )}
+            {!isSmallScreen && (
+              <StyledTableCell>
+                <EditNoteIcon />
+              </StyledTableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
           {data?.map((item, index) => {
-            const { ticketId, userName, message } = item;
+            const {
+              ticketId,
+              userName,
+              message,
+              ticketStatus,
+              createdAt,
+              updatedAt,
+            } = item;
             return (
               <StyledTableRow key={ticketId}>
                 {!isSmallScreen && (
@@ -145,17 +164,62 @@ export default function TicketsTable(props) {
                       : ""}
                   </StyledTableCell>
                 )}
-                {/* <StyledTableCell>{role}</StyledTableCell> */}
-                {/* <StyledTableCell>
+                {!isSmallScreen && (
+                  <StyledTableCell>
+                    {ticketStatus === 1 ? (
+                      <div className="flex justify-center items-center space-x-2">
+                        <span className="bg-blue-600 px-2 flex justify-center items-center py-1 rounded-lg">
+                          <ConfirmationNumberIcon
+                            fontSize={"sm"}
+                            color="primary"
+                          />
+                        </span>
+                        <span className="">open</span>
+                      </div>
+                    ) : ticketStatus === 2 ? (
+                      <div className="flex justify-center items-center space-x-2">
+                        <span className="bg-orange-600 px-2 flex justify-center items-center py-1 rounded-lg">
+                          <HorizontalRuleIcon fontSize={"sm"} />
+                        </span>
+                        <span className="">closed</span>
+                      </div>
+                    ) : (
+                      <div className="flex justify-center items-center space-x-2">
+                        <span className="bg-yellow-500 px-2 flex justify-center items-center py-1 rounded-lg">
+                          <RotateLeftIcon fontSize={"sm"} />
+                        </span>
+                        <span className="">Reopened</span>
+                      </div>
+                    )}
+                  </StyledTableCell>
+                )}
+                {!isSmallScreen && <StyledTableCell>Admin</StyledTableCell>}
+                {!isSmallScreen && (
+                  <StyledTableCell>
+                    {dayjs(Number(createdAt))
+                      .format("DD.MMM.YYYY")
+                      .toUpperCase()}
+                  </StyledTableCell>
+                )}
+                {!isSmallScreen && (
+                  <StyledTableCell>
+                    {dayjs(Number(updatedAt))
+                      .format("DD.MMM.YYYY")
+                      .toUpperCase()}
+                  </StyledTableCell>
+                )}
+                <StyledTableCell>
                   <div className="cursor-pointer">
-                    <LongMenu
-                      id={id}
-                      navigate={props.navigate}
+                    <TicketOpen />
+                    {/* <VisibilityIcon fontSize={"sm"} /> */}
+                    {/* <LongMenu
+                      // id={id}
+                      // navigate={props.navigate}
                       data={item}
-                      handleDelete={props.handleDelete}
-                    />
+                      // handleDelete={props.handleDelete}
+                    /> */}
                   </div>
-                </StyledTableCell> */}
+                </StyledTableCell>
               </StyledTableRow>
             );
           })}

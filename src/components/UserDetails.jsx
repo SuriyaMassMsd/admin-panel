@@ -138,9 +138,9 @@ const UserDetails = ({
               <h1 className="text-[50px]">
                 {username
                   ? username ||
-                    email.split("@")[0].substring(0, 12) +
-                      (email.split("@")[0].length > 12 ? "..." : "")
-                  : username || email.split("@")[0]}
+                    email?.split("@")[0].substring(0, 12) +
+                      (email?.split("@")[0].length > 12 ? "..." : "")
+                  : username || email?.split("@")[0]}
               </h1>
               <p className="opacity-65">{email}</p>
               <div className="flex space-x-4 items-center justify-center">
