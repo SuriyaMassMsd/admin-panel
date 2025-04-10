@@ -45,6 +45,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function TicketsTable(props) {
   const [data, setData] = React.useState([]);
+  const [search, setSearch] = React.useState("");
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
 
@@ -96,135 +97,156 @@ export default function TicketsTable(props) {
   //   return "table";
 
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        width: "100%",
-        overflowX: "auto",
-        boxShadow: "none",
-        // border: "1px solid #e0e0e0",
-        [theme.breakpoints.down("sm")]: {
-          border: "none",
-        },
-      }}
-    >
-      <Table
-        aria-label="customized table"
+    <div>
+      <div className="flex justify-between items-center">
+        <div></div>
+        <div>
+          <input
+            type="text"
+            onChange={(e) => setSearch(e.target.value)}
+            className="px-10 py-1.5 outline-none border-none rounded-2xl bg-white mb-10 text-black"
+            placeholder="search"
+          />
+        </div>
+      </div>
+      <TableContainer
+        component={Paper}
         sx={{
-          minWidth: isSmallScreen ? "auto" : 650,
+          width: "100%",
+          overflowX: "auto",
+          boxShadow: "none",
+          // border: "1px solid #e0e0e0",
           [theme.breakpoints.down("sm")]: {
-            "& .MuiTableCell-root": {
-              padding: "6px 4px",
-            },
+            border: "none",
           },
         }}
       >
-        <TableHead>
-          <TableRow>
-            {!isSmallScreen && <StyledTableCell>ID</StyledTableCell>}
-            {!isSmallScreen && <StyledTableCell>Priority</StyledTableCell>}
-            {!isSmallScreen && <StyledTableCell>Asignee</StyledTableCell>}
-            {!isSmallScreen && <StyledTableCell>Descripition</StyledTableCell>}
-            {!isSmallScreen && <StyledTableCell>Status</StyledTableCell>}
-            {!isSmallScreen && <StyledTableCell>Released by</StyledTableCell>}
-            {!isSmallScreen && <StyledTableCell>Created on</StyledTableCell>}
-            {!isSmallScreen && (
-              <StyledTableCell>Completion date</StyledTableCell>
-            )}
-            {!isSmallScreen && (
-              <StyledTableCell>
-                <EditNoteIcon />
-              </StyledTableCell>
-            )}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data?.map((item, index) => {
-            const {
-              ticketId,
-              userName,
-              message,
-              ticketStatus,
-              createdAt,
-              updatedAt,
-            } = item;
-            return (
-              <StyledTableRow key={ticketId}>
-                {!isSmallScreen && (
-                  <StyledTableCell>{`ABC0000${index + 1}`}</StyledTableCell>
-                )}
-                <StyledTableCell>P1</StyledTableCell>
-                {!isSmallScreen && (
-                  <StyledTableCell>{userName}</StyledTableCell>
-                )}
-                {!isSmallScreen && (
-                  <StyledTableCell>
-                    {message.length > 12
-                      ? `${message.substring(0, 40)}...`
-                      : ""}
-                  </StyledTableCell>
-                )}
-                {!isSmallScreen && (
-                  <StyledTableCell>
-                    {ticketStatus === 1 ? (
-                      <div className="flex justify-center items-center space-x-2">
-                        <span className="bg-blue-600 px-2 flex justify-center items-center py-1 rounded-lg">
-                          <ConfirmationNumberIcon
-                            fontSize={"sm"}
-                            color="primary"
-                          />
-                        </span>
-                        <span className="">open</span>
-                      </div>
-                    ) : ticketStatus === 2 ? (
-                      <div className="flex justify-center items-center space-x-2">
-                        <span className="bg-orange-600 px-2 flex justify-center items-center py-1 rounded-lg">
-                          <HorizontalRuleIcon fontSize={"sm"} />
-                        </span>
-                        <span className="">closed</span>
-                      </div>
-                    ) : (
-                      <div className="flex justify-center items-center space-x-2">
-                        <span className="bg-yellow-500 px-2 flex justify-center items-center py-1 rounded-lg">
-                          <RotateLeftIcon fontSize={"sm"} />
-                        </span>
-                        <span className="">Reopened</span>
-                      </div>
-                    )}
-                  </StyledTableCell>
-                )}
-                {!isSmallScreen && <StyledTableCell>Admin</StyledTableCell>}
-                {!isSmallScreen && (
-                  <StyledTableCell>
-                    {dayjs(Number(createdAt))
-                      .format("DD.MMM.YYYY")
-                      .toUpperCase()}
-                  </StyledTableCell>
-                )}
-                {!isSmallScreen && (
-                  <StyledTableCell>
-                    {dayjs(Number(updatedAt))
-                      .format("DD.MMM.YYYY")
-                      .toUpperCase()}
-                  </StyledTableCell>
-                )}
+        <Table
+          aria-label="customized table"
+          sx={{
+            minWidth: isSmallScreen ? "auto" : 650,
+            [theme.breakpoints.down("sm")]: {
+              "& .MuiTableCell-root": {
+                padding: "6px 4px",
+              },
+            },
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              {!isSmallScreen && <StyledTableCell>ID</StyledTableCell>}
+              {!isSmallScreen && <StyledTableCell>Priority</StyledTableCell>}
+              {!isSmallScreen && <StyledTableCell>Asignee</StyledTableCell>}
+              {!isSmallScreen && (
+                <StyledTableCell>Descripition</StyledTableCell>
+              )}
+              {!isSmallScreen && <StyledTableCell>Status</StyledTableCell>}
+              {!isSmallScreen && <StyledTableCell>Released by</StyledTableCell>}
+              {!isSmallScreen && <StyledTableCell>Created on</StyledTableCell>}
+              {!isSmallScreen && (
+                <StyledTableCell>Completion date</StyledTableCell>
+              )}
+              {!isSmallScreen && (
                 <StyledTableCell>
-                  <div className="cursor-pointer">
-                    <TicketOpen data={item} />
-                    {/* <VisibilityIcon fontSize={"sm"} /> */}
-                    {/* <LongMenu
+                  <EditNoteIcon />
+                </StyledTableCell>
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data
+              ?.filter((item) => {
+                return search.toLowerCase() === ""
+                  ? item
+                  : item.message.toLowerCase().includes(search);
+              })
+              .map((item, index) => {
+                const {
+                  ticketId,
+                  userName,
+                  message,
+                  ticketStatus,
+                  createdAt,
+                  updatedAt,
+                } = item;
+                return (
+                  <StyledTableRow key={ticketId}>
+                    {!isSmallScreen && (
+                      <StyledTableCell>{`ABC0000${index + 1}`}</StyledTableCell>
+                    )}
+                    <StyledTableCell>P1</StyledTableCell>
+                    {!isSmallScreen && (
+                      <StyledTableCell>{userName}</StyledTableCell>
+                    )}
+                    {!isSmallScreen && (
+                      <StyledTableCell>
+                        {message.length > 12
+                          ? `${message.substring(0, 40)}...`
+                          : ""}
+                      </StyledTableCell>
+                    )}
+                    {!isSmallScreen && (
+                      <StyledTableCell>
+                        {ticketStatus === 1 ? (
+                          <div className="flex justify-center items-center space-x-2">
+                            <span className="bg-blue-600 px-2 flex justify-center items-center py-1 rounded-lg">
+                              <ConfirmationNumberIcon
+                                fontSize={"sm"}
+                                color="primary"
+                              />
+                            </span>
+                            <span className="">open</span>
+                          </div>
+                        ) : ticketStatus === 2 ? (
+                          <div className="flex justify-center items-center space-x-2">
+                            <span className="bg-orange-600 px-2 flex justify-center items-center py-1 rounded-lg">
+                              <HorizontalRuleIcon fontSize={"sm"} />
+                            </span>
+                            <span className="">closed</span>
+                          </div>
+                        ) : (
+                          <div className="flex justify-center items-center space-x-2">
+                            <span className="bg-yellow-500 px-2 flex justify-center items-center py-1 rounded-lg">
+                              <RotateLeftIcon fontSize={"sm"} />
+                            </span>
+                            <span className="">Reopened</span>
+                          </div>
+                        )}
+                      </StyledTableCell>
+                    )}
+                    {!isSmallScreen && <StyledTableCell>Admin</StyledTableCell>}
+                    {!isSmallScreen && (
+                      <StyledTableCell>
+                        {dayjs(Number(createdAt))
+                          .format("DD.MMM.YYYY")
+                          .toUpperCase()}
+                      </StyledTableCell>
+                    )}
+                    {!isSmallScreen && (
+                      <StyledTableCell>
+                        {dayjs(Number(updatedAt))
+                          .format("DD.MMM.YYYY")
+                          .toUpperCase()}
+                      </StyledTableCell>
+                    )}
+                    <StyledTableCell>
+                      <div className="cursor-pointer">
+                        <TicketOpen data={item} />
+                        {/* <VisibilityIcon fontSize={"sm"} /> */}
+                        {/* <LongMenu
                       // id={id}
                       // navigate={props.navigate}
                       data={item}
                       // handleDelete={props.handleDelete}
                     /> */}
-                  </div>
-                </StyledTableCell>
-              </StyledTableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                      </div>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 }
