@@ -1,98 +1,94 @@
-import React, { useState } from "react";
-import Button from "@mui/material/Button";
+import * as React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogTitle,
+  TextField,
+  Button,
+  Box,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
-import { Bounce, toast, ToastContainer } from "react-toastify";
-import PropagateLoader from "react-spinners/PropagateLoader";
+import { toast } from "react-toastify";
 
+// Custom Bootstrap-like Dialog
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialog-paper": {
-    width: "900px",
-    maxWidth: "90%",
-  },
-  "& .MuiDialogContent-root": {
-    padding: theme.spacing(1),
-  },
-  "& .MuiDialogActions-root": {
-    padding: theme.spacing(1),
+    borderRadius: 16,
+    padding: theme.spacing(2),
+    width: "50vw",
+    maxWidth: "none",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
   },
 }));
 
-const TicketDetails = ({
-  open,
-  handleClose,
-  // handlePromote,
-}) => {
-  const [loading, setLoading] = useState(false);
+export default function TicketDetails({ open, handleClose }) {
+  const [inputValue, setInputValue] = React.useState("");
+  const { message, ticketId } = JSON.parse(localStorage.getItem("ticketData"));
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const token = localStorage.getItem("token");
 
-  //   const success = () => {
-  //     toast.success("User Promoted Successfully", {
-  //       position: "top-right",
-  //       autoClose: 2000,
-  //       hideProgressBar: false,
-  //       closeOnClick: false,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: "light",
-  //       transition: Bounce,
-  //     });
-  //   };
-  //   const failed = () => {
-  //     toast.error(
-  //       "Update necessary user details to promote user as an Instructor",
-  //       {
-  //         position: "top-right",
-  //         autoClose: 2000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "light",
-  //         transition: Bounce,
-  //       }
-  //     );
-  //   };
+  const payload = { solution: inputValue };
+  const handleReset = () => setInputValue("");
+  const handleSubmit = async () => {
+    try {
+      await fetch(`${apiUrl}/ticket/close/${ticketId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      handleClose();
+      toast.success("solution submited successfully");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  //   const handlePromote = async (id) => {
-  //     setLoading(true);
-  //     const apiUrl = import.meta.env.VITE_BASE_URL;
-  //     const token = localStorage.getItem("token");
+  return (
+    <BootstrapDialog open={open} onClose={handleClose}>
+      <DialogTitle>
+        <Typography variant="h6" fontWeight="bold">
+          Close Ticket
+        </Typography>
+      </DialogTitle>
 
-  //     if (!apiUrl || !token) {
-  //       console.warn("Missing API URL or Token");
-  //       return;
-  //     }
+      <DialogContent>
+        <Box mb={2} mt={2} sx={{ height: 50 }}>
+          <Typography variant="body1" color="text.secondary">
+            {message}
+          </Typography>
+        </Box>
+        <TextField
+          fullWidth
+          label="Solution"
+          variant="outlined"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
+      </DialogContent>
 
-  //     try {
-  //       const response = await fetch(`${apiUrl}/users/assign/${id}`, {
-  //         method: "POST",
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       });
-
-  //       setLoading(false);
-  //       if (response.status === 200) {
-  //         success();
-  //       }
-  //       if (response.status === 201) {
-  //         failed();
-  //       }
-  //       // setData((prev) => prev.filter((u) => u.id !== id));
-  //     } catch (err) {
-  //       console.log("error", err);
-  //       setLoading(false);
-  //       toast.error(err.message);
-  //     }
-  //   };
-
-  return <div>hello</div>;
-};
-
-export default TicketDetails;
+      <DialogActions sx={{ px: 3, pb: 2, justifyContent: "space-between" }}>
+        <Button
+          onClick={handleReset}
+          variant="outlined"
+          color="secondary"
+          sx={{ px: 10, py: 1.5, fontWeight: 600 }}
+        >
+          Reset
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="success"
+          sx={{ px: 10, py: 1.5, fontWeight: 600 }}
+        >
+          Submit
+        </Button>
+      </DialogActions>
+    </BootstrapDialog>
+  );
+}

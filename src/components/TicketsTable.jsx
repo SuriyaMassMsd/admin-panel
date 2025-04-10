@@ -210,7 +210,7 @@ export default function TicketsTable(props) {
                 )}
                 <StyledTableCell>
                   <div className="cursor-pointer">
-                    <TicketOpen />
+                    <TicketOpen data={item} />
                     {/* <VisibilityIcon fontSize={"sm"} /> */}
                     {/* <LongMenu
                       // id={id}
