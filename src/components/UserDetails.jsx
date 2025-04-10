@@ -30,8 +30,9 @@ const UserDetails = ({
   handleDeleteOpen,
   // handlePromote,
 }) => {
-  const userData = JSON.parse(localStorage.getItem("userData"));
-  const { age, email, profilePicture, username, isActive, id } = userData;
+  const { email, profilePicture, username, isActive, id } = JSON.parse(
+    localStorage.getItem("userData")
+  );
   const [loading, setLoading] = useState(false);
 
   const defImg =

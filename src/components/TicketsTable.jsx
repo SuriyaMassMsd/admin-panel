@@ -43,7 +43,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function TicketsTable(props) {
+export default function TicketsTable() {
   const [data, setData] = React.useState([]);
   const [search, setSearch] = React.useState("");
   const apiUrl = import.meta.env.VITE_BASE_URL;
@@ -158,7 +158,7 @@ export default function TicketsTable(props) {
               ?.filter((item) => {
                 return search.toLowerCase() === ""
                   ? item
-                  : item.message.toLowerCase().includes(search);
+                  : item?.message?.toLowerCase().includes(search);
               })
               .map((item, index) => {
                 const {
@@ -180,8 +180,8 @@ export default function TicketsTable(props) {
                     )}
                     {!isSmallScreen && (
                       <StyledTableCell>
-                        {message.length > 12
-                          ? `${message.substring(0, 40)}...`
+                        {message?.length > 12
+                          ? `${message?.substring(0, 40)}...`
                           : ""}
                       </StyledTableCell>
                     )}
