@@ -16,6 +16,7 @@ import TicketDetails from "./TicketDetails";
 export default function TicketOpen({ data }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [selectedTicket, setTicket] = React.useState("");
   const menuOpen = Boolean(anchorEl);
 
   console.log("ticketdata", data);
@@ -42,7 +43,8 @@ export default function TicketOpen({ data }) {
   };
 
   const openUser = (data) => {
-    localStorage.setItem("ticketData", JSON.stringify(data));
+    // localStorage.setItem("ticketData", JSON.stringify(data));
+    setTicket(data);
     handleDialogOpen();
   };
 
@@ -59,7 +61,11 @@ export default function TicketOpen({ data }) {
         <VisibilityIcon fontSize="sm" />
       </IconButton>
 
-      <TicketDetails open={dialogOpen} handleClose={handleDialogClose} />
+      <TicketDetails
+        open={dialogOpen}
+        handleClose={handleDialogClose}
+        data={selectedTicket}
+      />
     </div>
   );
 }

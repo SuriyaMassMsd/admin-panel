@@ -23,9 +23,9 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function TicketDetails({ open, handleClose }) {
+export default function TicketDetails({ open, handleClose, data }) {
   const [inputValue, setInputValue] = React.useState("");
-  const { message, ticketId } = JSON.parse(localStorage.getItem("ticketData"));
+  const { message, ticketId } = data;
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
 
