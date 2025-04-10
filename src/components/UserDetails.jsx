@@ -29,10 +29,9 @@ const UserDetails = ({
   handleClose,
   handleDeleteOpen,
   // handlePromote,
+  data,
 }) => {
-  const { email, profilePicture, username, isActive, id } = JSON.parse(
-    localStorage.getItem("userData")
-  );
+  const { email, profilePicture, username, isActive, id } = data;
   const [loading, setLoading] = useState(false);
 
   const defImg =

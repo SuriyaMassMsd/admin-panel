@@ -49,6 +49,7 @@ function AlertDialog({ open, handleClose, id, handleDelete }) {
 export default function LongMenu({ id, navigate, data, handleDelete }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [selectedUser, setUser] = React.useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const menuOpen = Boolean(anchorEl);
 
@@ -78,7 +79,7 @@ export default function LongMenu({ id, navigate, data, handleDelete }) {
   };
 
   const openUser = (data) => {
-    localStorage.setItem("userData", JSON.stringify(data));
+    setUser(data);
     handleDialogOpen();
   };
 
@@ -125,6 +126,7 @@ export default function LongMenu({ id, navigate, data, handleDelete }) {
         open={dialogOpen}
         handleClose={handleDialogClose}
         handleDeleteOpen={handleDeleteOpen}
+        data={selectedUser}
       />
       <AlertDialog
         open={deleteDialogOpen}
