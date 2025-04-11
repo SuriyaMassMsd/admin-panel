@@ -30,7 +30,7 @@ export default function TicketDetails({ open, handleClose, data }) {
   const {
     message,
     ticketId,
-    userName,
+    username,
     createdAt,
     solution,
     handlerName,
@@ -146,7 +146,7 @@ export default function TicketDetails({ open, handleClose, data }) {
               <span style={{ fontWeight: 600, color: "#444" }}>
                 👤 Issued by
               </span>
-              <span>{userName ? userName : "unknown"}</span>
+              <span>{username ? username : "unknown"}</span>
             </div>
             <div
               style={{
@@ -316,7 +316,7 @@ export default function TicketDetails({ open, handleClose, data }) {
               <span style={{ fontWeight: 600, color: "#444" }}>
                 👤 Issued by
               </span>
-              <span>{userName ? userName : "unknown"}</span>
+              <span>{username ? username : "unknown"}</span>
             </div>
             <div
               style={{
