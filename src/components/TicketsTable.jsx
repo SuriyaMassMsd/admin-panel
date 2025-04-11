@@ -154,15 +154,13 @@ export default function TicketsTable() {
                 <StyledTableCell>Descripition</StyledTableCell>
               )}
               {!isSmallScreen && <StyledTableCell>Status</StyledTableCell>}
-              {!isSmallScreen && <StyledTableCell>Released by</StyledTableCell>}
+              {/* {!isSmallScreen && <StyledTableCell>Released by</StyledTableCell>} */}
               {!isSmallScreen && <StyledTableCell>Created on</StyledTableCell>}
-              {!isSmallScreen && (
+              {/* {!isSmallScreen && (
                 <StyledTableCell>Completion date</StyledTableCell>
-              )}
+              )} */}
               {!isSmallScreen && (
-                <StyledTableCell>
-                  <EditNoteIcon />
-                </StyledTableCell>
+                <StyledTableCell>{/* <EditNoteIcon /> */}</StyledTableCell>
               )}
             </TableRow>
           </TableHead>
@@ -233,7 +231,7 @@ export default function TicketsTable() {
                         )}
                       </StyledTableCell>
                     )}
-                    {!isSmallScreen && <StyledTableCell>Admin</StyledTableCell>}
+                    {/* {!isSmallScreen && <StyledTableCell>Admin</StyledTableCell>} */}
                     {!isSmallScreen && (
                       <StyledTableCell>
                         {dayjs(Number(createdAt))
@@ -241,13 +239,13 @@ export default function TicketsTable() {
                           .toUpperCase()}
                       </StyledTableCell>
                     )}
-                    {!isSmallScreen && (
+                    {/* {!isSmallScreen && (
                       <StyledTableCell>
                         {dayjs(Number(updatedAt))
                           .format("DD.MMM.YYYY")
                           .toUpperCase()}
                       </StyledTableCell>
-                    )}
+                    )} */}
                     <StyledTableCell>
                       <div className="cursor-pointer">
                         <TicketOpen data={item} />
