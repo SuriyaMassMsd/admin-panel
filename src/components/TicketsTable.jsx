@@ -46,8 +46,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function TicketsTable() {
   const [data, setData] = React.useState([]);
   const [search, setSearch] = React.useState("");
+  const [filter, setFilter] = React.useState("");
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
+
+  React.useEffect(() => {
+    console.log("Filter selected:", filter);
+  }, [filter]);
 
   React.useEffect(() => {
     const fetchTickets = async () => {
@@ -90,21 +95,29 @@ export default function TicketsTable() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  console.log(data);
-
   if (!data) return <Animations />;
-
-  //   return "table";
 
   return (
     <div>
       <div className="flex justify-between items-center">
         <div></div>
-        <div>
+        <div className="space-x-6">
+          <select
+            name="filter"
+            id="filter"
+            className="bg-white text-black border-none outline-none rounded-xl cursor-pointer focus:border-none focus:outline-none"
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="">Select filter</option>
+            <option value="userName">Username</option>
+            <option value="ticketId">TicketId</option>
+            <option value="message">Description</option>
+            <option value="ticketStatus">Ticket Status</option>
+          </select>
           <input
             type="text"
             onChange={(e) => setSearch(e.target.value)}
-            className="px-10 py-1.5 outline-none border-none rounded-2xl bg-white mb-10 text-black"
+            className="px-10 py-2 outline-none border-none rounded-2xl bg-white mb-10 text-black"
             placeholder="search"
           />
         </div>
@@ -156,9 +169,13 @@ export default function TicketsTable() {
           <TableBody>
             {data
               ?.filter((item) => {
-                return search.toLowerCase() === ""
-                  ? item
-                  : item?.message?.toLowerCase().includes(search);
+                if (!search.trim()) return true;
+                if (!filter) return true;
+                const value = item[filter];
+                return value
+                  ?.toString()
+                  .toLowerCase()
+                  .includes(search.toLowerCase());
               })
               .map((item, index) => {
                 const {
@@ -172,7 +189,9 @@ export default function TicketsTable() {
                 return (
                   <StyledTableRow key={ticketId}>
                     {!isSmallScreen && (
-                      <StyledTableCell>{`ABC0000${index + 1}`}</StyledTableCell>
+                      <StyledTableCell>
+                        {`ABC${ticketId.toString().padStart(4, "0")}`}
+                      </StyledTableCell>
                     )}
                     <StyledTableCell>P1</StyledTableCell>
                     {!isSmallScreen && (

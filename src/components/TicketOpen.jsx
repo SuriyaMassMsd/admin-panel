@@ -19,8 +19,6 @@ export default function TicketOpen({ data }) {
   const [selectedTicket, setTicket] = React.useState("");
   const menuOpen = Boolean(anchorEl);
 
-  console.log("ticketdata", data);
-
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
