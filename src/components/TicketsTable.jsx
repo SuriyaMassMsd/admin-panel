@@ -67,23 +67,7 @@ export default function TicketsTable() {
           throw new Error(ticketsData.message || "Something went wrong");
         }
 
-        const tickets = ticketsData?.value?.allTickets || [];
-
-        const userFetches = tickets.map((ticket) =>
-          fetch(`${apiUrl}/users/${ticket.userId}`, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
-          }).then((res) => res.json())
-        );
-
-        const users = await Promise.all(userFetches);
-
-        const enrichedTickets = tickets.map((ticket, index) => ({
-          ...ticket,
-          userName: users[index]?.name || "Unknown",
-        }));
-
-        setData(enrichedTickets);
+        setData(ticketsData?.value.allTickets || []);
       } catch (error) {
         console.error("Error fetching tickets:", error);
       }
@@ -178,7 +162,7 @@ export default function TicketsTable() {
               .map((item, index) => {
                 const {
                   ticketId,
-                  userName,
+                  username,
                   message,
                   ticketStatus,
                   createdAt,
@@ -193,7 +177,7 @@ export default function TicketsTable() {
                     )}
                     <StyledTableCell>P1</StyledTableCell>
                     {!isSmallScreen && (
-                      <StyledTableCell>{userName}</StyledTableCell>
+                      <StyledTableCell>{username}</StyledTableCell>
                     )}
                     {!isSmallScreen && (
                       <StyledTableCell>
