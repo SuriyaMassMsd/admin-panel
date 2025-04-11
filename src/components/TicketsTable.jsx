@@ -95,7 +95,7 @@ export default function TicketsTable() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  if (!data) return <Animations />;
+  if (data.length === 0) return <Animations />;
 
   return (
     <div>
