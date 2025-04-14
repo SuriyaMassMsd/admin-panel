@@ -7,6 +7,7 @@ import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import PersonIcon from "@mui/icons-material/Person";
 import BugReportIcon from "@mui/icons-material/BugReport";
+import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import {
   Route,
   Routes,
@@ -22,6 +23,7 @@ import User from "../Users/User";
 import MyForm from "../../pages/Form";
 import UserDetails from "../UserDetails";
 import TicketsTable from "../TicketsTable";
+import Faq from "../Faq";
 
 const NAVIGATION = [
   {
@@ -51,6 +53,12 @@ const NAVIGATION = [
     title: "Tickets",
     path: "/tickets",
     icon: <BugReportIcon />,
+  },
+  {
+    segment: "faq",
+    title: "FAQ",
+    path: "/faq",
+    icon: <LiveHelpIcon />,
   },
 ];
 
@@ -238,8 +246,8 @@ export default function Sidebar(props) {
 
       case "/tickets":
         return <TicketsTable />;
-      case "/signin":
-        return <h1>Please Sign In</h1>;
+      case "/faq":
+        return <Faq />;
       case "/tickets":
         return <h1>Tickets</h1>;
       case "/notify":
