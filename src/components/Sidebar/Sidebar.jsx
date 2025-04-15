@@ -94,7 +94,7 @@ export default function Sidebar(props) {
   const [selectedCourse, setSelectedCourse] = React.useState(null);
   const [session, setSession] = React.useState(null);
   const [pathname, setPathname] = React.useState(
-    localStorage.getItem("current")
+    localStorage.getItem("current") || "/Home"
   );
 
   function useDemoRouter() {
@@ -144,8 +144,8 @@ export default function Sidebar(props) {
   };
 
   const renderContent = () => {
-    const path = router.pathname;
-    const url = location.pathname;
+    const path = router.pathname || "";
+    // const url = location.pathname;
 
     if (path.startsWith("/courses/details")) {
       return (

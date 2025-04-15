@@ -1,31 +1,31 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getUserValue } from "./UserType";
 
-const useAutoLogOut = (timeout = 10 * 60 * 1000) => {
+const useAutoLogOut = () => {
   const navigate = useNavigate();
+
   useEffect(() => {
-    let timer;
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-    const resetTimer = () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
+    const payload = getUserValue();
+    if (!payload?.exp) return;
+
+    const expiryInMs = payload.exp * 1000 - Date.now();
+
+    if (expiryInMs <= 0) {
+      localStorage.removeItem("token");
+      navigate("/sign-in");
+    } else {
+      const timer = setTimeout(() => {
         localStorage.removeItem("token");
-        localStorage.removeItem("current");
         navigate("/sign-in");
-      }, timeout);
-    };
+      }, expiryInMs);
 
-    window.addEventListener("mousemove", resetTimer);
-    window.addEventListener("keydown", resetTimer);
-
-    resetTimer();
-
-    return () => {
-      window.removeEventListener("mousemove", resetTimer);
-      window.removeEventListener("keydown", resetTimer);
-      clearTimeout(timer);
-    };
-  }, [navigate, timeout]);
+      return () => clearTimeout(timer);
+    }
+  }, [navigate]);
 };
 
 export default useAutoLogOut;
