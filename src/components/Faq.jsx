@@ -114,10 +114,13 @@ const Faq = () => {
 
       {data?.map((item, index) => {
         return (
-          <div className="bg-white/10 backdrop-blur-md border border-white/30 shadow-lg rounded-xl px-10 py-6 w-[50%] mb-4">
-            <div className="text-white flex flex-col space-y-4" key={index}>
+          <div className="bg-white/10 dark:bg-black/30 backdrop-blur-md border border-white/30 shadow-lg rounded-xl px-10 py-6 w-[50%] mb-4">
+            <div
+              className="text-black dark:text-white flex flex-col space-y-4"
+              key={index}
+            >
               <h1 className="font-semibold text-3xl">{item.subject}</h1>
-              <div className="flex flex-col text-xl space-y-2 text-white/90">
+              <div className="flex flex-col text-xl space-y-2 text-black/80 dark:text-white/90">
                 <span>Q : {item.question}</span>
                 <span>A : {item.answer}</span>
               </div>
