@@ -111,23 +111,21 @@ const Faq = () => {
         </form>
       </FormProvider>
 
-      <div className="bg-white shadow-2xl rounded-md px-10 py-6 w-[60%] space-y-6 mt-10">
-        <h1 className="text-4xl text-black">All FAQ's</h1>
-        {data?.map((item, index) => {
-          return (
-            <div className="bg-gray-200 shadow-md rounded-md px-10 py-6 w-full">
-              <div className="text-black flex flex-col space-y-4" key={index}>
-                <h1 className="font-semibold text-3xl">{item.subject}</h1>
-                <div className="flex flex-col text-xl space-y-2">
-                  <span>Q : {item.question}</span>
-                  <span>A : {item.answer}</span>
-                </div>
+      {data?.map((item, index) => {
+        return (
+          <div className="bg-white/10 backdrop-blur-md border border-white/30 shadow-lg rounded-xl px-10 py-6 w-[50%] mb-4">
+            <div className="text-white flex flex-col space-y-4" key={index}>
+              <h1 className="font-semibold text-3xl">{item.subject}</h1>
+              <div className="flex flex-col text-xl space-y-2 text-white/90">
+                <span>Q : {item.question}</span>
+                <span>A : {item.answer}</span>
               </div>
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
     </div>
+    // </div>
   );
 };
 
