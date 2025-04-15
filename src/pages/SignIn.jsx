@@ -63,15 +63,6 @@ const SignIn = () => {
         console.error("Token not found in response data.");
         toast.error("Authentication failed. Please try again.");
       }
-
-      // localStorage.setItem("token", data.value.token);
-      // reset();
-
-      // setStatus(response.status);
-      // if (response.status == 201) {
-      //   success();
-      // }
-      // window.location.href = "/";
     } catch (err) {
       console.log(err);
     } finally {

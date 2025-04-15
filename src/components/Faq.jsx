@@ -66,6 +66,7 @@ const Faq = () => {
       const newFaq = await response.json();
       setData((prev) => [newFaq, ...prev]);
       toast.success("successfully faq created");
+      methods.reset();
     } catch (err) {
       console.log(err);
     }
