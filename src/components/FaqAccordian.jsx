@@ -22,8 +22,8 @@ const CustomAccordion = ({ question, answer }) => {
         border: "1px solid rgba(255,255,255,0.3)",
         borderRadius: "16px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-        mb: 2,
-        width: "50%",
+        mb: 3.5,
+        width: "70%",
         overflow: "hidden",
         "&::before": {
           display: "none",
@@ -36,6 +36,7 @@ const CustomAccordion = ({ question, answer }) => {
         <div className="flex flex-col w-full">
           <Typography
             variant="body1"
+            sx={{ fontSize: 23 }}
             color={isDark ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.8)"}
           >
             {question}
@@ -45,7 +46,13 @@ const CustomAccordion = ({ question, answer }) => {
       <AccordionDetails>
         <Typography
           variant="body1"
-          sx={{ color: isDark ? "#fff" : "#333", fontSize: "1.1rem" }}
+          sx={{
+            color: isDark ? "#e0e0e0" : "#333",
+            backgroundColor: isDark ? "#2c2c2c" : "#f5f5f5",
+            fontSize: "1rem",
+            padding: "1rem",
+            borderRadius: "8px",
+          }}
         >
           {answer}
         </Typography>

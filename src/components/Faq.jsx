@@ -75,11 +75,11 @@ const Faq = () => {
     }
   };
   return (
-    <div className="">
+    <div className="flex flex-col justify-center items-center">
       <h1 className="font-semibold text-5xl mt-10 mb-4">Add New FAQ</h1>
       <FormProvider {...methods}>
         <form
-          className="space-y-4 py-6 w-[50%] "
+          className="space-y-4 py-6 w-[50%] mb-10"
           onSubmit={methods.handleSubmit(submitData)}
         >
           <Input
