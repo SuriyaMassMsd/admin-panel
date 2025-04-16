@@ -72,45 +72,46 @@ const Faq = () => {
   };
   return (
     <div className="flex flex-col justify-center items-center">
-      <h1 className="font-semibold text-5xl mt-10 mb-4">Add New FAQ</h1>
-      <FormProvider {...methods}>
-        <form
-          className="space-y-4 py-6 w-[50%] mb-10"
-          onSubmit={methods.handleSubmit(submitData)}
-        >
-          <Input
-            name="subject"
-            id="subject"
-            type="text"
-            label="Subject"
-            placeholder="subject*"
-            error={methods.formState.errors.subject}
-          />
-          <Input
-            name="question"
-            id="question"
-            type="text"
-            label="Question"
-            placeholder="question*"
-            error={methods.formState.errors.question}
-          />
-          <Input
-            name="answer"
-            id="answer"
-            type="textarea"
-            label="Answer"
-            placeholder="answer*"
-            error={methods.formState.errors.answer}
-          />
-          <button
-            disabled={loading}
-            className="bg-[#00bbab] cursor-pointer hover:bg-[#51ada5f3] w-full font-semibold text-white py-4 px-4 rounded mt-4"
+      <div className="w-[60%] border border-gray-800 shadow-2xl px-20 py-4 mt-10 mb-10">
+        <h1 className="font-semibold text-3xl mt-10 mb-4">Add New FAQ</h1>
+        <FormProvider {...methods}>
+          <form
+            className="space-y-4 w-full  mb-10"
+            onSubmit={methods.handleSubmit(submitData)}
           >
-            {loading ? "Adding FAQ" : "Add FAQ"}
-          </button>
-        </form>
-      </FormProvider>
-
+            <Input
+              name="subject"
+              id="subject"
+              type="text"
+              label="Subject"
+              placeholder="subject*"
+              error={methods.formState.errors.subject}
+            />
+            <Input
+              name="question"
+              id="question"
+              type="text"
+              label="Question"
+              placeholder="question*"
+              error={methods.formState.errors.question}
+            />
+            <Input
+              name="answer"
+              id="answer"
+              type="textarea"
+              label="Answer"
+              placeholder="answer*"
+              error={methods.formState.errors.answer}
+            />
+            <button
+              disabled={loading}
+              className="bg-[#00bbab] cursor-pointer hover:bg-[#51ada5f3] w-full font-semibold text-white py-4 px-4 rounded mt-4"
+            >
+              {loading ? "Adding FAQ" : "Add FAQ"}
+            </button>
+          </form>
+        </FormProvider>
+      </div>
       {data?.map((item, index) => {
         return (
           <CustomAccordion

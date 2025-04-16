@@ -23,6 +23,8 @@ const CustomAccordion = ({ question, answer }) => {
         borderRadius: "16px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
         mb: 3.5,
+        px: 2,
+        py: 1,
         width: "70%",
         overflow: "hidden",
         "&::before": {

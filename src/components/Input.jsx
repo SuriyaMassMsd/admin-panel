@@ -1,4 +1,3 @@
-import { Html } from "@mui/icons-material";
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -16,6 +15,14 @@ const Input = ({
   ...rest
 }) => {
   const { register, setValue } = useFormContext();
+  const [arrayValue, setArrayValue] = useState("");
+
+  const baseInputClasses =
+    "px-[10px] w-full mt-2 py-[10px] border rounded outline-none bg-[#f7f7f7] placeholder:text-gray-600 placeholder:font-[500] text-[#333]";
+  const errorClasses =
+    "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500";
+  const normalClasses =
+    "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab] focus:ring-0 focus:outline-none";
 
   const renderInputField = () => {
     switch (type) {
@@ -23,17 +30,17 @@ const Input = ({
         return (
           <div>
             <label htmlFor={id}>{label}</label>
-
             <textarea
               id={id}
               placeholder={placeholder}
-              className={`px-[10px] w-full mt-2 py-[10px] border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
-    ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
-    ${className}`}
+              className={`${baseInputClasses} ${
+                error ? errorClasses : normalClasses
+              } ${className}`}
               {...register(name)}
             />
           </div>
         );
+
       case "file":
         return (
           <div>
@@ -41,11 +48,10 @@ const Input = ({
             <input
               type="file"
               id={id}
-              {...rest}
               accept="video/*,image/*"
-              className={`px-[10px] w-full py-[10px] mt-1 border rounded outline-none text-[#969696]
-                    ${error ? "border-red-500 shadow-md shadow-red-500/50" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
-                    ${className}`}
+              className={`${baseInputClasses} ${
+                error ? errorClasses : normalClasses
+              } ${className}`}
               onChange={(e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -62,13 +68,13 @@ const Input = ({
                         { shouldValidate: true }
                       );
                     };
-
                     video.src = URL.createObjectURL(file);
                   } else {
                     setValue(name, file, { shouldValidate: true });
                   }
                 }
               }}
+              {...rest}
             />
           </div>
         );
@@ -76,14 +82,12 @@ const Input = ({
       case "select":
         return (
           <div>
-            <label className="" htmlFor={id}>
-              {label}
-            </label>
+            <label htmlFor={id}>{label}</label>
             <select
               id={id}
-              className={`px-[10px] w-full py-[10px] mt-2 border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
-              ${error ? "border-red-500 shadow-md shadow-red-500/50" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
-              ${className}`}
+              className={`${baseInputClasses} ${
+                error ? errorClasses : normalClasses
+              } ${className}`}
               {...register(name)}
             >
               {options?.map((option) => (
@@ -94,31 +98,29 @@ const Input = ({
             </select>
           </div>
         );
+
       case "email":
       case "password":
       case "text":
         return (
           <div>
-            <label className="" htmlFor={id}>
-              {label}
-            </label>
+            <label htmlFor={id}>{label}</label>
             <input
               type={type}
               id={id}
-              // name={name}
               placeholder={placeholder}
-              className={`px-[10px] w-full mt-2 py-[10px] border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
-              
-                ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"} 
-                ${className}`}
+              className={`${baseInputClasses} ${
+                error ? errorClasses : normalClasses
+              } ${className}`}
               {...register(name)}
             />
           </div>
         );
+
       case "checkbox":
         return (
           <div>
-            {data.map((d, index) => (
+            {data?.map((d, index) => (
               <div key={index}>
                 <input
                   type="checkbox"
@@ -131,31 +133,29 @@ const Input = ({
             ))}
           </div>
         );
-      case "array":
-        const [arrayValue, setArrayValue] = useState("");
 
+      case "array":
         return (
           <div>
-            <label className="" htmlFor={id}>
-              {label}
-            </label>
+            <label htmlFor={id}>{label}</label>
             <div className="flex gap-2">
               <input
                 type="text"
                 id={id}
                 value={arrayValue}
                 placeholder={placeholder}
-                className={`px-[10px] w-full py-[10px] mt-1 border rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696] 
-                  ${error ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500" : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"}`}
+                className={`${baseInputClasses} ${
+                  error ? errorClasses : normalClasses
+                } ${className}`}
                 onChange={(e) => setArrayValue(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    const trimmedValue = arrayValue.trim();
-                    if (trimmedValue) {
-                      const currentValues = methods.getValues(name) || [];
-                      if (!currentValues.includes(trimmedValue)) {
-                        setValue(name, [...currentValues, trimmedValue], {
+                    const trimmed = arrayValue.trim();
+                    if (trimmed) {
+                      const current = methods.getValues(name) || [];
+                      if (!current.includes(trimmed)) {
+                        setValue(name, [...current, trimmed], {
                           shouldValidate: true,
                         });
                       }
@@ -165,19 +165,16 @@ const Input = ({
                 }}
               />
             </div>
-            {/* {error && (
-              <p className="font-headerFont text-red-500">{error.message}</p>
-            )} */}
             <div className="mt-2 flex gap-2 flex-wrap">
               {methods.getValues(name)?.map((item, index) => (
                 <span
                   key={index}
                   className="bg-[#00bbab] text-white px-2 py-1 rounded cursor-pointer"
                   onClick={() => {
-                    const filteredValues = methods
+                    const filtered = methods
                       .getValues(name)
                       .filter((_, i) => i !== index);
-                    setValue(name, filteredValues, { shouldValidate: true });
+                    setValue(name, filtered, { shouldValidate: true });
                   }}
                 >
                   {item} ✖
