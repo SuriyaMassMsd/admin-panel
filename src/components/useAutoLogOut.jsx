@@ -16,7 +16,7 @@ const useAutoLogOut = () => {
 
     if (expiryInMs <= 0) {
       localStorage.removeItem("token");
-      navigate("/sign-in");
+      window.location.href = "/sign-in";
     } else {
       const timer = setTimeout(() => {
         localStorage.removeItem("token");
