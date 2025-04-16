@@ -7,13 +7,9 @@ import { toast } from "react-toastify";
 import CustomAccordion from "./FaqAccordian";
 
 const schema = z.object({
-  subject: z
-    .string()
-    .min(10, { message: "subject must contain at least 10 character(s)" }),
-  question: z.string().nonempty({ message: "Course type is required" }),
-  answer: z
-    .string()
-    .min(1, { message: "answer must contain at least 1 character(s)" }),
+  subject: z.string().nonempty({ message: "subject is required" }),
+  question: z.string().nonempty({ message: "question is required" }),
+  answer: z.string().nonempty({ message: "answer is required" }),
 });
 
 const Faq = () => {
