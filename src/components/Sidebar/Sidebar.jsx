@@ -94,7 +94,7 @@ export default function Sidebar(props) {
   const [selectedCourse, setSelectedCourse] = React.useState(null);
   const [session, setSession] = React.useState(null);
   const [pathname, setPathname] = React.useState(
-    localStorage.getItem("current") || "/Home"
+    sessionStorage.getItem("current") || "/Home"
   );
 
   function useDemoRouter() {
@@ -126,13 +126,13 @@ export default function Sidebar(props) {
     };
   }, []);
 
-  localStorage.setItem("current", pathname);
-  const demoRoute = localStorage.getItem("current");
+  sessionStorage.setItem("current", pathname);
+  const demoRoute = sessionStorage.getItem("current");
   const router = useDemoRouter(demoRoute);
 
   const location = useLocation();
   // console.log("PathName", pathname);
-  console.log(selectedCourse);
+  // console.log(selectedCourse);
 
   const currentRoutes = () => {
     setPathname("/courses");
