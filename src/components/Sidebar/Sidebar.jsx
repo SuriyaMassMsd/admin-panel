@@ -8,6 +8,8 @@ import { PageContainer } from "@toolpad/core/PageContainer";
 import PersonIcon from "@mui/icons-material/Person";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
+import HailIcon from "@mui/icons-material/Hail";
+
 import {
   Route,
   Routes,
@@ -24,6 +26,7 @@ import MyForm from "../../pages/Form";
 import UserDetails from "../UserDetails";
 import TicketsTable from "../TicketsTable";
 import Faq from "../Faq";
+import Instructor from "../Instructor";
 
 const NAVIGATION = [
   {
@@ -47,6 +50,12 @@ const NAVIGATION = [
     title: "Users",
     path: "/users",
     icon: <PersonIcon />,
+  },
+  {
+    segment: "instructor",
+    title: "instructor",
+    path: "/instructor",
+    icon: <HailIcon />,
   },
   {
     segment: "tickets",
@@ -248,8 +257,8 @@ export default function Sidebar(props) {
         return <TicketsTable />;
       case "/faq":
         return <Faq />;
-      case "/tickets":
-        return <h1>Tickets</h1>;
+      case "/instructor":
+        return <Instructor />;
       case "/notify":
         return <h1>Notify</h1>;
       default:

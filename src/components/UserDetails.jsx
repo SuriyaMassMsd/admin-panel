@@ -10,10 +10,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import { getUserValue } from "./UserType";
+
+const userType = getUserValue();
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialog-paper": {
-    width: "900px",
+    width: userType.role === "Admin" ? "900px" : "700px",
     maxWidth: "90%",
   },
   "& .MuiDialogContent-root": {
@@ -121,7 +124,9 @@ const UserDetails = ({
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          <div className="flex justify-start items-start space-x-[60px] px-10  py-6 gap-5">
+          <div
+            className={`flex  space-x-[60px] px-10  py-6 gap-5 ${userType.role === "Admin" ? "justify-start items-start" : "justify-center items-center"}`}
+          >
             <div className="w-56 h-56 relative ">
               <div
                 className={`w-5 border-[3px] border-black h-5 top-1 right-12 ${isActive ? "bg-lime-400" : "bg-red-500"} rounded-full absolute z-20 shadow-md animate-pulse`}
@@ -143,21 +148,28 @@ const UserDetails = ({
                   : username || email?.split("@")[0]}
               </h1>
               <p className="opacity-65">{email}</p>
-              <div className="flex space-x-4 items-center justify-center">
-                <button
-                  disabled={loading}
-                  onClick={() => handlePromote(id)}
-                  className="px-20 py-4 font-semibold hover:bg-lime-500 cursor-pointer transition-all duration-300 1s bg-lime-600 rounded-xs outline-none border-none text-white"
-                >
-                  {loading ? "Promoting..." : "Promote"}
-                </button>
-                <button
-                  onClick={handleDeleteOpen}
-                  className="px-20 py-4 font-semibold hover:bg-red-500 cursor-pointer transition-all duration-300 1s bg-red-600 rounded-xs outline-none border-none text-white"
-                >
-                  Delete
-                </button>
-              </div>
+              {userType.role === "Admin" && (
+                <div className="flex space-x-4 items-center justify-center">
+                  <button
+                    disabled={loading}
+                    onClick={() => handlePromote(id)}
+                    className="px-20 py-4 font-semibold hover:bg-lime-500 cursor-pointer transition-all duration-300 1s bg-lime-600 rounded-xs outline-none border-none text-white "
+                  >
+                    {loading ? "Promoting..." : "Promote"}
+                  </button>
+                  <button
+                    disabled={userType.role !== "Admin"}
+                    onClick={handleDeleteOpen}
+                    className={`px-20 py-4 font-semibold hover:bg-red-500 transition-all duration-300 bg-red-600 rounded-xs outline-none border-none text-white ${
+                      userType.role !== "Admin"
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer"
+                    }`}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </DialogContent>
