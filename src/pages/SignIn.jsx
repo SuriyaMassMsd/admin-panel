@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Bounce, ToastContainer, toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 const SignIn = () => {
   const [status, setStatus] = useState(null);
@@ -49,6 +50,11 @@ const SignIn = () => {
       console.log(response);
 
       if (!response.ok) throw new Error(data.message);
+
+      if (jwtDecode(data.value.token).role === "Student") {
+        toast.error("No permission");
+        return;
+      }
 
       if (data?.value?.token) {
         localStorage.setItem("token", data.value.token);
