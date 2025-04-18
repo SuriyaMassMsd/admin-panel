@@ -80,9 +80,19 @@ export default function CustomizedTables(props) {
         </TableHead>
         <TableBody>
           {data?.map((item, index) => {
-            const { email, id, role, username } = item;
+            const { email, id, role, username, status } = item;
             return (
-              <StyledTableRow key={id}>
+              <StyledTableRow
+                key={id}
+                sx={{
+                  ...(Number(status) === -1 && {
+                    backgroundColor: "#222222 !important",
+                    "& td": {
+                      color: "#000 !important",
+                    },
+                  }),
+                }}
+              >
                 {!isSmallScreen && (
                   <StyledTableCell>{index + 1}</StyledTableCell>
                 )}

@@ -13,6 +13,7 @@ import { styled } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import { CloseOutlined } from "@mui/icons-material";
 import dayjs from "dayjs";
+import { getUserValue } from "./UserType";
 
 // Custom Bootstrap-like Dialog
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -38,6 +39,7 @@ export default function TicketDetails({ open, handleClose, data }) {
   } = data;
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
+  const userType = getUserValue();
 
   const payload = { solution: inputValue };
   const handleReset = () => setInputValue("");
@@ -166,70 +168,78 @@ export default function TicketDetails({ open, handleClose, data }) {
             </div>
           </div>
 
-          <div style={{ marginBottom: "24px" }}>
-            <label
-              htmlFor="solution"
-              style={{
-                display: "block",
-                fontWeight: 600,
-                fontSize: "15px",
-                marginBottom: "10px",
-              }}
-            >
-              🛠️ Solution
-            </label>
-            <textarea
-              id="solution"
-              rows="5"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Describe the resolution..."
-              style={{
-                width: "100%",
-                padding: "12px 14px",
-                borderRadius: "12px",
-                border: "1px solid #ddd",
-                fontSize: "14px",
-                outline: "none",
-                transition: "border 0.2s ease-in-out",
-              }}
-            ></textarea>
-          </div>
+          {userType.role === "Admin" && (
+            <>
+              <div style={{ marginBottom: "24px" }}>
+                <label
+                  htmlFor="solution"
+                  style={{
+                    display: "block",
+                    fontWeight: 600,
+                    fontSize: "15px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  🛠️ Solution
+                </label>
+                <textarea
+                  id="solution"
+                  rows="5"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Describe the resolution..."
+                  style={{
+                    width: "100%",
+                    padding: "12px 14px",
+                    borderRadius: "12px",
+                    border: "1px solid #ddd",
+                    fontSize: "14px",
+                    outline: "none",
+                    transition: "border 0.2s ease-in-out",
+                  }}
+                ></textarea>
+              </div>
 
-          <div
-            style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}
-          >
-            <button
-              onClick={handleReset}
-              style={{
-                padding: "10px 18px",
-                borderRadius: "10px",
-                border: "none",
-                backgroundColor: "#f3f3f3",
-                color: "#333",
-                fontWeight: 500,
-                cursor: "pointer",
-                transition: "background 0.2s ease",
-              }}
-            >
-              Reset
-            </button>
-            <button
-              onClick={handleSubmit}
-              style={{
-                padding: "10px 18px",
-                borderRadius: "10px",
-                border: "none",
-                background: "linear-gradient(135deg, #4f46e5, #3b82f6)",
-                color: "white",
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "background 0.3s ease",
-              }}
-            >
-              Submit
-            </button>
-          </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "12px",
+                }}
+              >
+                <button
+                  onClick={handleReset}
+                  style={{
+                    padding: "10px 18px",
+                    borderRadius: "10px",
+                    border: "none",
+                    backgroundColor: "#f3f3f3",
+                    color: "#333",
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    transition: "background 0.2s ease",
+                  }}
+                >
+                  Reset
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  style={{
+                    padding: "10px 18px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "linear-gradient(135deg, #4f46e5, #3b82f6)",
+                    color: "white",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    transition: "background 0.3s ease",
+                  }}
+                >
+                  Submit
+                </button>
+              </div>
+            </>
+          )}
         </div>
       ) : data.ticketStatus === 2 ? (
         <div

@@ -34,24 +34,27 @@ const UserDetails = ({
   // handlePromote,
   data,
 }) => {
-  const { email, profilePicture, username, isActive, id } = data;
+  const { email, profilePicture, username, isActive, id, role } = data;
   const [loading, setLoading] = useState(false);
 
   const defImg =
     "https://imgs.search.brave.com/wTGFv276tv4aDjxtxOQJKFik7yI3PdFq6OpafOk7YCI/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMubGlmZS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzIwMTkv/MTAvMTUxNTMyMjgv/MTE1MjA5Ni1lMTU3/MTE1MzU0NzMzMi5q/cGc";
 
   const success = () => {
-    toast.success("User Promoted Successfully", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      transition: Bounce,
-    });
+    toast.success(
+      `User ${role === "Student" ? "Promoted" : "Demoted"}  Successfully`,
+      {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      }
+    );
   };
   const failed = () => {
     toast.error(
@@ -70,10 +73,18 @@ const UserDetails = ({
     );
   };
 
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const token = localStorage.getItem("token");
+
+  const apiUrls = {
+    role:
+      userType.role === "Admin" && role === "Instructor"
+        ? `${apiUrl}/users/demote/${id}`
+        : role === "Student" && `${apiUrl}/users/promote/${id}`,
+  };
+
   const handlePromote = async (id) => {
     setLoading(true);
-    const apiUrl = import.meta.env.VITE_BASE_URL;
-    const token = localStorage.getItem("token");
 
     if (!apiUrl || !token) {
       console.warn("Missing API URL or Token");
@@ -81,18 +92,16 @@ const UserDetails = ({
     }
 
     try {
-      const response = await fetch(`${apiUrl}/users/assign/${id}`, {
+      const response = await fetch(apiUrls.role, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
 
       setLoading(false);
-      if (response.status === 200) {
+      if (response.status === 201) {
         success();
       }
-      if (response.status === 201) {
-        failed();
-      }
+
       // setData((prev) => prev.filter((u) => u.id !== id));
     } catch (err) {
       console.log("error", err);
@@ -155,7 +164,13 @@ const UserDetails = ({
                     onClick={() => handlePromote(id)}
                     className="px-20 py-4 font-semibold hover:bg-lime-500 cursor-pointer transition-all duration-300 1s bg-lime-600 rounded-xs outline-none border-none text-white "
                   >
-                    {loading ? "Promoting..." : "Promote"}
+                    {loading
+                      ? userType.role === "Admin" && role === "Instructor"
+                        ? "Demoting..."
+                        : "Promoting..."
+                      : userType.role === "Admin" && role === "Instructor"
+                        ? "Demote"
+                        : "Promote"}
                   </button>
                   <button
                     disabled={userType.role !== "Admin"}

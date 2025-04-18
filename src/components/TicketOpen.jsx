@@ -57,13 +57,15 @@ export default function TicketOpen({ data }) {
         aria-controls={menuOpen ? "long-menu" : undefined}
         aria-expanded={menuOpen ? "true" : undefined}
         aria-haspopup="true"
-        onClick={() => userType.role === "Admin" && openUser(data)}
+        onClick={() => openUser(data)}
       >
-        {userType.role === "Admin" ? (
-          <VisibilityIcon fontSize="sm" />
-        ) : (
-          <VisibilityOffIcon fontSize="sm" />
-        )}
+        {/* {userType.role === "Admin" ? ( */}
+
+        <VisibilityIcon fontSize="sm" />
+
+        {/* ) : (
+           <VisibilityOffIcon fontSize="sm" />
+         )} */}
       </IconButton>
 
       <TicketDetails
