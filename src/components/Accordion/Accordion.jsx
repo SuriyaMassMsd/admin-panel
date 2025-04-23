@@ -5,6 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomizedAccordions from "./AccordionUi";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   title: z
@@ -37,9 +38,8 @@ const Accordion = ({ course }) => {
           },
         });
         const formDatas = await response.json();
-        setData(formDatas.value || []);
-
         if (!response.ok) throw new Error(formDatas.message);
+        setData(formDatas.value || []);
       } catch (err) {
         console.log(err);
       }
@@ -64,6 +64,13 @@ const Accordion = ({ course }) => {
 
       const formDatas = await response.json();
       if (!response.ok) throw new Error(formDatas.message);
+
+      if (response.status === 200) {
+        toast.success("Chapter added succssfully");
+        setIsModalOpen(false);
+      } else {
+        toast.error(response.message);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -82,11 +89,16 @@ const Accordion = ({ course }) => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 text-black bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 text-black bg-black opacity-95 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold">Create Chapter</h2>
-              <button onClick={() => setIsModalOpen(false)}>✖️</button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="cursor-pointer "
+              >
+                ✖️
+              </button>
             </div>
             <FormProvider {...methods}>
               <form onSubmit={methods.handleSubmit(submitChapter)}>
