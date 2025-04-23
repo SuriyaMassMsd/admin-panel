@@ -15,10 +15,10 @@ const schema = z.object({
     .min(10, { message: "Description must contain at least 10 character(s)" }),
 });
 
-const Accordion = () => {
+const Accordion = ({ course }) => {
   const [data, setData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const details = JSON.parse(localStorage.getItem("item"));
+  const details = course;
 
   const methods = useForm({
     resolver: zodResolver(schema),

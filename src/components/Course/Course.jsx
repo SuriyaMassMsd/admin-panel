@@ -84,7 +84,8 @@ export default function Course({ navigate, datas, current }) {
   // }, []);
 
   const handleRouteData = (data) => {
-    localStorage.setItem("item", JSON.stringify(data));
+    setSelectedCourse(data);
+    // localStorage.setItem("item", JSON.stringify(data));
     setPathname("/courses");
     navigate("/courses/details");
   };

@@ -172,7 +172,7 @@ export default function Sidebar(props) {
           </div>
           <div className="mt-10">
             <Details
-              course={selectedCourse}
+              data={selectedCourse}
               navigate={router.navigate}
               current={{ setPathname }}
             />

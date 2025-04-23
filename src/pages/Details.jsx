@@ -26,9 +26,9 @@ const courseStatusOptions = [
   { value: "0", label: "Rework" },
 ];
 
-const Details = ({ navigate, current }) => {
+const Details = ({ data, navigate, current }) => {
   const userData = getUserValue();
-  const course = JSON.parse(localStorage.getItem("item"));
+  const course = data;
 
   const methods = useForm({
     resolver: zodResolver(schema),
@@ -171,7 +171,7 @@ const Details = ({ navigate, current }) => {
           </div>
 
           <div className="mt-20">
-            <Accordion />
+            <Accordion course={course} />
           </div>
         </Grid>
 
