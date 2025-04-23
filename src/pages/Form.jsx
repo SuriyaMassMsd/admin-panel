@@ -29,9 +29,8 @@ const schema = z.object({
 
   preview: z.union([z.instanceof(File), z.string().url().or(z.literal(""))]),
 });
-const MyForm = ({ navigate }) => {
-  const existingCourse = JSON.parse(localStorage.getItem("item"));
-  console.log(existingCourse);
+const MyForm = ({ datas, navigate }) => {
+  const existingCourse = datas;
 
   const [loading, setLoading] = useState(false);
   const methods = useForm({

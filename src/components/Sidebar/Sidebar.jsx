@@ -196,7 +196,7 @@ export default function Sidebar(props) {
             <span>/ Edit</span>
           </div>
           <div>
-            <MyForm navigate={router.navigate} />
+            <MyForm datas={selectedCourse} navigate={router.navigate} />
           </div>
         </>
       );

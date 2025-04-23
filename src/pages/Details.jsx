@@ -45,8 +45,6 @@ const Details = ({ data, navigate, current }) => {
 
   const apiUrl = import.meta.env.VITE_BASE_URL;
 
-  // console.log(statusEndPoint[selectedStatus]);
-
   const handleStatusChange = async (newStatus) => {
     const statusEndPoint = {
       7: {
@@ -153,7 +151,7 @@ const Details = ({ data, navigate, current }) => {
                 className="flex justify-between items-center gap-3 cursor-pointer"
                 onClick={courseEdit}
               >
-                Edit <EditIcon fontSize="small" />{" "}
+                Edit <EditIcon fontSize="small" />
               </h4>
             </div>
 
