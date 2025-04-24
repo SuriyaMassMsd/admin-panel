@@ -14,7 +14,10 @@ export default function CourseTabs({ navigate, datas, current }) {
   const handleChange = (event, newValue) => setValue(newValue);
 
   const handleRouteData = (data) => {
+    console.log(data.courseId);
+
     setSelectedCourse(data);
+    // localStorage.setItem("courseId", data.courseId);
     setPathname("/courses");
     navigate("/courses/details");
   };
@@ -44,7 +47,7 @@ export default function CourseTabs({ navigate, datas, current }) {
     <Box sx={{ width: "100%", my: 4 }}>
       <div className="flex justify-center sm:justify-end mb-6">
         <button
-          className="px-10 py-2 bg-gray-500 text-white font-semibold rounded hover:scale-105 hover:bg-gray-600 transition-all duration-200"
+          className="px-10 cursor-pointer py-2 bg-gray-500 text-white font-semibold rounded hover:scale-105 hover:bg-gray-600 transition-all duration-200"
           onClick={() => {
             localStorage.removeItem("item");
             navigate("/courses/addCourse");

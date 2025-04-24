@@ -303,13 +303,46 @@ const MyForm = ({ datas, navigate }) => {
             Your browser does not support the video tag.
           </video>
         ) : null}
-        <button
-          disabled={loading}
-          className="bg-[#00bbab] cursor-pointer hover:bg-[#51ada5f3] w-full font-semibold text-white py-2 px-4 rounded mt-4"
-        >
-          {existingCourse ? "Update course" : "Create course"}
-          {/* {loading ? "Submiting course" : "Create course"} */}
-        </button>
+
+        <div className="flex justify-between items-center gap-4">
+          <button
+            className="
+                              mt-4
+                              w-full
+                              text-gray-800          
+                              bg-gray-200            
+                              cursor-pointer
+                              duration-150 
+                              ease-in-out
+                              transition-all 1s
+                              hover:bg-gray-300      
+                              focus:ring-4
+                              focus:outline-none
+                              focus:ring-gray-400    
+                              font-medium
+                              rounded
+                              text-sm
+                              px-5
+                              py-2.5
+                              text-center
+
+                              dark:text-white        
+                              dark:bg-gray-600       
+                              dark:hover:bg-gray-700 
+                              dark:focus:ring-gray-500
+                            "
+            onClick={() => methods.reset()}
+          >
+            Reset
+          </button>
+          <button
+            disabled={loading}
+            className="bg-[#00bbab] cursor-pointer hover:bg-[#51ada5f3] w-full font-semibold text-white py-2 px-4 rounded mt-4"
+          >
+            {existingCourse ? "Update course" : "Create course"}
+            {/* {loading ? "Submiting course" : "Create course"} */}
+          </button>
+        </div>
         <ToastContainer
           position="top-right"
           autoClose={5000}

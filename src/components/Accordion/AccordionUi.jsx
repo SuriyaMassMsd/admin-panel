@@ -139,13 +139,19 @@ const CustomizedAccordions = ({ item }) => {
                 ))}
           </div>
 
-          <Button
-            variant="outlined"
-            startIcon={<AddIcon />}
+          <button
             onClick={() => setIsModalOpen(true)}
+            type="submit"
+            className="
+            cursor-pointer
+    mt-2
+    font-medium rounded-lg text-sm px-10 py-3 text-center
+    bg-pink-300 text-white hover:bg-pink-400 focus:ring-4 focus:outline-none focus:ring-pink-200
+    dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-500
+  "
           >
             Add Lesson
-          </Button>
+          </button>
         </MuiAccordionDetails>
       </MuiAccordion>
 
@@ -154,7 +160,12 @@ const CustomizedAccordions = ({ item }) => {
           <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl h-auto max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold">Create Lesson</h2>
-              <button onClick={() => setIsModalOpen(false)}>✖️</button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="cursor-pointer"
+              >
+                ✖️
+              </button>
             </div>
             <FormProvider {...methods}>
               <form onSubmit={methods.handleSubmit(submitChapter)}>
@@ -183,12 +194,44 @@ const CustomizedAccordions = ({ item }) => {
                   methods={methods}
                   accept="video/*"
                 />
-                <button
-                  type="submit"
-                  className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                >
-                  Add Lesson
-                </button>
+                <div className="flex justify-between items-center gap-4">
+                  <button
+                    className="
+                              mt-4
+                              w-full
+                              text-gray-800          
+                              bg-gray-200            
+                              cursor-pointer
+                              duration-150 
+                              ease-in-out
+                              transition-all 1s
+                              hover:bg-gray-300      
+                              focus:ring-4
+                              focus:outline-none
+                              focus:ring-gray-400    
+                              font-medium
+                              rounded-lg
+                              text-sm
+                              px-5
+                              py-2.5
+                              text-center
+
+                              dark:text-white        
+                              dark:bg-gray-600       
+                              dark:hover:bg-gray-700 
+                              dark:focus:ring-gray-500
+                            "
+                    onClick={() => methods.reset()}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    type="submit"
+                    className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  >
+                    Add Lesson
+                  </button>
+                </div>
               </form>
             </FormProvider>
           </div>

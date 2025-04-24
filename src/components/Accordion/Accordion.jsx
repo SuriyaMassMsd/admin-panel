@@ -65,11 +65,13 @@ const Accordion = ({ course }) => {
       const formDatas = await response.json();
       if (!response.ok) throw new Error(formDatas.message);
 
-      if (response.status === 200) {
+      if (formDatas.error) {
+        toast.error(formDatas.message);
+        setIsModalOpen(false);
+      } else if (formDatas.error === false) {
+        setData((pre) => [...pre, formDatas.value]);
         toast.success("Chapter added succssfully");
         setIsModalOpen(false);
-      } else {
-        toast.error(response.message);
       }
     } catch (err) {
       console.log(err);
@@ -118,12 +120,48 @@ const Accordion = ({ course }) => {
                   placeholder="Description*"
                   error={methods.formState.errors.description}
                 />
-                <button
-                  type="submit"
-                  className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Add Chapter
-                </button>
+                <div className="flex justify-between items-center gap-4">
+                  <button
+                    className="
+                              mt-4
+                              w-full
+                              text-gray-800          
+                              bg-gray-200            
+                              cursor-pointer
+                              duration-150 
+                              ease-in-out
+                              transition-all 1s
+                              hover:bg-gray-300      
+                              focus:ring-4
+                              focus:outline-none
+                              focus:ring-gray-400    
+                              font-medium
+                              rounded-lg
+                              text-sm
+                              px-5
+                              py-2.5
+                              text-center
+
+                              dark:text-white        
+                              dark:bg-gray-600       
+                              dark:hover:bg-gray-700 
+                              dark:focus:ring-gray-500
+                            "
+                    onClick={() => methods.reset()}
+                  >
+                    Reset
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="cursor-pointer
+    duration-150 
+    ease-in-out
+    transition-all 1s mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Add Chapter
+                  </button>
+                </div>
               </form>
             </FormProvider>
           </div>

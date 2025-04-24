@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Accordion from "../components/Accordion/Accordion.jsx";
 import {
   Grid,
@@ -14,6 +14,7 @@ import { FormProvider, useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUserValue } from "../components/UserType.js";
 import EditIcon from "@mui/icons-material/Edit";
+import { useCourse } from "../components/Course/UseCourse.jsx";
 
 const schema = z.object({
   courseStatus: z.string(),
@@ -28,6 +29,11 @@ const courseStatusOptions = [
 
 const Details = ({ data, navigate, current }) => {
   const userData = getUserValue();
+  // const { course } = useCourse();
+
+  // console.log(course);
+
+  // const [course, setCourse] = useState(null);
   const course = data;
 
   const methods = useForm({
