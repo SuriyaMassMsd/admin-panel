@@ -18,8 +18,11 @@ const schema = z.object({
 
 const Accordion = ({ course }) => {
   const [data, setData] = useState(null);
+  const [lesson, setLesson] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const details = course;
+  const token = localStorage.getItem("token");
+  const apiUrl = import.meta.env.VITE_BASE_URL;
 
   const methods = useForm({
     resolver: zodResolver(schema),
@@ -48,10 +51,57 @@ const Accordion = ({ course }) => {
     chapterData();
   }, []);
 
+  const addLesson = async (newLesson) => {
+    try {
+      const response = await fetch(`${apiUrl}/lesson`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: newLesson,
+      });
+
+      const responseData = await response.json();
+      if (!response.ok) throw new Error(responseData.message);
+
+      if (responseData.error === false) {
+        toast.success("lesson added successful");
+        setIsModalOpen(false);
+        setLesson((pre) => [...pre, newLesson]);
+      } else {
+        toast.error(responseData.message);
+        setIsModalOpen(false);
+      }
+    } catch (err) {
+      toast.error(err.message);
+      console.error("Upload failed", err);
+    }
+  };
+
+  useEffect(() => {
+    const fetchLesson = async () => {
+      const token = localStorage.getItem("token");
+      const apiUrl = import.meta.env.VITE_BASE_URL;
+
+      try {
+        const response = await fetch(`${apiUrl}/lesson`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const responseData = await response.json();
+        setLesson(responseData.value || []);
+        if (!response.ok) throw new Error(responseData.message);
+      } catch (err) {
+        console.error("lesson fetch failed", err);
+      }
+    };
+    fetchLesson();
+  }, []);
+
   const submitChapter = async (data) => {
-    const token = localStorage.getItem("token");
     const sentData = { ...data, courseId: details.courseId };
-    const apiUrl = import.meta.env.VITE_BASE_URL;
     try {
       const response = await fetch(`${apiUrl}/chapter`, {
         method: "POST",
@@ -171,7 +221,14 @@ const Accordion = ({ course }) => {
       {data &&
         data
           .filter((item) => item.courseId === details.courseId)
-          .map((item, i) => <CustomizedAccordions key={i} item={item} />)}
+          .map((item, i) => (
+            <CustomizedAccordions
+              lesson={lesson?.filter((l) => l.chapterId === item.chapterId)}
+              key={i}
+              item={item}
+              addLesson={addLesson}
+            />
+          ))}
     </>
   );
 };

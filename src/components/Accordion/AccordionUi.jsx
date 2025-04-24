@@ -31,8 +31,7 @@ const schema = z.object({
     .refine((value) => !!value, { message: "Video is required" }),
 });
 
-const CustomizedAccordions = ({ item }) => {
-  const [lesson, setLesson] = useState(null);
+const CustomizedAccordions = ({ lesson, item, addLesson }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const details = JSON.parse(localStorage.getItem("item"));
 
@@ -65,55 +64,8 @@ const CustomizedAccordions = ({ item }) => {
     payload.append("chapterId", item.chapterId);
 
     console.log("Data to be sent:", Object.fromEntries(payload.entries()));
-
-    try {
-      const response = await fetch(`${apiUrl}/lesson`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: payload,
-      });
-
-      const responseData = await response.json();
-      if (!response.ok) throw new Error(responseData.message);
-
-      if (responseData.error === false) {
-        toast.success("lesson added successful");
-        setIsModalOpen(false);
-        setLesson((pre) => [...pre, responseData.value]);
-      } else {
-        toast.error(responseData.message);
-        setIsModalOpen(false);
-      }
-      // console.log("Upload successful", responseData);
-    } catch (err) {
-      toast.error(err.message);
-      console.error("Upload failed", err);
-    }
+    addLesson();
   };
-
-  useEffect(() => {
-    const fetchLesson = async () => {
-      const token = localStorage.getItem("token");
-      const apiUrl = import.meta.env.VITE_BASE_URL;
-
-      try {
-        const response = await fetch(`${apiUrl}/lesson`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const responseData = await response.json();
-        setLesson(responseData.value || []);
-        if (!response.ok) throw new Error(responseData.message);
-      } catch (err) {
-        console.error("lesson fetch failed", err);
-      }
-    };
-    fetchLesson();
-  }, []);
 
   return (
     <>
