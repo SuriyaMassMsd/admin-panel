@@ -73,9 +73,12 @@ const Faq = () => {
     }
   };
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-start items-start">
       {userType.role === "Admin" ? (
-        <div className="w-[60%] border border-gray-800 shadow-2xl px-20 py-4 mt-10 mb-10">
+        <div
+          id="shadow"
+          className=" rounded-[12px] w-[60%] px-20 py-4 mt-10 mb-10"
+        >
           <h1 className="font-semibold text-3xl mt-10 mb-4">Add New FAQ</h1>
           <FormProvider {...methods}>
             <form
@@ -106,12 +109,42 @@ const Faq = () => {
                 placeholder="answer*"
                 error={methods.formState.errors.answer}
               />
-              <button
-                disabled={loading}
-                className="bg-[#00bbab] cursor-pointer hover:bg-[#51ada5f3] w-full font-semibold text-white py-4 px-4 rounded mt-4"
-              >
-                {loading ? "Adding FAQ" : "Add FAQ"}
-              </button>
+              <div className="flex justify-between items-center gap-4">
+                <button
+                  className="
+                              mt-4
+                              w-full
+                              text-gray-800          
+                              bg-gray-200            
+                              cursor-pointer
+                              duration-150 
+                              ease-in-out
+                              transition-all 1s
+                              hover:bg-gray-300      
+                              focus:ring-4
+                              focus:outline-none
+                              focus:ring-gray-400    
+                              rounded
+                              px-4
+                              py-4
+                              text-center
+                              font-semibold
+                              dark:text-white        
+                              dark:bg-gray-600       
+                              dark:hover:bg-gray-700 
+                              dark:focus:ring-gray-500
+                            "
+                  onClick={() => methods.reset()}
+                >
+                  Reset
+                </button>
+                <button
+                  disabled={loading}
+                  className="bg-[#00bbab] cursor-pointer hover:bg-[#51ada5f3] w-full font-semibold text-white py-4 px-4 rounded mt-4"
+                >
+                  {loading ? "Adding FAQ" : "Add FAQ"}
+                </button>
+              </div>
             </form>
           </FormProvider>
         </div>

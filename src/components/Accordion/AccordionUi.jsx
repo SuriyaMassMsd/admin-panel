@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../Input";
 // import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   title: z
@@ -52,7 +53,10 @@ const CustomizedAccordions = ({ item }) => {
     if (formData.video.file) {
       payload.append("video", formData.video.file);
       if (formData.video.duration) {
-        payload.append("duration", formData.video.duration.toString());
+        payload.append(
+          "duration",
+          formData.video.duration.toString().split(".")[0]
+        );
       }
     } else {
       payload.append("video", formData.video);
@@ -74,8 +78,17 @@ const CustomizedAccordions = ({ item }) => {
       const responseData = await response.json();
       if (!response.ok) throw new Error(responseData.message);
 
-      console.log("Upload successful", responseData);
+      if (responseData.error === false) {
+        toast.success("lesson added successful");
+        setIsModalOpen(false);
+        setLesson((pre) => [...pre, responseData.value]);
+      } else {
+        toast.error(responseData.message);
+        setIsModalOpen(false);
+      }
+      // console.log("Upload successful", responseData);
     } catch (err) {
+      toast.error(err.message);
       console.error("Upload failed", err);
     }
   };
@@ -93,8 +106,6 @@ const CustomizedAccordions = ({ item }) => {
           },
         });
         const responseData = await response.json();
-        // console.log(responseData);
-
         setLesson(responseData.value || []);
         if (!response.ok) throw new Error(responseData.message);
       } catch (err) {

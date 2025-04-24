@@ -131,6 +131,7 @@ export default function Sidebar(props) {
       signOut: () => {
         setSession(null);
         navigate("/sign-in");
+        localStorage.removeItem("token");
       },
     };
   }, []);

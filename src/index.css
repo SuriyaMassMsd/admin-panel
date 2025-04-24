@@ -1,6 +1,16 @@
 @import "flowbite/src/themes/default";
 @import "tailwindcss";
 
+/* in your global CSS */
+:root {
+  --card-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px,
+    rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+#shadow {
+  box-shadow: var(--card-shadow);
+}
+
 body {
   font-family: sans-serif;
   scroll-behavior: smooth;
@@ -13,3 +23,8 @@ body {
 #add {
   scroll-margin-top: 0;
 }
+/* #shadow {
+  box-shadow:
+    rgba(0, 0, 0, 0.12) 0px 1px 3px,
+    rgba(0, 0, 0, 0.24) 0px 1px 2px;
+} */
