@@ -64,7 +64,9 @@ const CustomizedAccordions = ({ lesson, item, addLesson }) => {
     payload.append("chapterId", item.chapterId);
 
     console.log("Data to be sent:", Object.fromEntries(payload.entries()));
-    addLesson();
+    addLesson(payload, () => {
+      setIsModalOpen(false);
+    });
   };
 
   return (

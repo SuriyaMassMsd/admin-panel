@@ -51,7 +51,30 @@ const Accordion = ({ course }) => {
     chapterData();
   }, []);
 
-  const addLesson = async (newLesson) => {
+  const fetchLesson = async () => {
+    const token = localStorage.getItem("token");
+    const apiUrl = import.meta.env.VITE_BASE_URL;
+
+    try {
+      const response = await fetch(`${apiUrl}/lesson`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const responseData = await response.json();
+      setLesson(responseData.value || []);
+      if (!response.ok) throw new Error(responseData.message);
+    } catch (err) {
+      console.error("lesson fetch failed", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchLesson();
+  }, []);
+
+  const addLesson = async (newLesson, onSuccess) => {
     try {
       const response = await fetch(`${apiUrl}/lesson`, {
         method: "POST",
@@ -66,8 +89,9 @@ const Accordion = ({ course }) => {
 
       if (responseData.error === false) {
         toast.success("lesson added successful");
-        setIsModalOpen(false);
-        setLesson((pre) => [...pre, newLesson]);
+        setLesson((pre) => [...pre, responseData.value]);
+        await fetchLesson();
+        if (onSuccess) onSuccess();
       } else {
         toast.error(responseData.message);
         setIsModalOpen(false);
@@ -77,28 +101,6 @@ const Accordion = ({ course }) => {
       console.error("Upload failed", err);
     }
   };
-
-  useEffect(() => {
-    const fetchLesson = async () => {
-      const token = localStorage.getItem("token");
-      const apiUrl = import.meta.env.VITE_BASE_URL;
-
-      try {
-        const response = await fetch(`${apiUrl}/lesson`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const responseData = await response.json();
-        setLesson(responseData.value || []);
-        if (!response.ok) throw new Error(responseData.message);
-      } catch (err) {
-        console.error("lesson fetch failed", err);
-      }
-    };
-    fetchLesson();
-  }, []);
 
   const submitChapter = async (data) => {
     const sentData = { ...data, courseId: details.courseId };

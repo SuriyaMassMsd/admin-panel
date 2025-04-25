@@ -2,7 +2,6 @@ import { object, z } from "zod";
 import Input from "../components/Input";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import RichTextEditor from "./../components/RichTextEditor";
 import { useEffect, useState } from "react";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 
