@@ -161,9 +161,7 @@ const Details = ({ data, navigate, current }) => {
               </h4>
             </div>
 
-            <p className="text-[16px] text-gray-300 font-normal">
-              {course.introduction}
-            </p>
+            <p className="text-[16px]  font-normal">{course.introduction}</p>
 
             <div className="w-full h-auto p-4 rounded-md ">
               <img src={course.thumbnailUrl} alt={course.title} />
