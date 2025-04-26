@@ -1,55 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CustomizedTables from "../UserTable";
+import { delData, getData } from "../../hooks/api";
 
 const User = ({ navigate, datas, current }) => {
-  const [data, setData] = useState(null);
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const apiUrl = import.meta.env.VITE_BASE_URL;
-      const token = localStorage.getItem("token");
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const {
+    data: users,
+    isLoading: usersLoading,
+    error: usersError,
+    mutate: usersMutate,
+  } = getData(`${apiUrl}/users`);
 
-      try {
-        const response = await fetch(`${apiUrl}/users`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response) {
-          const errorData = await response.json();
-          console.log("Error", errorData.message || "something went wrong");
-          return;
-        }
-
-        const datas = await response.json();
-
-        setData(datas?.value?.filter(({ role }) => role === "Student") ?? []);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchUserData();
-  }, []);
+  const { trigger: deleteUser, mutate: deleteMutate } = delData(
+    `${apiUrl}/users`
+  );
 
   const handleDelete = async (id) => {
-    const apiUrl = import.meta.env.VITE_BASE_URL;
-    const token = localStorage.getItem("token");
-
     try {
-      await fetch(`${apiUrl}/users/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setData((prev) => prev.filter((u) => u.id !== id));
+      await deleteUser(id);
+      usersMutate();
     } catch (err) {
       console.log("error", err);
     }
   };
 
+  if (usersError) {
+    console.log(usersError.response?.data?.message || "Something went wrong");
+    return <div>Error loading users.</div>;
+  }
+
+  if (usersLoading || !users) {
+    return <div>Loading...</div>;
+  }
+
+  const studentUsers =
+    users?.value?.filter(({ role }) => role === "Student") ?? [];
+
   return (
     <div>
       <CustomizedTables
-        data={data}
+        data={studentUsers}
         navigate={navigate}
         current={current}
         handleDelete={handleDelete}

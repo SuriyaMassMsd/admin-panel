@@ -7,6 +7,7 @@ import MovieFilterIcon from "@mui/icons-material/MovieFilter";
 import Details from "../../pages/Details";
 import YouTube from "../Skeleton/Skeleton";
 import CourseTabs from "../CourseList/CourseList";
+import { getData } from "../../hooks/api";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -31,55 +32,75 @@ export default function Course({ navigate, datas, current }) {
   const { setPathname } = current;
   const [approvedCourse, setApprovedCourse] = React.useState(null);
   const [pendingCourse, setPendingCourse] = React.useState(null);
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const { data, error, isLoading } = getData(`${apiUrl}/course`);
 
   React.useEffect(() => {
-    const courseData = async () => {
-      const token = localStorage.getItem("token");
-      const apiUrl = import.meta.env.VITE_BASE_URL;
-      try {
-        const response = await fetch(`${apiUrl}/course`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    if (!data) return;
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.log("Error", errorData.message || "something went wrong");
-          return;
-        }
-        const data = await response.json();
+    if (
+      (data?.value.approved?.length || 0) > 0 ||
+      (data?.value.pending?.length || 0) > 0
+    ) {
+      setApprovedCourse(data.value.approved);
+      setPendingCourse(data.value.pending);
+      localStorage.setItem(
+        "dataLength",
+        JSON.stringify(data?.value.approved?.length || 4)
+      );
+    } else {
+      setApprovedCourse([]);
+      setPendingCourse([]);
+    }
+  }, [data]);
 
-        if (
-          (data?.value.approved.length !== 0 &&
-            data?.value.approved.length >= 0) ||
-          (data?.value.pending.length !== 0 && data?.value.pending.length >= 0)
-        ) {
-          setApprovedCourse(data.value.approved);
-          setPendingCourse(data.value.pending);
-          localStorage.setItem(
-            "dataLength",
-            JSON.stringify(data?.value.approved.length || 4)
-          );
-        } else {
-          setApprovedCourse([]);
-          setPendingCourse([]);
-        }
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-    courseData();
-  }, []);
+  // React.useEffect(() => {
+  //   const courseData = async () => {
+  //     const token = localStorage.getItem("token");
+  //     try {
+  //       // const response = await fetch(`${apiUrl}/course`, {
+  //       //   method: "GET",
+  //       //   headers: {
+  //       //     Authorization: `Bearer ${token}`,
+  //       //   },
+  //       // });
+
+  //       // if (!response.ok) {
+  //       //   const errorData = await response.json();
+  //       //   console.log("Error", errorData.message || "something went wrong");
+  //       //   return;
+  //       // }
+  //       // // const data = await response.json();
+
+  //       if (
+  //         (data?.value.approved.length !== 0 &&
+  //           data?.value.approved.length >= 0) ||
+  //         (data?.value.pending.length !== 0 && data?.value.pending.length >= 0)
+  //       ) {
+  //         setApprovedCourse(data.value.approved);
+  //         setPendingCourse(data.value.pending);
+  //         localStorage.setItem(
+  //           "dataLength",
+  //           JSON.stringify(data?.value.approved.length || 4)
+  //         );
+  //       } else {
+  //         setApprovedCourse([]);
+  //         setPendingCourse([]);
+  //       }
+  //     } catch (error) {
+  //       console.log("error", error);
+  //     }
+  //   };
+  //   courseData();
+  // }, []);
 
   if (!approvedCourse || !pendingCourse) return <YouTube />;
 
-  const handleRouteData = (data) => {
-    setSelectedCourse(data);
-    setPathname("/courses");
-    navigate("/courses/details");
-  };
+  // const handleRouteData = (data) => {
+  //   setSelectedCourse(data);
+  //   setPathname("/courses");
+  //   navigate("/courses/details");
+  // };
 
   return (
     // <Box sx={{ flexGrow: 1, my: 4 }}>

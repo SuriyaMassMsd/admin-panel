@@ -29,11 +29,7 @@ const courseStatusOptions = [
 
 const Details = ({ data, navigate, current }) => {
   const userData = getUserValue();
-  // const { course } = useCourse();
 
-  // console.log(course);
-
-  // const [course, setCourse] = useState(null);
   const course = data;
 
   const methods = useForm({
