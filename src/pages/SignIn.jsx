@@ -4,10 +4,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
+import useFcmToken from "../firebase/firebase";
+import { postData } from "../hooks/api";
 
 const SignIn = () => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const Schema = z.object({
     email: z.string().email("Email is required"),
     password: z.string({ required_error: "Password is required" }).min(6),
@@ -34,11 +37,14 @@ const SignIn = () => {
     });
   };
 
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+
+  const { getFcmToken, deviceType } = useFcmToken();
+  const { trigger: postFcmToken } = postData(`${apiUrl}/fcm`);
+
   const submitForm = async (data) => {
     const { email, password } = data;
     setLoading(true);
-    // console.log(process.env.VITE_SIGNIN);
-    const apiUrl = import.meta.env.VITE_BASE_URL;
 
     try {
       const response = await fetch(`${apiUrl}/auth/signin`, {
@@ -46,35 +52,69 @@ const SignIn = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await response.json();
-      console.log(response);
 
-      if (!response.ok) throw new Error(data.message);
+      const responseData = await response.json();
 
-      if (jwtDecode(data.value.token).role === "Student") {
+      if (!response.ok) throw new Error(responseData.message);
+
+      const tokenFromApi = responseData?.value?.token;
+      if (!tokenFromApi) {
+        toast.error("Authentication failed. Please try again.");
+        return;
+      }
+
+      // Reject login if role is not allowed
+      if (jwtDecode(tokenFromApi).role === "Student") {
         toast.error("No permission");
         return;
       }
 
-      if (data?.value?.token) {
-        localStorage.setItem("token", data.value.token);
-        reset();
-        setStatus(response.status);
+      localStorage.setItem("token", tokenFromApi);
+      reset();
+      setStatus(response.status);
 
-        if (response.status === 201) {
-          success();
-        }
-        window.location.href = "/";
-      } else {
-        console.error("Token not found in response data.");
-        toast.error("Authentication failed. Please try again.");
+      // ✅ Wait for FCM token to be ready
+      let fcmToken = null;
+      let attempts = 0;
+      const maxAttempts = 10;
+      while (!fcmToken && attempts < maxAttempts) {
+        fcmToken = getFcmToken();
+        if (fcmToken) break;
+        console.log(
+          `Waiting for FCM token... (${attempts + 1}/${maxAttempts})`
+        );
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        attempts++;
       }
+
+      if (fcmToken) {
+        try {
+          console.log("📡 Sending FCM token:", fcmToken, deviceType); // Make sure token is valid
+          const result = await postFcmToken({ token: fcmToken, deviceType });
+
+          console.log("FCM token result:", result); // Log the response from the API
+
+          toast.success("✅ FCM token sent to server");
+        } catch (error) {
+          console.error("❌ Failed to post FCM token", error);
+          toast.error("Failed to send FCM token");
+        }
+      } else {
+        console.warn("⚠️ FCM token not available after waiting");
+      }
+
+      if (response.status === 201) success();
+
+      // ✅ Finally redirect
+      window.location.href = "/";
     } catch (err) {
-      console.log(err);
+      console.error("Login error", err);
+      toast.error(err.message || "Login failed.");
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div className="bg-blue-300/50 h-screen bg-cover py-10 bg-center">
       <div

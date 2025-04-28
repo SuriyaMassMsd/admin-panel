@@ -3,8 +3,12 @@ import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import "global";
 import { Bounce, ToastContainer } from "react-toastify";
 import useAutoLogOut from "./components/useAutoLogOut.jsx";
+import useFcmToken from "./firebase/firebase.js";
 
 const App = () => {
+  const { token, deviceType } = useFcmToken();
+  console.log(token, deviceType);
+
   useAutoLogOut();
   useEffect(() => {
     document.title = "Admin Panel";
