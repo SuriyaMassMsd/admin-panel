@@ -1,4 +1,3 @@
-// useFcmToken.js
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, isSupported } from "firebase/messaging";
 import { useEffect, useState, useRef } from "react";
@@ -18,7 +17,7 @@ const messaging = getMessaging(app);
 
 function useFcmToken() {
   const [fcmToken, setFcmToken] = useState(null);
-  const fcmTokenRef = useRef(null); // ✅ ref to access latest token synchronously
+  const fcmTokenRef = useRef(null);
   const parser = new UAParser();
   const deviceInfo = parser.getResult();
   const deviceType = deviceInfo.os.name;
@@ -50,7 +49,7 @@ function useFcmToken() {
 
         console.log("✅ FCM Token acquired:", token);
         setFcmToken(token);
-        fcmTokenRef.current = token; // ✅ store in ref for sync access
+        fcmTokenRef.current = token;
       } catch (error) {
         console.error("Error fetching FCM token", error);
       }

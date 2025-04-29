@@ -73,12 +73,11 @@ const SignIn = () => {
       reset();
       setStatus(response.status);
 
-      // ✅ Wait for FCM token to be ready
       let fcmToken = null;
       let attempts = 0;
       const maxAttempts = 10;
       while (!fcmToken && attempts < maxAttempts) {
-        fcmToken = getFcmToken();
+        fcmToken = await getFcmToken();
         if (fcmToken) break;
         console.log(
           `Waiting for FCM token... (${attempts + 1}/${maxAttempts})`
@@ -89,12 +88,13 @@ const SignIn = () => {
 
       if (fcmToken) {
         try {
-          console.log("📡 Sending FCM token:", fcmToken, deviceType); // Make sure token is valid
-          const result = await postFcmToken({ token: fcmToken, deviceType });
+          console.log("📡 Sending FCM token:", fcmToken, deviceType);
+          const result = await postFcmToken({ fcmToken, deviceType });
 
-          console.log("FCM token result:", result); // Log the response from the API
-
-          toast.success("✅ FCM token sent to server");
+          console.log("FCM token result:", result);
+          if (result.error === false) {
+            toast.success("✅ FCM token sent to server");
+          }
         } catch (error) {
           console.error("❌ Failed to post FCM token", error);
           toast.error("Failed to send FCM token");
