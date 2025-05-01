@@ -12,6 +12,8 @@ import Animations from "./Skeleton/TableSkeleton";
 import LongMenu from "./UserSuspend";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { CheckCircle, PauseCircle, Cancel } from "@mui/icons-material";
+import { Stack, Typography } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -38,7 +40,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function CustomizedTables(props) {
   const data = props?.data || [];
-  // const { setPathname } = props.current;
+
+  const showStatusColumn = data.some((user) => user.role !== "Instructor");
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -75,23 +78,27 @@ export default function CustomizedTables(props) {
             <StyledTableCell>{isSmallScreen ? "User" : "Name"}</StyledTableCell>
             {!isSmallScreen && <StyledTableCell>Email</StyledTableCell>}
             <StyledTableCell>Role</StyledTableCell>
+
+            {showStatusColumn && <StyledTableCell>Status </StyledTableCell>}
+
             <StyledTableCell>Action</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data?.map((item, index) => {
             const { email, id, role, username, status } = item;
+
             return (
               <StyledTableRow
                 key={id}
-                sx={{
-                  ...(Number(status) === -1 && {
-                    backgroundColor: "#222222 !important",
-                    "& td": {
-                      color: "#000 !important",
-                    },
-                  }),
-                }}
+                // sx={{
+                //   ...(Number(status) === -1 && {
+                //     backgroundColor: "#222222 !important",
+                //     "& td": {
+                //       color: "#000 !important",
+                //     },
+                //   }),
+                // }}
               >
                 {!isSmallScreen && (
                   <StyledTableCell>{index + 1}</StyledTableCell>
@@ -105,6 +112,30 @@ export default function CustomizedTables(props) {
                 </StyledTableCell>
                 {!isSmallScreen && <StyledTableCell>{email}</StyledTableCell>}
                 <StyledTableCell>{role}</StyledTableCell>
+                {showStatusColumn && (
+                  <StyledTableCell>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      {item.status === 2 && (
+                        <>
+                          <CheckCircle color="success" fontSize="small" />
+                          <Typography variant="body2">Active</Typography>
+                        </>
+                      )}
+                      {item.status === 1 && (
+                        <>
+                          <PauseCircle color="warning" fontSize="small" />
+                          <Typography variant="body2">Inactive</Typography>
+                        </>
+                      )}
+                      {item.status === -1 && (
+                        <>
+                          <Cancel color="error" fontSize="small" />
+                          <Typography variant="body2">Deleted</Typography>
+                        </>
+                      )}
+                    </Stack>
+                  </StyledTableCell>
+                )}
                 <StyledTableCell>
                   <div className="cursor-pointer">
                     <LongMenu

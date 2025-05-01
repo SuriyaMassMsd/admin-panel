@@ -1,56 +1,55 @@
 import React, { useEffect, useState } from "react";
 import CustomizedTables from "../components/UserTable";
+import { delData, getData } from "../hooks/api";
 
 const Instructor = ({}) => {
   const [data, setData] = useState(null);
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const {
+    data: userData,
+    error,
+    mutate,
+    isLoading,
+  } = getData(`${apiUrl}/users`);
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      const apiUrl = import.meta.env.VITE_BASE_URL;
-      const token = localStorage.getItem("token");
+    if (userData?.value) {
+      const instructors = userData.value.filter(
+        (user) => user.role === "Instructor"
+      );
+      setData(instructors);
+      mutate();
+    }
+  }, [userData]);
 
-      try {
-        const response = await fetch(`${apiUrl}/users`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response) {
-          const errorData = await response.json();
-          console.log("Error", errorData.message || "something went wrong");
-          return;
-        }
-
-        const datas = await response.json();
-
-        setData(
-          datas?.value?.filter(({ role }) => role === "Instructor") ?? []
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchUserData();
-  }, []);
+  const { trigger: deleteUser, mutate: deleteMutate } = delData(
+    `${apiUrl}/users`
+  );
 
   const handleDelete = async (id) => {
-    const apiUrl = import.meta.env.VITE_BASE_URL;
-    const token = localStorage.getItem("token");
-
     try {
-      await fetch(`${apiUrl}/users/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setData((prev) => prev.filter((u) => u.id !== id));
+      await deleteUser(id);
+      mutate();
     } catch (err) {
-      console.log("error", err);
+      console.error("Delete error:", err);
     }
   };
 
+  if (error) {
+    console.log(error.response?.data?.message || "Something went wrong");
+    return <div>Error loading users.</div>;
+  }
+
+  if (isLoading || !userData) {
+    return (
+      <div>
+        <Animations />
+      </div>
+    );
+  }
   return (
     <div>
-      <CustomizedTables data={data} />
+      <CustomizedTables data={data} handleDelete={handleDelete} />
     </div>
   );
 };

@@ -16,7 +16,13 @@ const options = ["Delete", "Details"];
 
 const ITEM_HEIGHT = 48;
 
-function AlertDialog({ open, handleClose, id, handleDelete }) {
+function AlertDialog({
+  open,
+  handleClose,
+  id,
+  handleDelete,
+  handleDialogClose,
+}) {
   return (
     <Dialog
       open={open}
@@ -36,6 +42,7 @@ function AlertDialog({ open, handleClose, id, handleDelete }) {
           onClick={() => {
             handleDelete(id);
             handleClose();
+            handleDialogClose();
           }}
           autoFocus
         >
@@ -130,6 +137,7 @@ export default function LongMenu({ id, navigate, data, handleDelete }) {
       />
       <AlertDialog
         open={deleteDialogOpen}
+        handleDialogClose={handleDialogClose}
         handleClose={handleDeleteClose}
         handleDelete={handleDelete}
         id={id}

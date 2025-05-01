@@ -1,6 +1,7 @@
 import React from "react";
 import CustomizedTables from "../UserTable";
 import { delData, getData } from "../../hooks/api";
+import Animations from "../Skeleton/TableSkeleton";
 
 const User = ({ navigate, datas, current }) => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
@@ -30,7 +31,11 @@ const User = ({ navigate, datas, current }) => {
   }
 
   if (usersLoading || !users) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Animations />
+      </div>
+    );
   }
 
   const studentUsers =
