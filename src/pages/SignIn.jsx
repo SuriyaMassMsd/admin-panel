@@ -77,7 +77,7 @@ const SignIn = () => {
       let attempts = 0;
       const maxAttempts = 10;
       while (!fcmToken && attempts < maxAttempts) {
-        fcmToken = await getFcmToken();
+        fcmToken = getFcmToken();
         if (fcmToken) break;
         console.log(
           `Waiting for FCM token... (${attempts + 1}/${maxAttempts})`
@@ -105,7 +105,6 @@ const SignIn = () => {
 
       if (response.status === 201) success();
 
-      // ✅ Finally redirect
       window.location.href = "/";
     } catch (err) {
       console.error("Login error", err);

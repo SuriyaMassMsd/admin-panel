@@ -3,15 +3,18 @@ import "./index.css";
 import App from "./App.jsx";
 import "global";
 import SignIn from "./pages/SignIn.jsx";
+import Form from "./pages/Form.jsx";
+import { Details } from "@mui/icons-material";
 import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import Form from "./pages/Form.jsx";
-import { Details } from "@mui/icons-material";
+import { ToastContainer, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const token = localStorage.getItem("token");
+
 const route = createBrowserRouter([
   {
     path: "/",
@@ -26,7 +29,20 @@ const route = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  // <ThemeProvider>
-  <RouterProvider router={route} />
-  // </ThemeProvider>
+  <>
+    <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick={true}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+      transition={Bounce}
+    />
+    <RouterProvider router={route} />
+  </>
 );
