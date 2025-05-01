@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CustomizedTables from "../components/UserTable";
 import { delData, getData } from "../hooks/api";
+import Animations from "../components/Skeleton/TableSkeleton";
 
 const Instructor = ({}) => {
   const [data, setData] = useState(null);

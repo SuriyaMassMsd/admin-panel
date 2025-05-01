@@ -112,7 +112,6 @@ export default function TicketsTable() {
           width: "100%",
           overflowX: "auto",
           boxShadow: "none",
-          // border: "1px solid #e0e0e0",
           [theme.breakpoints.down("sm")]: {
             border: "none",
           },
@@ -143,9 +142,7 @@ export default function TicketsTable() {
               {/* {!isSmallScreen && (
                 <StyledTableCell>Completion date</StyledTableCell>
               )} */}
-              {!isSmallScreen && (
-                <StyledTableCell>{/* <EditNoteIcon /> */}</StyledTableCell>
-              )}
+              {!isSmallScreen && <StyledTableCell></StyledTableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
