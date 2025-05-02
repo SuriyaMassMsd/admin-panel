@@ -53,7 +53,7 @@ const Input = ({
                 error ? errorClasses : normalClasses
               } ${className}`}
               onChange={(e) => {
-                const file = e.target.files[0];
+                const file = e.target.files?.[0];
                 if (file) {
                   if (file.type.startsWith("video/")) {
                     const video = document.createElement("video");
@@ -62,11 +62,9 @@ const Input = ({
                       window.URL.revokeObjectURL(video.src);
                       const duration = video.duration;
                       console.log(`Video Duration: ${duration} seconds`);
-                      setValue(
-                        name,
-                        { file, duration },
-                        { shouldValidate: true }
-                      );
+
+                      // ✅ Store only the File object (Zod accepts this)
+                      setValue(name, file, { shouldValidate: true });
                     };
                     video.src = URL.createObjectURL(file);
                   } else {
