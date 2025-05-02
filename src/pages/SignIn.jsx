@@ -6,10 +6,12 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import useFcmToken from "../firebase/firebase";
 import { postData } from "../hooks/api";
+import { useNavigate } from "react-router";
 
 const SignIn = () => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const Schema = z.object({
     email: z.string().email("Email is required"),
@@ -23,24 +25,42 @@ const SignIn = () => {
     handleSubmit,
   } = useForm({ resolver: zodResolver(Schema) });
 
-  const success = () => {
-    toast.success("logged in succesfully", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      transition: Bounce,
-    });
-  };
-
   const apiUrl = import.meta.env.VITE_BASE_URL;
 
   const { getFcmToken, deviceType } = useFcmToken();
   const { trigger: postFcmToken } = postData(`${apiUrl}/fcm`);
+
+  // 🔁 FCM Callback Function
+  const sendFcmToken = async () => {
+    let fcmToken = null;
+    let attempts = 0;
+    const maxAttempts = 10;
+
+    while (!fcmToken && attempts < maxAttempts) {
+      fcmToken = getFcmToken();
+      if (fcmToken) break;
+      console.log(`Waiting for FCM token... (${attempts + 1}/${maxAttempts})`);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      attempts++;
+    }
+
+    if (fcmToken) {
+      try {
+        console.log("📡 Sending FCM token:", fcmToken, deviceType);
+        const result = await postFcmToken({ fcmToken, deviceType });
+
+        console.log("FCM token result:", result);
+        if (result.error === false) {
+          toast.success("✅ FCM token sent to server");
+        }
+      } catch (error) {
+        console.error("❌ Failed to post FCM token", error);
+        toast.error("Failed to send FCM token");
+      }
+    } else {
+      console.warn("⚠️ FCM token not available after waiting");
+    }
+  };
 
   const submitForm = async (data) => {
     const { email, password } = data;
@@ -73,39 +93,15 @@ const SignIn = () => {
       reset();
       setStatus(response.status);
 
-      let fcmToken = null;
-      let attempts = 0;
-      const maxAttempts = 10;
-      while (!fcmToken && attempts < maxAttempts) {
-        fcmToken = getFcmToken();
-        if (fcmToken) break;
-        console.log(
-          `Waiting for FCM token... (${attempts + 1}/${maxAttempts})`
-        );
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        attempts++;
+      if (response.status === 201) {
+        toast.success("Logged in successfully ✅");
+
+        // ⏩ Navigate immediately
+        navigate("/", { replace: true });
+
+        // 🛰️ Call FCM callback separately
+        sendFcmToken();
       }
-
-      if (fcmToken) {
-        try {
-          console.log("📡 Sending FCM token:", fcmToken, deviceType);
-          const result = await postFcmToken({ fcmToken, deviceType });
-
-          console.log("FCM token result:", result);
-          if (result.error === false) {
-            toast.success("✅ FCM token sent to server");
-          }
-        } catch (error) {
-          console.error("❌ Failed to post FCM token", error);
-          toast.error("Failed to send FCM token");
-        }
-      } else {
-        console.warn("⚠️ FCM token not available after waiting");
-      }
-
-      if (response.status === 201) success();
-
-      window.location.href = "/";
     } catch (err) {
       console.error("Login error", err);
       toast.error(err.message || "Login failed.");
@@ -116,17 +112,13 @@ const SignIn = () => {
 
   return (
     <div className="bg-blue-300/50 h-screen bg-cover py-10 bg-center">
-      <div
-        className="w-[90%] sm:w-[60%] px-2 py-6 sm:px-0 sm:py-0 bg-white mx-auto h-[100%] rounded-md flex
-       flex-col sm:flex-row items-center justify-center
-      "
-      >
+      <div className="w-[90%] sm:w-[60%] px-2 py-6 sm:px-0 sm:py-0 bg-white mx-auto h-[100%] rounded-md flex flex-col sm:flex-row items-center justify-center">
         <img
           src="sign-in.png"
           alt="signin"
-          className="hidden w-[50%] h-full rounded-l-md lg:block "
+          className="hidden w-[50%] h-full rounded-l-md lg:block"
         />
-        <div className="w-full px-4 sm:w-[80%] lg:w-[50%] lg:px-10 lg:py-14 ">
+        <div className="w-full px-4 sm:w-[80%] lg:w-[50%] lg:px-10 lg:py-14">
           <h1 className="text-[28px] font-[600]">Signin</h1>
           <h4 className="text-[#8c8c8c] text-[14px] font-[400]">
             Signin your account to continue
@@ -142,13 +134,10 @@ const SignIn = () => {
                 className={`px-[10px] w-full py-[10px] border ${
                   errors.email
                     ? "border-red-500 shadow-md shadow-red-500/50  placeholder:text-red-500"
-                    : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab] "
-                }  rounded outline-none 
-               placeholder:text-[#969696] placeholder:font-[500] text-[#969696]`}
+                    : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"
+                } rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696]`}
                 placeholder="Email*"
-                {...register("email", {
-                  required: true,
-                })}
+                {...register("email", { required: true })}
               />
               {errors.email && (
                 <p className="font-headerFont text-red-500">
@@ -162,13 +151,10 @@ const SignIn = () => {
                 className={`px-[10px] w-full py-[10px] border ${
                   errors.password
                     ? "border-red-500 shadow-md shadow-red-500/50 placeholder:text-red-500"
-                    : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab] "
-                }  rounded outline-none 
-               placeholder:text-[#969696] placeholder:font-[500] text-[#969696]`}
+                    : "border-gray-300 hover:border-[#00bbab] focus:border-[#00bbab]"
+                } rounded outline-none placeholder:text-[#969696] placeholder:font-[500] text-[#969696]`}
                 placeholder="Password*"
-                {...register("password", {
-                  required: true,
-                })}
+                {...register("password", { required: true })}
               />
               {errors.password && (
                 <p className="font-headerFont text-red-500">
@@ -177,65 +163,28 @@ const SignIn = () => {
               )}
             </div>
 
-            <div className="text-[14px] flex  justify-between items-center">
+            <div className="text-[14px] flex justify-between items-center">
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="keepsign" />
                 <label htmlFor="keepsign" className="cursor-pointer">
                   Keep me sign in
                 </label>
               </div>
-
-              <h4
-                className="text-[#00bbab]
-              
-              hover:underline underline-[#00bbab] cursor-pointer"
-              >
+              <h4 className="text-[#00bbab] hover:underline cursor-pointer">
                 Forgot Password
               </h4>
             </div>
+
             <div className="space-y-5">
               <button
-                className="bg-[#00bbab] w-full py-3 text-center cursor-pointer font-[600] text-[16px] text-white
-                hover:bg-[#00a899]
-                rounded-md
-                "
+                className="bg-[#00bbab] w-full py-3 text-center cursor-pointer font-[600] text-[16px] text-white hover:bg-[#00a899] rounded-md"
                 type="submit"
                 disabled={loading}
               >
                 {loading ? "SIGNING..." : "SIGN IN"}
               </button>
-              <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-                transition={Bounce}
-              />
-              {/* <div className="flex items-center gap-2">
-                <div className="flex-1 h-[1px]  bg-gray-300"></div>
-                <span className="text-gray-300 ">or</span>
-                <div className="flex-1 h-[1px]  bg-gray-300"></div>
-              </div>
-              <button
-                className="bg-white w-full py-3 text-center cursor-pointer font-[600] text-[16px] text-[#959595]
-                hover:bg-[#fafafa]
-                rounded-md
-                border border-[#e1e1e1] 
-                "
-                type="submit"
-              >
-                REGISTER
-              </button> */}
             </div>
           </form>
-
-          <div></div>
         </div>
       </div>
     </div>

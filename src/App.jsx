@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import "global";
-import { Bounce, ToastContainer } from "react-toastify";
 import useAutoLogOut from "./components/useAutoLogOut.jsx";
 import useFcmToken from "./firebase/firebase.js";
 
@@ -20,19 +19,6 @@ const App = () => {
   }, []);
   return (
     <div>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={true}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
       <Sidebar />
     </div>
   );
