@@ -52,6 +52,10 @@ const SignIn = () => {
         console.log("FCM token result:", result);
         if (result.error === false) {
           toast.success("✅ FCM token sent to server");
+          localStorage.setItem(
+            "fcmToken",
+            JSON.stringify({ fcmToken, deviceType })
+          );
         }
       } catch (error) {
         console.error("❌ Failed to post FCM token", error);

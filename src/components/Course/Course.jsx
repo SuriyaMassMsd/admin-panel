@@ -39,14 +39,14 @@ export default function Course({ navigate, datas, current }) {
     if (!data) return;
 
     if (
-      (data?.value.approved?.length || 0) > 0 ||
-      (data?.value.pending?.length || 0) > 0
+      (data?.value?.approved?.length || 0) > 0 ||
+      (data?.value?.pending?.length || 0) > 0
     ) {
       setApprovedCourse(data.value.approved);
       setPendingCourse(data.value.pending);
       localStorage.setItem(
         "dataLength",
-        JSON.stringify(data?.value.approved?.length || 4)
+        JSON.stringify(data?.value?.approved?.length || 4)
       );
     } else {
       setApprovedCourse([]);

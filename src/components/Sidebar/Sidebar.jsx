@@ -27,6 +27,8 @@ import UserDetails from "../UserDetails";
 import TicketsTable from "../TicketsTable";
 import Faq from "../Faq";
 import Instructor from "../Instructor";
+import { postData } from "../../hooks/api";
+import { toast } from "react-toastify";
 
 const NAVIGATION = [
   {
@@ -94,6 +96,9 @@ const Skeleton = styled("div")(({ theme, height }) => ({
 
 export default function Sidebar(props) {
   const userData = getUserValue();
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const payload = JSON.parse(localStorage.getItem("fcmToken"));
+  const { trigger: logOut } = postData(`${apiUrl}/auth/signout`);
   // console.log(userData);
 
   const { window } = props;
@@ -127,11 +132,18 @@ export default function Sidebar(props) {
         image: "https://mcmart.live/account/images/profile-icon.png",
       },
     });
+
     return {
-      signOut: () => {
-        setSession(null);
-        navigate("/sign-in");
-        localStorage.removeItem("token");
+      signOut: async () => {
+        const result = await logOut(payload);
+
+        if (result.error === true) return toast.error(result.message);
+
+        if (result.error === false) {
+          setSession(null);
+          navigate("/sign-in");
+          localStorage.clear();
+        }
       },
     };
   }, []);
