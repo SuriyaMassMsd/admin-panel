@@ -6,7 +6,7 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import useFcmToken from "../firebase/firebase";
 import { postData } from "../hooks/api";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const [status, setStatus] = useState(null);
@@ -31,7 +31,7 @@ const SignIn = () => {
   const { trigger: postFcmToken } = postData(`${apiUrl}/fcm`);
 
   // 🔁 FCM Callback Function
-  const sendFcmToken = async () => {
+  const sendFcmToken = async (tokenFromApi) => {
     let fcmToken = null;
     let attempts = 0;
     const maxAttempts = 10;
@@ -47,7 +47,17 @@ const SignIn = () => {
     if (fcmToken) {
       try {
         console.log("📡 Sending FCM token:", fcmToken, deviceType);
-        const result = await postFcmToken({ fcmToken, deviceType });
+
+        const response = await fetch(`${apiUrl}/fcm`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${tokenFromApi}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ fcmToken, deviceType }),
+        });
+
+        const result = await response.json();
 
         console.log("FCM token result:", result);
         if (result.error === false) {
@@ -56,6 +66,8 @@ const SignIn = () => {
             "fcmToken",
             JSON.stringify({ fcmToken, deviceType })
           );
+        } else {
+          throw new Error(result.message || "Unknown error");
         }
       } catch (error) {
         console.error("❌ Failed to post FCM token", error);
@@ -97,14 +109,10 @@ const SignIn = () => {
       reset();
       setStatus(response.status);
 
-      if (response.status === 201) {
+      if (responseData.error === false) {
         toast.success("Logged in successfully ✅");
-
-        // ⏩ Navigate immediately
+        sendFcmToken(tokenFromApi);
         navigate("/", { replace: true });
-
-        // 🛰️ Call FCM callback separately
-        sendFcmToken();
       }
     } catch (err) {
       console.error("Login error", err);

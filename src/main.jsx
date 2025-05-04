@@ -13,12 +13,19 @@ import {
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const token = localStorage.getItem("token");
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/sign-in" replace />;
+};
 
 const route = createBrowserRouter([
   {
     path: "/",
-    element: token ? <App /> : <Navigate to="/sign-in" replace />,
+    element: (
+      <ProtectedRoute>
+        <App />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/sign-in",
