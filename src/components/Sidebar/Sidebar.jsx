@@ -29,6 +29,7 @@ import Faq from "../Faq";
 import Instructor from "../Instructor";
 import { postData } from "../../hooks/api";
 import { toast } from "react-toastify";
+import Notification from "../Notification";
 
 const NAVIGATION = [
   {
@@ -69,6 +70,12 @@ const NAVIGATION = [
     segment: "faq",
     title: "FAQ",
     path: "/faq",
+    icon: <LiveHelpIcon />,
+  },
+  {
+    segment: "notifications",
+    title: "Notifications",
+    path: "/notifications",
     icon: <LiveHelpIcon />,
   },
 ];
@@ -272,8 +279,8 @@ export default function Sidebar(props) {
         return <Faq />;
       case "/instructor":
         return <Instructor />;
-      case "/notify":
-        return <h1>Notify</h1>;
+      case "/notifications":
+        return <Notification />;
       default:
         return <h1>404 - Not Found</h1>;
     }
