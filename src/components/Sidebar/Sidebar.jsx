@@ -9,6 +9,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import HailIcon from "@mui/icons-material/Hail";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import {
   Route,
@@ -76,7 +77,7 @@ const NAVIGATION = [
     segment: "notifications",
     title: "Notifications",
     path: "/notifications",
-    icon: <LiveHelpIcon />,
+    icon: <NotificationsIcon />,
   },
 ];
 
