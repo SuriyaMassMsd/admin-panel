@@ -32,6 +32,8 @@ const SignIn = () => {
 
   // 🔁 FCM Callback Function
   const sendFcmToken = async (tokenFromApi) => {
+    console.log(tokenFromApi);
+
     let fcmToken = null;
     let attempts = 0;
     const maxAttempts = 10;
@@ -111,7 +113,7 @@ const SignIn = () => {
 
       if (responseData.error === false) {
         toast.success("Logged in successfully ✅");
-        sendFcmToken(tokenFromApi);
+        await sendFcmToken(tokenFromApi);
         navigate("/", { replace: true });
       }
     } catch (err) {
