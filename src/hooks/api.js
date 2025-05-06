@@ -31,8 +31,9 @@ const postFetcher = async (url, { arg: payload }) => {
   return res.data;
 };
 
-// 🧩 Hook: GET data with SWR
-export const getData = (url) => useSWR(url, fetcher);
+// 🧩 Hook: GET data with SWR (local config to prevent refetch on focus)
+export const getData = (url) =>
+  useSWR(url, fetcher, { revalidateOnFocus: false });
 
 // 🧩 Hook: POST data with SWR Mutation
 export const postData = (url) => useSWRMutation(url, postFetcher);

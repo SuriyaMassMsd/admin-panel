@@ -1,146 +1,228 @@
-import { Select, MenuItem } from "@mui/material";
-import { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { z } from "zod";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { getData } from "../hooks/api";
-import Input from "../components/Input"; // ✅ Make sure this path is correct
+import * as z from "zod";
+import { postData } from "../hooks/api";
+import { toast } from "react-toastify";
 
-// Zod schema
+// Define the validation schema with Zod
 const schema = z.object({
-  title: z
-    .string({ required_error: "Title is required" })
-    .min(1, { message: "Title cannot be empty" }),
-
-  body: z
-    .string({ required_error: "Body is required" })
-    .min(1, { message: "Body cannot be empty" }),
-
+  type: z.enum(["Individual", "Role-based", "Topic-based", "All"]),
   userId: z
-    .number({ required_error: "User is required" })
-    .int({ message: "User must be an integer" }),
+    .string()
+    .optional()
+    .superRefine((val, ctx) => {
+      const type = ctx.parent?.type; // Accessing the parent data structure (form)
+      if (type === "Individual" && !val) {
+        ctx.addIssue({
+          path: ["userId"],
+          message: "User ID is required for Individual type",
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    }),
+  targetValue: z.enum(["student", "instructor", "admin"]).optional(),
+  topicValue: z.enum(["general", "courses", "community"]).optional(),
+  title: z.string().min(1, "Title is required"),
+  body: z.string().min(1, "Body is required"),
+  // route: z.string().min(1, "Route is required"),
 });
 
-const Notifications = () => {
-  const methods = useForm({
+const NotificationForm = () => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    watch,
+  } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      type: "Individual",
+      targetValue: "student",
+      topicValue: "general",
+    },
   });
-
-  const [selectedTab, setSelectedTab] = useState("Individual");
-
-  const handleChange = (event) => {
-    setSelectedTab(event.target.value);
-  };
+  const [notifyType, setNotify] = useState("Individual");
 
   const apiUrl = import.meta.env.VITE_BASE_URL;
+
   const {
-    data: users,
+    trigger: postNotification,
     isLoading,
-    error: usersError,
-  } = getData(`${apiUrl}/users`);
+    error,
+  } = postData(
+    notifyType !== "Individual"
+      ? `${apiUrl}/fcm/broadcast`
+      : `${apiUrl}/fcm/notify`
+  );
 
-  console.log(users);
+  const onSubmit = async (data) => {
+    setNotify(data.type);
+    const base = {
+      title: data.title,
+      body: data.body,
+      data: {},
+    };
 
-  const submitData = (data) => {
-    console.log("Form Data:", data);
+    let payload = { ...base };
+
+    if (data.type === "Individual") {
+      payload.userId = Number(data.userId);
+    } else if (data.type === "Role-based") {
+      payload.targetGroup = "role";
+      payload.targetValue = data.targetValue;
+    } else if (data.type === "Topic-based") {
+      payload.targetGroup = "topic";
+      payload.targetValue = data.topicValue;
+    }
+    const response = await postNotification(payload);
+    const result = await response.json();
+    if (!response.ok) throw new Error("somthing went wrong");
+
+    if (result.error === false) {
+      toast.success("Notification sent successfully");
+      console.log("Payload:", payload);
+    }
   };
 
-  return (
-    <div>
-      {/* Dropdown to choose audience type */}
-      <div className="flex justify-end">
-        <Select
-          value={selectedTab}
-          onChange={handleChange}
-          sx={{ color: "#90caf9", minWidth: 150 }}
-        >
-          <MenuItem value="Individual">Individual</MenuItem>
-          <MenuItem value="Role">Role</MenuItem>
-          <MenuItem value="Topic">Topic</MenuItem>
-          <MenuItem value="All">All</MenuItem>
-        </Select>
-      </div>
+  const type = watch("type");
 
-      {/* Main form container */}
-      <div
-        className="rounded-[12px] w-[60%] px-20 py-4 mt-10 mb-10"
+  return (
+    <div className="flex justify-start p-4 text-gray-600">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full max-w-lg p-8 rounded-xl "
         id="shadow"
       >
-        <FormProvider {...methods}>
-          <form
-            className="space-y-4 w-full mb-10"
-            onSubmit={methods.handleSubmit(submitData)}
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">
+          Send Notification
+        </h2>
+
+        <div className="mb-4">
+          <label className="block text-gray-500 mb-1">Notification Type</label>
+          <select
+            {...register("type")}
+            className="w-full p-2 border rounded-md"
           >
-            {/* Title */}
-            <Input
-              name="title"
-              id="title"
-              type="text"
-              label="Title"
-              placeholder="title*"
-              error={methods.formState.errors.title}
-            />
+            <option value="Individual">Individual</option>
+            <option value="Role-based">Role-based</option>
+            <option value="Topic-based">Topic-based</option>
+            <option value="All">All</option>
+          </select>
+          {errors.type && (
+            <span className="text-red-500">{errors.type.message}</span>
+          )}
+        </div>
 
-            {/* Body */}
-            <Input
-              name="body"
-              id="body"
-              type="textarea"
-              label="Body"
-              placeholder="body*"
-              error={methods.formState.errors.body}
+        {/* Show userId input for Individual type */}
+        {type === "Individual" && (
+          <div className="mb-4">
+            <label className="block text-gray-500 mb-1">User ID</label>
+            <input
+              type="number"
+              {...register("userId")}
+              className="w-full p-2 border rounded-md"
             />
-
-            {/* UserId (Select from API) */}
-            <Select
-              name="userId"
-              value={methods.getValues("userId") || ""}
-              onChange={(e) =>
-                methods.setValue("userId", parseInt(e.target.value))
-              }
-              displayEmpty
-              fullWidth
-              disabled={isLoading}
-              error={Boolean(methods.formState.errors.userId)}
-            >
-              <MenuItem value="" disabled>
-                Select a user
-              </MenuItem>
-              {!isLoading &&
-                users?.map((user) => (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.username}
-                  </MenuItem>
-                ))}
-            </Select>
-            {methods.formState.errors.userId && (
-              <p className="text-red-500 text-sm">
-                {methods.formState.errors.userId.message}
-              </p>
+            {errors.userId && (
+              <span className="text-red-500">{errors.userId.message}</span>
             )}
+          </div>
+        )}
 
-            {/* Buttons */}
-            <div className="flex justify-between gap-4">
-              <button
-                type="button"
-                className="mt-4 w-full text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-400 rounded px-4 py-4 text-center font-semibold dark:text-white dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-500"
-                onClick={() => methods.reset()}
-              >
-                Reset
-              </button>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="bg-[#00bbab] hover:bg-[#51ada5f3] w-full font-semibold text-white py-4 px-4 rounded mt-4"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
-        </FormProvider>
-      </div>
+        {/* Show targetValue input for Role-based type */}
+        {type === "Role-based" && (
+          <div className="mb-4">
+            <label className="block text-gray-500 mb-1">Select Role</label>
+            <select
+              {...register("targetValue")}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="student">Student</option>
+              <option value="instructor">Instructor</option>
+              <option value="admin">Admin</option>
+            </select>
+            {errors.targetValue && (
+              <span className="text-red-500">{errors.targetValue.message}</span>
+            )}
+          </div>
+        )}
+
+        {/* Show topicValue input for Topic-based type */}
+        {type === "Topic-based" && (
+          <div className="mb-4">
+            <label className="block text-gray-500 mb-1">Select Topic</label>
+            <select
+              {...register("topicValue")}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="general">General</option>
+              <option value="courses">Courses</option>
+              <option value="community">Community</option>
+            </select>
+            {errors.topicValue && (
+              <span className="text-red-500">{errors.topicValue.message}</span>
+            )}
+          </div>
+        )}
+
+        {/* Title */}
+        <div className="mb-4">
+          <label className="block text-gray-500 mb-1">Title</label>
+          <input
+            type="text"
+            {...register("title")}
+            className="w-full p-2 border rounded-md"
+          />
+          {errors.title && (
+            <span className="text-red-500">{errors.title.message}</span>
+          )}
+        </div>
+
+        {/* Body */}
+        <div className="mb-4">
+          <label className="block text-gray-500 mb-1">Body</label>
+          <input
+            type="text"
+            {...register("body")}
+            className="w-full p-2 border rounded-md"
+          />
+          {errors.body && (
+            <span className="text-red-500">{errors.body.message}</span>
+          )}
+        </div>
+
+        {/* Route */}
+        {/* <div className="mb-4">
+          <label className="block text-gray-500 mb-1">Route</label>
+          <input
+            type="text"
+            {...register("route")}
+            className="w-full p-2 border rounded-md"
+          />
+          {errors.route && (
+            <span className="text-red-500">{errors.route.message}</span>
+          )}
+        </div> */}
+
+        <div className="flex justify-between gap-6 mt-8">
+          <button
+            type="button"
+            onClick={() => reset()}
+            className="w-full py-2 rounded-md bg-gray-300 text-gray-800 font-semibold hover:bg-gray-400 transition cursor-pointer"
+          >
+            Reset
+          </button>
+          <button
+            type="submit"
+            className="w-full py-2 rounded-md bg-blue-500 text-white font-semibold hover:bg-blue-600 transition cursor-pointer"
+          >
+            Submit Notification
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default Notifications;
+export default NotificationForm;
