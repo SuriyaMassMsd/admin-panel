@@ -31,6 +31,11 @@ const postFetcher = async (url, { arg: payload }) => {
   return res.data;
 };
 
+const subscribeToTopicFetcher = async (url, { arg: payload }) => {
+  const res = await axios.post(url, payload, getAuthHeaders());
+  return res.data;
+};
+
 // 🧩 Hook: GET data with SWR (local config to prevent refetch on focus)
 export const getData = (url) =>
   useSWR(url, fetcher, { revalidateOnFocus: false });
@@ -40,3 +45,6 @@ export const postData = (url) => useSWRMutation(url, postFetcher);
 
 // 🧩 Hook: DELETE data with SWR Mutation
 export const delData = (url) => useSWRMutation(url, deleteFetcher);
+
+export const subscribeToTopic = (url) =>
+  useSWRMutation(url, subscribeToTopicFetcher);

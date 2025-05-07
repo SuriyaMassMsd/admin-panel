@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { postData } from "../hooks/api";
 import { toast } from "react-toastify";
+import { subscribeToTopic } from "../hooks/api";
 
 // Define the validation schema with Zod
 const schema = z.object({
@@ -57,32 +58,51 @@ const NotificationForm = () => {
       : `${apiUrl}/fcm/notify`
   );
 
+  const { trigger: subscribe } = subscribeToTopic(`${apiUrl}/fcm/topicReg`);
+
   const onSubmit = async (data) => {
-    setNotify(data.type);
-    const base = {
-      title: data.title,
-      body: data.body,
-      data: {},
-    };
+    try {
+      setNotify(data.type);
 
-    let payload = { ...base };
+      const base = {
+        title: data.title,
+        body: data.body,
+        data: {},
+      };
 
-    if (data.type === "Individual") {
-      payload.userId = Number(data.userId);
-    } else if (data.type === "Role-based") {
-      payload.targetGroup = "role";
-      payload.targetValue = data.targetValue;
-    } else if (data.type === "Topic-based") {
-      payload.targetGroup = "topic";
-      payload.targetValue = data.topicValue;
-    }
-    const response = await postNotification(payload);
-    const result = await response.json();
-    if (!response.ok) throw new Error("somthing went wrong");
+      let payload = { ...base };
 
-    if (result.error === false) {
+      const fcmTokenStr = localStorage.getItem("fcmToken");
+      if (!fcmTokenStr) {
+        throw new Error("No fcmToken found in localStorage");
+      }
+
+      const { fcmToken } = JSON.parse(fcmTokenStr);
+
+      console.log("Parsed FCM Token:", fcmToken);
+
+      if (data.type === "Individual") {
+        payload.userId = Number(data.userId);
+      } else if (data.type === "Role-based") {
+        payload.targetGroup = "role";
+        payload.targetValue = data.targetValue;
+      } else if (data.type === "Topic-based") {
+        payload.targetGroup = "topic";
+        payload.targetValue = data.topicValue;
+
+        console.log("Subscribing to topic...");
+        await subscribe({ fcmToken, topic: data.topicValue });
+        console.log("Subscription complete.");
+      }
+
+      console.log("Sending notification with payload:", payload);
+      const response = await postNotification(payload);
+      console.log("Notification response:", response);
+
       toast.success("Notification sent successfully");
-      console.log("Payload:", payload);
+    } catch (error) {
+      console.error("Notification error:", error);
+      toast.error("Failed to send notification: " + error.message);
     }
   };
 
