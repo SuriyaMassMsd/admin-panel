@@ -1,0 +1,331 @@
+import * as React from "react";
+import { extendTheme, styled } from "@mui/material/styles";
+import HomeIcon from "@mui/icons-material/Home";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import { AppProvider } from "@toolpad/core/AppProvider";
+import { DashboardLayout } from "@toolpad/core/DashboardLayout";
+import { PageContainer } from "@toolpad/core/PageContainer";
+import PersonIcon from "@mui/icons-material/Person";
+import BugReportIcon from "@mui/icons-material/BugReport";
+import LiveHelpIcon from "@mui/icons-material/LiveHelp";
+import HailIcon from "@mui/icons-material/Hail";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import Chat from "../Chat/Chat";
+
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import Course from "../Course/Course";
+import Details from "../../pages/Details";
+import Form from "../../pages/Form";
+import { getUserValue } from "../UserType";
+import User from "../Users/User";
+import MyForm from "../../pages/Form";
+import UserDetails from "../UserDetails";
+import TicketsTable from "../TicketsTable";
+import Faq from "../Faq";
+import Instructor from "../Instructor";
+import { postData } from "../../hooks/api";
+import { toast } from "react-toastify";
+import Notification from "../Notification";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
+import HomePage from "../HomePage";
+
+const NAVIGATION = [
+  {
+    kind: "header",
+    title: "Main items",
+  },
+  {
+    segment: "Home",
+    title: "Home",
+    icon: <HomeIcon />,
+    path: "/Home",
+  },
+  {
+    segment: "courses",
+    title: "Courses",
+    path: "/courses",
+    icon: <DashboardIcon />,
+  },
+  {
+    segment: "users",
+    title: "Users",
+    path: "/users",
+    icon: <PersonIcon />,
+  },
+  {
+    segment: "instructor",
+    title: "instructor",
+    path: "/instructor",
+    icon: <HailIcon />,
+  },
+  {
+    segment: "tickets",
+    title: "Tickets",
+    path: "/tickets",
+    icon: <BugReportIcon />,
+  },
+  {
+    segment: "faq",
+    title: "FAQ",
+    path: "/faq",
+    icon: <LiveHelpIcon />,
+  },
+  {
+    segment: "notifications",
+    title: "Notifications",
+    path: "/notifications",
+    icon: <NotificationsIcon />,
+  },
+  {
+    segment: "doubt",
+    title: "Doubt",
+    path: "/doubt",
+    icon: <ChatBubbleIcon />,
+  },
+];
+
+const demoTheme = extendTheme({
+  colorSchemes: { light: true, dark: true },
+  colorSchemeSelector: "class",
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 600,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
+});
+
+const Skeleton = styled("div")(({ theme, height }) => ({
+  backgroundColor: theme.palette.action.hover,
+  borderRadius: theme.shape.borderRadius,
+  height,
+  content: '" "',
+}));
+
+export default function Sidebar(props) {
+  const userData = getUserValue();
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const payload = JSON.parse(localStorage.getItem("fcmToken"));
+  const { trigger: logOut } = postData(`${apiUrl}/auth/signout`);
+  // console.log(userData);
+
+  const { window } = props;
+  const navigate = useNavigate();
+  const { id } = useParams();
+  console.log("UseParams", id);
+  const [selectedCourse, setSelectedCourse] = React.useState(null);
+  const [session, setSession] = React.useState(null);
+  const [pathname, setPathname] = React.useState(
+    sessionStorage.getItem("current") || "/Home"
+  );
+
+  console.log(selectedCourse);
+
+  function useDemoRouter() {
+    const router = React.useMemo(() => {
+      return {
+        pathname,
+        searchParams: new URLSearchParams(),
+        navigate: (path) => setPathname(String(path)),
+      };
+    }, [pathname]);
+
+    return router;
+  }
+
+  const authentication = React.useMemo(() => {
+    // signIn = () => {
+    setSession({
+      user: {
+        name: userData.role,
+        email: userData.email,
+        image: "https://mcmart.live/account/images/profile-icon.png",
+      },
+    });
+
+    return {
+      signOut: async () => {
+        const result = await logOut(payload);
+
+        if (result.error === true) return toast.error(result.message);
+
+        if (result.error === false) {
+          setSession(null);
+          navigate("/sign-in");
+          localStorage.clear();
+        }
+      },
+    };
+  }, []);
+
+  sessionStorage.setItem("current", pathname);
+  const demoRoute = sessionStorage.getItem("current");
+  const router = useDemoRouter(demoRoute);
+
+  const location = useLocation();
+  // console.log("PathName", pathname);
+  // console.log(selectedCourse);
+
+  const currentRoutes = () => {
+    setPathname("/courses");
+    router.navigate("/courses");
+  };
+  const courseDetails = () => {
+    setPathname("/courses");
+    router.navigate("/courses/details");
+  };
+
+  const renderContent = () => {
+    const path = router.pathname || "";
+    // const url = location.pathname;
+
+    if (path.startsWith("/courses/details")) {
+      return (
+        <>
+          <div className="flex items-center space-x-1 ">
+            <span>
+              <strong
+                className="cursor-pointer hover:underline"
+                onClick={currentRoutes}
+              >
+                Courses /
+              </strong>
+            </span>
+            <span>{selectedCourse?.courseStatus === 1 ? "Draft" : "Live"}</span>
+            <span>/ Details</span>
+          </div>
+          <div className="mt-10">
+            <Details
+              data={selectedCourse}
+              navigate={router.navigate}
+              current={{ setPathname }}
+            />
+          </div>
+        </>
+      );
+    }
+
+    if (path.startsWith("/courses/edit")) {
+      return (
+        <>
+          <div className="flex items-center space-x-1 ">
+            <span>
+              <strong
+                className="cursor-pointer hover:underline"
+                onClick={currentRoutes}
+              >
+                Courses
+              </strong>
+            </span>
+            <span>/ Edit</span>
+          </div>
+          <div>
+            <MyForm datas={selectedCourse} navigate={router.navigate} />
+          </div>
+        </>
+      );
+    }
+
+    if (path.includes("/courses/addCourse")) {
+      return (
+        <>
+          <div className="flex items-center space-x-1 w-">
+            <span>
+              <strong
+                className="cursor-pointer hover:underline"
+                onClick={currentRoutes}
+              >
+                Courses
+              </strong>
+            </span>
+            <span>/ AddCourses</span>
+          </div>
+          <Form />
+        </>
+      );
+    }
+    if (path.includes("/users/details")) {
+      return (
+        <>
+          <div className="flex items-center space-x-1 w-">
+            <span>
+              <strong
+                className="cursor-pointer hover:underline"
+                onClick={currentRoutes}
+              >
+                Users
+              </strong>
+            </span>
+            <span>/ Details</span>
+          </div>
+          <UserDetails />
+        </>
+      );
+    }
+
+    switch (path) {
+      case "/Home":
+        return <HomePage />;
+      case "/courses":
+        return (
+          <Course
+            navigate={router.navigate}
+            current={{ setPathname }}
+            datas={{ selectedCourse, setSelectedCourse }}
+          />
+        );
+      case "/users":
+        return <User navigate={router.navigate} current={{ setPathname }} />;
+
+      case "/tickets":
+        return <TicketsTable />;
+      case "/faq":
+        return <Faq />;
+      case "/instructor":
+        return <Instructor />;
+      case "/notifications":
+        return <Notification />;
+      case "/doubt":
+        return <Chat />;
+      default:
+        return <h1>404 - Not Found</h1>;
+    }
+  };
+
+  // Remove this const when copying and pasting into your project.
+  const demoWindow = typeof window !== "undefined" ? window() : undefined;
+
+  return (
+    <AppProvider
+      navigation={NAVIGATION}
+      authentication={authentication}
+      session={session}
+      router={router}
+      theme={demoTheme}
+      window={demoWindow}
+      branding={{
+        logo: (
+          <img
+            className="w-[140px] h-[40px] rounded-full bg-cover"
+            src="https://gravitus.io/static/media/gravituslogo.d101ec067ab314ba6c5f8c14bfc019c6.svg"
+            alt="gravitus logo"
+          />
+        ),
+        title: "",
+      }}
+    >
+      <DashboardLayout>
+        <PageContainer>{renderContent()}</PageContainer>
+      </DashboardLayout>
+    </AppProvider>
+  );
+}
